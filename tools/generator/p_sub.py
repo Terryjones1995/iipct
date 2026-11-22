@@ -30,6 +30,10 @@ def hero_photo(path, wh, alt, pos='center center'):
 def page_hero(trail, title, lead, pic='', **kw):
     """lib.sub_hero(); pic (from hero_photo) fills its photo slot with a real photograph, which sub_hero() itself cannot take."""
     s = sub_hero(trail, title, lead, **kw)
+    if kw.get('medal'):      # the icon medallion only balances the wide layout; once the hero stacks it is a lone circle
+        medal_box = '<div aria-hidden="true" style="flex: 0 0 200px'
+        assert s.count(medal_box) == 1, 'lib.sub_hero() markup changed: update p_sub.page_hero()'
+        s = s.replace(medal_box, '<div class="hide-t" aria-hidden="true" style="flex: 0 0 200px')
     if not pic:
         return s
     tail = '\n\n</div>\n</section>'
@@ -107,9 +111,9 @@ def immunization():
                   f'<div style="flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 16px">{ico("doc", 30, RUSTI, 1.4)}'
                   f'<div style="display: flex; flex-direction: column; gap: 3px">{h3("Ontario’s routine immunization schedule", 18.4)}'
                   f'<p style="margin: 0; font-size: 13.6px; line-height: 1.4; color: {INK}">The full list of publicly funded vaccines and when they are due, on the Government of Ontario website. Opens in a new tab.</p></div></div>'
-                  f'{btn("View the Schedule", SCHEDULE_URL, "outline", None, True, "sm")}</div>')
+                  f'{btn("View the Schedule", SCHEDULE_URL, "outline", None, True, "sm", "min-height: 40px")}</div>')
     baby = note('baby', 'Booking for a baby or young child?',
-                'Your child may also get vaccines at a well baby or well child visit. ' + textlink('See the visit schedule', 'WellBaby.dc.html', 14, 'gap: 8px'), 'cream')
+                f'Your child may also get vaccines at a <a href="WellBaby.dc.html" style="color: {RUST}; font-weight: 600">well baby or well child visit</a>.', 'cream')
     main = section('Who it’s for', who + shingrix) + section('The schedule', sched + baby)
     return 'IIPCT — Immunization Program', shell('Immunization.dc.html', 'Immunization Program', 'Publicly Funded Immunization Program',
                                                   'Culturally safe vaccines for all ages, covered by Ontario’s publicly funded program.', main, 'Book a vaccine visit',
@@ -126,10 +130,10 @@ def wellbaby():
     visit = grid([
         icon_item('stethoscope', 'rust', 'Physical assessment', 'This may include your child’s weight, length or height, and head circumference. The nurse or doctor may listen to the heart, lungs or abdomen, gently check the head and eyes, and check the hips.'),
         icon_item('sprout', 'sage', 'Development and milestones', 'We check how your child is developing. Please share any questions or concerns. The LookSee Checklist is a free resource for families in Ontario.',
-                  ext('LookSee Checklist for parents', 'https://www.lookseechecklist.com/en/parents', 13.4, RUST, 'margin-top: 4px')),
+                  ext('LookSee Checklist for parents', 'https://www.lookseechecklist.com/en/parents', 13.4, RUST, 'display: inline-flex; align-items: center; min-height: 40px; margin-top: 2px')),
         icon_item('chat-heart', 'gold', 'Time to talk', 'Questions about nutrition, sleep and behaviour, and guidance on injury prevention, healthy sleep, environmental health, oral health, fevers and more.'),
         icon_item('syringe', 'sage', 'Vaccinations', 'Your child may also get vaccines during the visit.',
-                  textlink('Immunization Program', 'Immunization.dc.html', 13.4, 'gap: 8px; margin-top: 4px')),
+                  textlink('Immunization Program', 'Immunization.dc.html', 13.4, 'gap: 8px; min-height: 40px; margin-top: 2px')),
     ], 330)
     main = section('When to book', schedule, 'Visit schedule') + section('What happens at a visit', visit, 'What to expect')
     return 'IIPCT — Well Baby and Well Child', shell('WellBaby.dc.html', 'Well Baby &amp; Well Child', 'Well Baby and Well Child Appointments',
@@ -198,19 +202,18 @@ def outreach():
         icon_item('check-circle', 'sage', 'Cancer screening', 'HPV screening clinics to reduce barriers and improve cervical cancer prevention, breast cancer screening events, and colorectal screening pathways.'),
         icon_item('heart-pulse', 'gold', 'Diabetes screening', 'Promoting early identification and intervention.'),
         icon_item('eye', 'rust', 'Eye screening', 'Diabetic retinopathy screening, bringing essential eye care to the community.',
-                  textlink('About eye screening', 'Retinopathy.dc.html', 13.4, 'gap: 8px; margin-top: 4px')),
+                  textlink('About eye screening', 'Retinopathy.dc.html', 13.4, 'gap: 8px; min-height: 40px; margin-top: 2px')),
         icon_item('house', 'sage', 'Support for displaced communities', 'Care, supplies and connections to services for people affected by emergencies, such as wildfire displacement.'),
         icon_item('tipi', 'gold', 'Powwows and community events', 'Sharing health and wellness information, providing culturally safe care, and building trust-based relationships.'),
     ], 330)
     goal = panel(prose('We support Indigenous individuals and families who may not have regular access to a primary care provider. Through outreach, we bring care directly to the community: meeting people where they are, in ways that honour their experiences and respect their needs.',
                        'Our goal is that all Indigenous people in our region have access to timely, preventive and compassionate care. Our outreach is community-driven and culturally grounded.',
                        size=14.8, style='margin-bottom: 10px'))
-    reach = note('phone', 'Need support?', 'If you or someone you know needs support, or would like to connect about outreach, please contact us. We’re here to help. '
-                 + textlink('Contact us', 'Contact.dc.html', 14, 'gap: 8px'), 'cream')
+    reach = note('phone', 'Need support?', f'If you or someone you know needs support, or would like to connect about outreach, please <a href="Contact.dc.html" style="color: {RUST}; font-weight: 600">contact us</a>. We’re here to help.', 'cream')
     story = (f'<a class="card" href="NewsBreastScreening.dc.html" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; padding: 20px 24px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
              f'<span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 112px; height: 112px; border-radius: 50%; background: #153526; color: #FFFFFF">'
              f'<span style="font-family: {SERIF}; font-weight: 600; font-size: 38px; line-height: 1">19</span><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px; color: #E3BE74">mammograms</span></span>'
-             f'<span style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px">{tag("Outreach story", "sage")}'
+             f'<span style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px">'
              f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">Together We’re Stronger: Breast Cancer Screening Event</span>'
              f'<span style="font-size: 13.8px; line-height: 1.45">19 mammograms were completed, with our partners the Mohawks of the Bay of Quinte, the South East Indigenous Cancer Program and Kingston Health Sciences Centre.</span>'
              f'<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.6px; font-weight: 600; color: {RUST}">Read the story{ico("arrow", 15, RUST, 1.9)}</span></span></a>')

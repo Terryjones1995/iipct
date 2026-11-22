@@ -18,7 +18,7 @@ def service_card(pic, icon, tone, title, text, items, cta, href):
 <h3 style="margin: 0; padding-left: 14px; font-family: {SERIF}; font-weight: 700; font-size: 25.4px; line-height: 1.08; letter-spacing: -0.018em; color: {HEAD}; white-space: nowrap">{title}</h3>
 <p style="margin: 0; padding-left: 15px; font-size: 14.8px; line-height: 1.3; letter-spacing: -0.012em; color: {INK}">{text}</p>
 <ul style="margin: 8px 0 0; padding: 10px 4px 10px 12px; list-style: none; border-radius: 10px; background: #FFFBF3; border: 1px solid #E6D8BD; display: flex; flex-direction: column; gap: 6px; font-size: 12.7px; letter-spacing: -0.012em; line-height: 1.2; color: {INK}">{rows}</ul>
-<div style="margin-top: auto; padding: 10px 8px 0">{btn(cta, href, 'primary', None, True, 'sm', 'width: 100%; gap: 14px; font-size: 12.4px; padding: 0 8px')}</div>
+<div style="margin-top: auto; padding: 10px 8px 0">{btn(cta, href, 'primary', None, True, 'sm', 'width: 100%; min-height: 40px; gap: 14px; font-size: 12.4px; padding: 0 8px')}</div>
 </div>
 </article>'''
 
@@ -31,7 +31,7 @@ def area(aid, icon, tone, title, lead, body, branch_style):
 {branch(96, '#B5BFA6', 0.5, branch_style)}
 <div style="position: relative; display: flex; align-items: center; gap: 16px">{circ(icon, tone, 58, 30, 1.4)}
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 5px">{h2(title, 30.4)}{p(lead, 14.8, MUTED, 1.4)}</div></div>
-<div style="position: relative; margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 16px; align-items: start">{body}</div>
+<div style="position: relative; margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 16px; align-items: start">{body}</div>
 </section>'''
 
 def contact_row(name, role, ext_, email):
@@ -44,14 +44,14 @@ def contact_row(name, role, ext_, email):
 
 def start_card(icon, tone, title, text, cta):
     return panel(f'<div style="display: flex; align-items: center; gap: 14px">{circ(icon, tone, 52, 27, 1.5)}{h3(title, 21)}</div>'
-                 + prose(text, size=14.4, style='margin-top: 12px') + f'<div style="margin-top: 16px">{cta}</div>', 'display: flex; flex-direction: column', '22px 24px 24px')
+                 + prose(text, size=14.4, style='margin-top: 12px') + f'<div style="margin-top: auto; padding-top: 16px">{cta}</div>', 'display: flex; flex-direction: column', '22px 24px 24px')
 
 def page():
     buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + btn('Contact a Clinic', 'Contact.dc.html', 'outline', 'phone', False)
     s = header('services')
-    extra = p('Our services draw equally from both Indigenous and mainstream ways of knowing and being.', 15.4, INK, 1.36, 'margin-top: 8px')
+    extra = p('Our services draw equally from both Indigenous and mainstream ways of knowing and being.', 15.4, INK, 1.36, 'margin-top: 8px; max-width: 470px')
     top = hero('hero-services', 60.2, 344, 'Services', 'Explore four key programs supporting health, wellness, and community care.', buttons,
-               h1_size=57, lead_size=20.6, lead_lh=1.3, lead_weight=500, extra=extra, pad='24px 0 34px 90px', gap=9, btn_mt=12, sq_mt=0, obj='center 30%')
+               h1_size=57, lead_size=20.6, lead_w=470, lead_lh=1.3, lead_weight=500, extra=extra, pad='24px 0 34px 90px', gap=9, btn_mt=12, sq_mt=0, obj='center 30%')
     # lib.hero() takes only mock-up crops: put IIPCT's own photograph in place of the stand-in (people who are not IIPCT's)
     stand_in = f'<img class="hero-photo" src="{BLOB["hero-services"]}" alt=""'
     assert stand_in in top, 'lib.hero() markup changed: update p_services.page()'
@@ -89,7 +89,7 @@ def page():
                             size=14.8, style='margin-bottom: 10px'))
                 + panel(prose('Language, culture and identity are central to this care. Through discussions with seers and mental health professionals, clients regain direction and connection. '
                               'Traditional knowledge is used as a preventative and supportive approach for overall wellness.', size=14.8, style='margin-bottom: 10px')
-                        + f'<div style="margin-top: 6px">{textlink("Contact us to connect with our Traditional Healing Coordinator", "Contact.dc.html", 14, "white-space: normal; gap: 10px")}</div>'))
+                        + f'<div style="margin-top: 6px">{textlink("Contact us to connect with our Traditional Healing Coordinator", "Contact.dc.html", 14, "white-space: normal; gap: 10px; min-height: 40px")}</div>'))
     s += area('cultural', 'bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support and cultural learning.', cultural,
               'left: -40px; bottom: -60px; transform: rotate(12deg)')
 
