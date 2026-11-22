@@ -355,6 +355,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .nb {
     white-space: nowrap;
   }
+  .wb::after {
+    content: "\200B";
+  }
   a[href^="mailto:"] {
     overflow-wrap: anywhere;
   }
@@ -747,14 +750,62 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .t-b {
     max-width: 68ch;
   }
+  #main>* {
+    margin-top: 48px !important;
+  }
+  #main>:first-child, #main>.hero-sec, #main>.sh {
+    margin-top: 0 !important;
+  }
+  #main>.hero-sec+*, #main>.sh+* {
+    margin-top: 28px !important;
+  }
+  #main>.w {
+    padding-top: 0 !important;
+  }
+  .sp-photo {
+    flex: 0 0 40% !important;
+  }
+  .sp-txt {
+    flex: 1 1 0 !important;
+    padding: 6px 0 10px 28px !important;
+  }
+  .sp-feat {
+    flex: 1 1 100% !important;
+    padding: 12px 0 0 !important;
+  }
+  .fl-list {
+    display: grid !important;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 20px !important;
+  }
+  .fl-i {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+  .cu-col {
+    flex: 1 1 0 !important;
+  }
+  .ft-col .fl {
+    font-size: 14.5px !important;
+  }
+  .ev-tm {
+    flex-basis: 152px !important;
+  }
+  .cu-col+.cu-col {
+    border-left: 1px solid #E6D6BC;
+  }
   .gt2 {
+    display: grid !important;
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 16px !important;
   }
   .gt2>:last-child:nth-child(odd) {
     grid-column: 1 / -1;
   }
   .gt3 {
+    display: grid !important;
     grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+    gap: 16px !important;
   }
   .gt3>* {
     grid-column: span 2;
@@ -874,6 +925,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     font-size: 14px !important;
   }
   .g-tiles {
+    display: grid !important;
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
     gap: 12px !important;
   }
@@ -995,6 +1047,81 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .ft-col .fl {
     font-size: 15px !important;
+  }
+  .ft-logo>a>span:first-child {
+    width: 64px !important;
+    height: 64px !important;
+  }
+  .ft-logo>a>span:first-child>img {
+    width: 52px !important;
+  }
+  #main>* {
+    margin-top: 40px !important;
+  }
+  #main>:first-child, #main>.hero-sec, #main>.sh {
+    margin-top: 0 !important;
+  }
+  #main>.hero-sec+*, #main>.sh+* {
+    margin-top: 24px !important;
+  }
+  #main>.w {
+    padding-top: 0 !important;
+  }
+  .sp-photo>div {
+    min-height: 210px !important;
+  }
+  .sp-txt {
+    padding: 20px 0 12px !important;
+  }
+  .hsub {
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+  }
+  .ev-tm {
+    flex: 1 1 100% !important;
+  }
+  .loc-g .tl {
+    white-space: nowrap;
+    font-size: 14px !important;
+  }
+  .loc-g>a>span {
+    padding-left: 0 !important;
+  }
+  .loc-g>a>span:first-child {
+    gap: 7px !important;
+  }
+  .cu-col .ci {
+    width: 52px !important;
+    height: 52px !important;
+  }
+  .cu-col .ci svg {
+    width: 26px;
+    height: 26px;
+  }
+  .jl {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px !important;
+  }
+  .jl>a {
+    justify-content: center;
+    text-align: center;
+    padding: 6px 10px !important;
+    min-height: 44px !important;
+  }
+  .toc ul {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 2px 8px !important;
+  }
+  .tile>img {
+    width: 64px !important;
+    height: 64px !important;
+  }
+  .bt>span[aria-hidden] {
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 22px !important;
   }
 }
 

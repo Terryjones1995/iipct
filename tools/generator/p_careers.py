@@ -37,7 +37,7 @@ def page():
 <section id="jobs" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 56px 0 68px">
 <div style="padding-left: 20px">{sec_head('Current Opportunities', 'Join Our Team', '', 31.6)}</div>
 {p('Each posting opens on IIPCT’s hiring page, where you can read the full job description and apply.', 15, INK, 1.45, 'max-width: 640px; margin: 8px 0 0 20px')}
-<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 18px">{cards}</div>
+<div class="g-cards gt2" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 18px">{cards}</div>
 </section>
 <div style="margin-top: 30px">'''
     right = (btn('See Current Openings', '#jobs', 'light', None, True, 'md', 'padding: 0 24px; gap: 13px; font-size: 13px; min-height: 40px')

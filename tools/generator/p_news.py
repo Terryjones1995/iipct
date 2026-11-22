@@ -194,7 +194,7 @@ def news():
         story('October 9, 2025', 'Community health', 'sage', 'Together We’re Stronger: Breast Cancer Screening Event',
               '19 mammograms were completed, with our partners the Mohawks of the Bay of Quinte, the South East Indigenous Cancer Program and Kingston Health Sciences Centre.', BREAST,
               ('news/breast-screening-event-table-640.jpg', BREAST_ALT, 640, 426)),
-    ], 300, 18)
+    ], 300, 18, '', 'g-cards gt2')
     main = section('Stories', stories, 'From IIPCT') + section('Updates', f'<div style="display: flex; flex-direction: column; gap: 14px">{updates_section()}</div>', 'From our Facebook page')
     s = header('events')
     s += sub_hero([HOME, ('News &amp; Updates', None)], 'News &amp; Updates', 'Stories and updates from Tsi Kanonhkhwatsheríyo, including our posts from Facebook.',

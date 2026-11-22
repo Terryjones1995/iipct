@@ -339,7 +339,7 @@ def home_events():
             last = dt
         groups += (f'<li data-end="{end}" data-day="{dt}" data-key="{key}">'
                    f'<a class="tl" href="{href}" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
-                   f'<span class="t-s" style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
+                   f'<span class="t-s ev-tm" style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
                    f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
                    f'<span class="t-b" style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{e["title"]}</span>'
                    f'<span class="t-s" style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span>{closed_row}</span></a></li>')

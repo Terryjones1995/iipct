@@ -457,7 +457,7 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
          site_photo=None, photo_alt='', photo_wh=None, narrow_pos=None):
     """photo = a mock-up crop name; or site_photo = a real photograph under site-img/ (with photo_alt and photo_wh=(w, h))."""
     eb = eyebrow(eyebrow_txt, RUST, 'font-size: 12.5px; letter-spacing: 0.14em; margin-bottom: 2px') if eyebrow_txt else ''
-    sb = (f'<p style="margin: 0; font-family: {SERIF}; font-weight: 620; font-size: {sub_size}px; line-height: 1.2; letter-spacing: -0.014em; color: {H1C}">{sub}</p>') if sub else ''
+    sb = (f'<p class="hsub" style="margin: 0; font-family: {SERIF}; font-weight: 620; font-size: {sub_size}px; line-height: 1.2; letter-spacing: -0.014em; color: {H1C}">{sub}</p>') if sub else ''
     sq = f'<span class="sq" style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>'
     sq_first = sq if not sub else ''
     sq_last = sq if sub else ''
@@ -529,10 +529,10 @@ def feature_list(items, icon_size=46, title_size=15.6, gap=22, text_size=12.5, i
     """items: (icon, title, text)"""
     out = ''
     for ic, t, d in items:
-        out += (f'<div style="display: flex; align-items: flex-start; gap: {icon_gap}px">{ico(ic, icon_size, RUSTI, 1.2, "margin-top: 1px")}'
+        out += (f'<div class="fl-i" style="display: flex; align-items: flex-start; gap: {icon_gap}px">{ico(ic, icon_size, RUSTI, 1.2, "margin-top: 1px")}'
                 f'<div style="display: flex; flex-direction: column; gap: 4px"><h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: {title_size}px; line-height: 1.12; letter-spacing: -0.01em; color: {HEAD}">{t}</h3>'
                 f'<p style="margin: 0; font-size: {text_size}px; line-height: 1.32; color: {INK}">{d}</p></div></div>')
-    return f'<div style="display: flex; flex-direction: column; gap: {gap}px">{out}</div>'
+    return f'<div class="fl-list" style="display: flex; flex-direction: column; gap: {gap}px">{out}</div>'
 
 def split_section(photo_html, eyebrow_txt, title, body_html, cta, features, style='', title_size=30.5, photo_w='29.4%', feat_w='32.2%'):
     return f'''
@@ -803,6 +803,7 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 .t-s{font-size:14.5px !important;line-height:1.45 !important}
 .crumb{font-size:14px !important}
 .nb{white-space:nowrap}
+.wb::after{content:"\\200B"}
 a[href^="mailto:"]{overflow-wrap:anywhere}
 .mbar{display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#153526;border-top:1px solid #C8A15A;padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);box-shadow:0 -4px 16px rgba(12,39,29,.22)}
 .mb-a{flex:1 1 0;min-width:0;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px !important;color:#FFFFFF;text-decoration:none;font-size:13px;font-weight:700;line-height:1.1;letter-spacing:.01em}
@@ -911,9 +912,22 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .sh .h1{font-size:40px !important}
 .h2{font-size:30px !important}
 .t-b{max-width:68ch}
-.gt2{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+#main>*{margin-top:48px !important}
+#main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
+#main>.hero-sec+*,#main>.sh+*{margin-top:28px !important}
+#main>.w{padding-top:0 !important}
+.sp-photo{flex:0 0 40% !important}
+.sp-txt{flex:1 1 0 !important;padding:6px 0 10px 28px !important}
+.sp-feat{flex:1 1 100% !important;padding:12px 0 0 !important}
+.fl-list{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px !important}
+.fl-i{flex-direction:column;gap:10px !important}
+.cu-col{flex:1 1 0 !important}
+.ft-col .fl{font-size:14.5px !important}
+.ev-tm{flex-basis:152px !important}
+.cu-col+.cu-col{border-left:1px solid #E6D6BC}
+.gt2{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:16px !important}
 .gt2>:last-child:nth-child(odd){grid-column:1 / -1}
-.gt3{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+.gt3{display:grid !important;grid-template-columns:repeat(6,minmax(0,1fr)) !important;gap:16px !important}
 .gt3>*{grid-column:span 2}
 .gt3>:nth-child(3n+1):nth-last-child(2){grid-column:2 / span 2}
 .gt3>:nth-child(3n+1):last-child{grid-column:3 / span 2}
@@ -944,7 +958,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .t-h3l{font-size:22px !important}
 .tl{font-size:15px !important}
 .crumb .tl{font-size:14px !important}
-.g-tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
+.g-tiles{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
 .g-tiles>:last-child:nth-child(odd){grid-column:1 / -1}
 .g-cards{grid-template-columns:minmax(0,1fr) !important;gap:14px !important}
 .tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px 14px 50px !important}
@@ -970,6 +984,26 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .ft-art{display:none !important}
 .ft-legal{gap:2px 18px !important;padding-top:10px !important;font-size:14px !important}
 .ft-col .fl{font-size:15px !important}
+.ft-logo>a>span:first-child{width:64px !important;height:64px !important}
+.ft-logo>a>span:first-child>img{width:52px !important}
+#main>*{margin-top:40px !important}
+#main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
+#main>.hero-sec+*,#main>.sh+*{margin-top:24px !important}
+#main>.w{padding-top:0 !important}
+.sp-photo>div{min-height:210px !important}
+.sp-txt{padding:20px 0 12px !important}
+.hsub{font-size:21px !important;line-height:1.2 !important}
+.ev-tm{flex:1 1 100% !important}
+.loc-g .tl{white-space:nowrap;font-size:14px !important}
+.loc-g>a>span{padding-left:0 !important}
+.loc-g>a>span:first-child{gap:7px !important}
+.cu-col .ci{width:52px !important;height:52px !important}
+.cu-col .ci svg{width:26px;height:26px}
+.jl{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px !important}
+.jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important}
+.toc ul{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px !important}
+.tile>img{width:64px !important;height:64px !important}
+.bt>span[aria-hidden]{width:64px !important;height:64px !important;font-size:22px !important}
 }
 @container pg (max-width:374px){
 .hero-txt .h1,.sh .h1{font-size:29px !important}
@@ -1033,7 +1067,7 @@ def _fsu(m):
     return re.sub(r'^<(\w+)', r'<\1 class="fsu"', t, count=1)
 
 ROLE_CLASSES = {'t-b', 't-s', 't-h3', 't-h3l', 'lead', 'h1', 'h2', 'fsu', 'lk', 'tl', 'btn', 'nv', 'ml', 'fl', 'mb-a', 'seg', 'bo', 'cl', 'crumb'}
-_ROLE_TAGS = {'p', 'li', 'dd', 'dt', 'figcaption', 'ul', 'ol', 'span', 'a', 'div'}
+_ROLE_TAGS = {'p', 'li', 'dd', 'dt', 'figcaption', 'ul', 'ol', 'span', 'a', 'div', 'summary'}
 def _role(m):
     """Type roles for phones and tablets (RESP_CSS sets their sizes there; desktop keeps the inline sizes). Helpers set
     t-b (body, 16 px) and t-s (secondary, 14.5 px) themselves; any other text element with an inline size from 12.5 to
@@ -1062,8 +1096,9 @@ _PHONE = re.compile(r'\(\d{3}\) \d{3}-\d{4}(?: ext\. \d+)?|\d{3}-\d{3}-\d{4}(?: 
 _TELEXT = re.compile(r'(<a [^>]*href="tel:[^"]*"[^>]*>[^<]*</a>)( ext\. \d+)')
 _MAIL = re.compile(r'([\w.+-]+@)([\w-]+\.[\w.-]+)')
 def _nobreak(body):
-    """Phone numbers and "ext. 213" never split across lines, and email addresses may break after the @ (class nb is
-    nowrap under 1100 px only, so wide layouts are unchanged). Only text between tags is touched, never attributes."""
+    """Phone numbers and "ext. 213" never split across lines (class nb), and email addresses may break after the @
+    (class wb: an empty span that holds a zero-width space there). Both rules apply under 1100 px only, so wide layouts
+    are unchanged. Only text between tags is touched, never attributes or scripts."""
     body = _TELEXT.sub(r'<span class="nb">\1\2</span>', body)
     parts = _TXT.split(body)
     inside_script = False
@@ -1075,7 +1110,7 @@ def _nobreak(body):
         if inside_script or not part.strip():
             continue
         part = _PHONE.sub(lambda m: f'<span class="nb">{m.group(0)}</span>', part)
-        parts[i] = _MAIL.sub(r'\1<wbr>\2', part)
+        parts[i] = _MAIL.sub(r'\1<span class="wb"></span>\2', part)
     return ''.join(parts)
 
 def responsive(body):

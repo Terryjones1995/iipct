@@ -89,7 +89,7 @@ def page():
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 40px; margin-top: 16px">
 {branch(110, '#B5BFA6', 0.5, 'right: -30px; bottom: -44px; transform: rotate(-12deg)')}
 <div style="position: relative; overflow: hidden; border-radius: 16px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: {SHADOW}; display: flex; flex-wrap: wrap; align-items: stretch">
-<div class="pads" style="flex: 1 1 440px; min-width: 0; padding: 20px 32px 22px 32px; display: flex; flex-direction: column; gap: 12px">
+<div class="pads cu-col" style="flex: 1 1 440px; min-width: 0; padding: 20px 32px 22px 32px; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; align-items: center; gap: 20px">
 {circ('phone', 'rust', 66, 32, 1.5)}
 <div style="display: flex; flex-direction: column; gap: 4px">
@@ -102,7 +102,7 @@ def page():
 <p style="margin: 4px 0 0; font-size: 13.8px; line-height: 1.45; color: {INK}">Hours differ by location. <a href="#locations" style="font-weight: 600">See each location’s hours</a>.</p>
 </div>
 {vdiv('200px', GOLDL, 'margin: 26px 0 22px')}
-<div class="pads" style="position: relative; flex: 1 1 440px; min-width: 0; padding: 20px 30px 22px 36px; display: flex; flex-direction: column; gap: 12px">
+<div class="pads cu-col" style="position: relative; flex: 1 1 440px; min-width: 0; padding: 20px 30px 22px 36px; display: flex; flex-direction: column; gap: 12px">
 <div style="position: relative; display: flex; align-items: center; gap: 20px">
 {circ('mail', 'sage', 66, 32, 1.5)}
 <div style="display: flex; flex-direction: column; gap: 4px">

@@ -162,7 +162,7 @@ def jump_links():
     pill = (f'display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; background: #FFFDF8; '
             f'border: 1px solid #C9B691; font-size: 13.6px; font-weight: 600; line-height: 1.2; color: {HEAD}; text-decoration: none')
     links = ''.join(f'<a class="btn bo" href="#{aid}" style="{pill}">{label}</a>' for key, aid, label in LOCATIONS)
-    return f'<nav aria-label="Team by location" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px">{links}</nav>'
+    return f'<nav class="jl" aria-label="Team by location" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px">{links}</nav>'
 
 def page():
     s = header('who')
@@ -178,7 +178,7 @@ def page():
                  f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-bottom: 10px; border-bottom: 1px solid {GOLDL}">'
                  + swap(h2(label, 27, HEAD, 'flex: 1 1 auto', 'h2'), '<h2 ', f'<h2 id="{aid}-h" ')
                  + f'<span style="font-size: 13.6px; font-weight: 600; color: {MUTED}">{len(people)} {"person" if len(people) == 1 else "people"}</span>{where}</div>'
-                 f'<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px">'
+                 f'<div class="g-cards gt2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px">'
                  + ''.join(member_card(m) for m in people) + '</div></section>')
     s += f'''
 <div style="{WRAP}; padding: 30px 48px 8px 83px; display: flex; flex-direction: column; gap: 40px">

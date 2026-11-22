@@ -35,7 +35,7 @@ STORIES = [
 def committee_card(num, label, role):
     m = next(x for x in TEAM if x[0] == num)
     rl = f'<span style="font-size: 13.6px; line-height: 1.3; color: {INK}">{role}</span>' if role else ''
-    return (f'<a class="card" href="{TEAM_PAGE}#{m[2]}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
+    return (f'<a class="card tile" href="{TEAM_PAGE}#{m[2]}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
             + photo(f'people/{m[7]}.jpg', '', f'flex: none; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid #FFFDF8; box-shadow: 0 0 0 1px {LINE}', w=600, h=600)
             + f'<span style="min-width: 0; display: flex; flex-direction: column; gap: 3px"><span style="font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.1; color: {HEAD}">{label}</span>{rl}</span></a>')
 
@@ -97,7 +97,7 @@ def page():
 </div>
 {photo('bpso/logo-bpso-champion.png', 'BPSO Champion logo', 'flex: none; width: 150px; height: auto; border-radius: 10px', w=480, h=320)}
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px">{''.join(committee_card(*c) for c in COMMITTEE)}</div>
+<div class="g-tiles gt3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px">{''.join(committee_card(*c) for c in COMMITTEE)}</div>
 </section>
 <section style="{WRAP}; padding: 34px 52px 0 70px; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; flex-direction: column; gap: 6px">{eyebrow('BPSO Events')}{h2('Our BPSO Journey', 32)}</div>

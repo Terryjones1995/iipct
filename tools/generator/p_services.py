@@ -79,7 +79,7 @@ def page():
     ]
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 40px; margin-top: 16px">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px">
+<div class="g-cards gt2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px">
 {''.join(cards)}
 </div>
 </section>'''

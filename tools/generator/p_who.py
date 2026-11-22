@@ -149,12 +149,12 @@ def page():
 {textlink('Meet the full team', 'Team.dc.html', 14.4, 'min-height: 40px')}
 </div>
 {p('Our team is made up of highly trained and culturally safe professionals eager to provide care to the communities we serve.', 15.4, INK, 1.45, 'max-width: 720px; margin-top: 6px')}
-<div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 16px">{strip}</div>
+<div class="g-tiles gt3" style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 16px">{strip}</div>
 </section>
 <section style="{WRAP}; padding: 30px 55px 0 66px">
 {eyebrow('Our Clinics &amp; Teams')}
 {h2('Five Locations', 30, HEAD, 'margin-top: 6px')}
-<div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px">{tiles}</div>
+<div class="g-cards gt3" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px">{tiles}</div>
 </section>
 <div style="margin-top: 26px">'''
     right = (btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check', True, 'md', 'border-color: #C8A15A; min-width: 226px')

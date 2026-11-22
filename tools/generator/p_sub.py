@@ -80,7 +80,7 @@ def primary():
         link_card('foot', 'sage', 'Advanced Foot Care', 'Assessment and care from nurses with specialized certification.', 'FootCare.dc.html'),
         link_card('eye', 'rust', 'Diabetic Retinopathy Screening', 'Monthly eye screening clinics for people with diabetes.', 'Retinopathy.dc.html'),
         link_card('map', 'gold', 'Outreach &amp; Community Support', 'Screening and support out in the community.', 'Outreach.dc.html'),
-    ], 330)
+    ], 330, 16, '', 'g-tiles gt2')
     col = lambda t, items: (f'<div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 10px">{sub_title(t)}{bullets(items, "check", "#1F4A2B", 14.2, 8)}</div>')
     blood = panel(f'<div style="display: flex; align-items: center; gap: 16px">{circ("droplet", "rust", 52, 27, 1.5)}{h3("Blood draws (phlebotomy)", 21)}</div>'
                   + prose('A nurse or doctor uses a needle to take blood from a vein, usually in your arm. The blood is sent to a lab to help diagnose conditions.', size=14.4, style='margin-top: 14px')
