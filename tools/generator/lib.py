@@ -4,6 +4,15 @@ import facts
 from facts import (LOCATIONS, EXTENSIONS, MAIN_PHONE, MAIN_TEL, GENERAL_EMAIL, BOOKING_URL, ORG_NAME, ORG_EN, ORG_SHORT,
                    hours_rows, address, option_text)
 
+# ---------------------------------------------------------------- the server copy of the site
+# Until iipct.org moves, the server version of the site (the events staff publish, sign-ups, staff sign-in) runs at
+# this address and this static copy stays the public front end: the events lists on Home and Events & Programs follow
+# the server's public events feed (tools/generator/live-events.js, copied to assets/js/), and the footer links to the
+# server's sign-in. Empty = the feature is off and every page is exactly what it is without it.
+# tools/publish-preview.sh --launch refuses while this is a test address (README: "Live events from the server").
+LIVE_SITE = "https://iipct.pixelelite.ca"
+assert LIVE_SITE == '' or re.fullmatch(r'https://[a-z0-9.-]+', LIVE_SITE), 'LIVE_SITE: an https:// origin with no path or trailing slash, or ""'
+
 A = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets') + '/'
 BLOB = json.load(open(A + 'blobs.json'))
 META = json.load(open(A + 'meta.json'))
@@ -396,6 +405,8 @@ def footer(top_h=90, pre='', tall=False):
     crow = lambda ic, t, h: (f'<a class="fl" href="{h}" style="display: flex; align-items: center; gap: 13px; color: #F4EFE4; text-decoration: none; font-size: 12.4px; line-height: 1.2">{ico(ic, 17, "#D9B36A", 1.7)}<span>{t}</span></a>')
     bar = ''.join(f'<span style="flex: 1; background: {c}"></span>' for c in ['#FEFDFC', '#F7D80C', '#BA2B2C', '#0A8242'])
     pipe = '<span class="ft-pipe" aria-hidden="true" style="width: 1px; height: 15px; background: #C8A15A"></span>'
+    # the way to the server's sign-in (staff, members): only while LIVE_SITE is set
+    signin = (f'\n{pipe}<a class="fl" href="{LIVE_SITE}/login" style="color: #F4EFE4; text-decoration: none">Sign in</a>') if LIVE_SITE else ''
     return f'''
 <footer style="position: relative; margin-top: 4px">
 {pre}{landscape(top_h, 720, '', tall, 'hz-d')}{horizon(480, 64, 'hz-p ft-hz', 3)}
@@ -433,7 +444,7 @@ def footer(top_h=90, pre='', tall=False):
 <span>© 2026 {ORG_NAME} ({ORG_SHORT}). All rights reserved.</span>
 {pipe}<a class="fl" href="Privacy.dc.html" style="color: #F4EFE4; text-decoration: none">Privacy Policy</a>
 {pipe}<a class="fl" href="Accessibility.dc.html" style="color: #F4EFE4; text-decoration: none">Accessibility</a>
-{pipe}<a class="fl" href="SiteMap.dc.html" style="color: #F4EFE4; text-decoration: none">Site Map</a>
+{pipe}<a class="fl" href="SiteMap.dc.html" style="color: #F4EFE4; text-decoration: none">Site Map</a>{signin}
 {pipe}<span>Built by <a class="fl" href="https://pixelelite.ca" style="color: #E3BE74; font-weight: 600; text-decoration: none">Pixel Elite Media</a> · <a class="fl" href="https://pixelelite.ca" style="color: #F4EFE4; text-decoration: none">pixelelite.ca</a></span>
 <span class="ft-bar" aria-hidden="true" style="margin-left: auto; width: 150px; height: 7px; border-radius: 2px; overflow: hidden; display: flex">{bar}</span>
 </div>
