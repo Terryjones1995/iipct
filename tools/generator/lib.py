@@ -1,7 +1,7 @@
 """Shared building blocks for the IIPCT rebrand artboards (inline-styled markup)."""
-import json, re, math, random
+import json, os, re, math, random
 
-A = '/home/claude/iipct_work/assets/'
+A = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets') + '/'
 BLOB = json.load(open(A + 'blobs.json'))
 META = json.load(open(A + 'meta.json'))
 
