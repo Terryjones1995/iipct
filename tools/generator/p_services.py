@@ -43,8 +43,10 @@ def contact_row(name, role, ext_, email):
             f'<a class="tl" href="mailto:{email}" style="{link}">{ico("mail", 16, RUST, 1.8)}<span>{email}</span></a></li>')
 
 def start_card(icon, tone, title, text, cta):
-    return panel(f'<div style="display: flex; align-items: center; gap: 14px">{circ(icon, tone, 52, 27, 1.5)}{h3(title, 21)}</div>'
-                 + prose(text, size=14.4, style='margin-top: 12px') + f'<div style="margin-top: auto; padding-top: 16px">{cta}</div>', 'display: flex; flex-direction: column', '22px 24px 24px')
+    """Text on the left, its button on the right (the immunization schedule panel's pattern); the button drops below on narrow screens."""
+    return panel(f'<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 40px">'
+                 f'<div style="flex: 1 1 min(420px, 100%); min-width: 0"><div style="display: flex; align-items: center; gap: 14px">{circ(icon, tone, 52, 27, 1.5)}{h3(title, 21)}</div>'
+                 + prose(text, size=14.4, style='margin-top: 12px; max-width: 760px') + f'</div><div style="flex: none; max-width: 100%">{cta}</div></div>', '', '22px 24px 24px')
 
 def page():
     buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + btn('Contact a Clinic', 'Contact.dc.html', 'outline', 'phone', False)
@@ -89,7 +91,8 @@ def page():
                             size=14.8, style='margin-bottom: 10px'))
                 + panel(prose('Language, culture and identity are central to this care. Through discussions with seers and mental health professionals, clients regain direction and connection. '
                               'Traditional knowledge is used as a preventative and supportive approach for overall wellness.', size=14.8, style='margin-bottom: 10px')
-                        + f'<div style="margin-top: 6px">{textlink("Contact us to connect with our Traditional Healing Coordinator", "Contact.dc.html", 14, "white-space: normal; gap: 10px; min-height: 40px")}</div>'))
+                        + p(f'To connect with our Traditional Healing Coordinator, please <a href="Contact.dc.html" style="color: {RUST}; font-weight: 600">contact us</a>.',
+                            14.8, INK, 1.55, 'margin-top: 2px')))
     s += area('cultural', 'bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support and cultural learning.', cultural,
               'left: -40px; bottom: -60px; transform: rotate(12deg)')
 
@@ -121,6 +124,7 @@ def page():
                        + bullets([nrt, 'Smoking cessation counselling with goal setting, journaling, and one-on-one or phone-based support (weekly, biweekly or monthly)',
                                   'An Indigenous Quit Kit, available on request'], 'check', '#1F4A2B', 14.4, 7))
                + panel(h3('Questions about these programs?', 19) + contacts
+                       + f'<div style="margin-top: 4px">{textlink("Contact a clinic", "Contact.dc.html", 14, "gap: 10px; min-height: 40px")}</div>'
                        + p(f'Stay connected to our community programs and events through our <a href="Events.dc.html" style="{link}">Events page</a>, '
                            f'our <a href="{FACEBOOK_URL}" style="{link}">Facebook page</a> and our <a href="{NEWSLETTER_URL}" style="{link}">monthly newsletter</a>.',
                            14.2, INK, 1.5, 'margin-top: 12px'), 'grid-column: 1 / -1'))
@@ -139,7 +143,7 @@ def page():
 <section style="position: relative; {WRAP}; padding: 44px 58px 0 61px">
 <div style="display: flex; flex-direction: column; gap: 6px">{eyebrow('Getting care')}{h2('How to get care', 30.4)}
 {p('Our priority population is all people who identify as Indigenous, and their families, in our regions. All our services are status blind.', 14.8, INK, 1.45, 'max-width: 760px')}</div>
-<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 16px">{start}</div>
+<div style="margin-top: 16px; display: flex; flex-direction: column; gap: 16px">{start}</div>
 </section>
 <div style="margin-top: 36px">{nl_band()}</div>'''
     s += footer()

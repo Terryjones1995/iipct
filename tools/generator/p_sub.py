@@ -110,7 +110,7 @@ def immunization():
     sched = panel(f'<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px">'
                   f'<div style="flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 16px">{ico("doc", 30, RUSTI, 1.4)}'
                   f'<div style="display: flex; flex-direction: column; gap: 3px">{h3("Ontario’s routine immunization schedule", 18.4)}'
-                  f'<p style="margin: 0; font-size: 13.6px; line-height: 1.4; color: {INK}">The full list of publicly funded vaccines and when they are due, on the Government of Ontario website. Opens in a new tab.</p></div></div>'
+                  f'<p style="margin: 0; font-size: 13.6px; line-height: 1.4; color: {INK}">Which routine vaccines are due at each age, on the Government of Ontario website. Opens in a new tab.</p></div></div>'
                   f'{btn("View the Schedule", SCHEDULE_URL, "outline", None, True, "sm", "min-height: 40px")}</div>')
     baby = note('baby', 'Booking for a baby or young child?',
                 f'Your child may also get vaccines at a <a href="WellBaby.dc.html" style="color: {RUST}; font-weight: 600">well baby or well child visit</a>.', 'cream')
@@ -209,7 +209,7 @@ def outreach():
     goal = panel(prose('We support Indigenous individuals and families who may not have regular access to a primary care provider. Through outreach, we bring care directly to the community: meeting people where they are, in ways that honour their experiences and respect their needs.',
                        'Our goal is that all Indigenous people in our region have access to timely, preventive and compassionate care. Our outreach is community-driven and culturally grounded.',
                        size=14.8, style='margin-bottom: 10px'))
-    reach = note('phone', 'Need support?', f'If you or someone you know needs support, or would like to connect about outreach, please <a href="Contact.dc.html" style="color: {RUST}; font-weight: 600">contact us</a>. We’re here to help.', 'cream')
+    reach = note('handshake', 'Connect with us about outreach', f'If you or someone you know needs support, or would like to connect about outreach, please <a href="Contact.dc.html" style="color: {RUST}; font-weight: 600">contact us</a>. We’re here to help.', 'cream')
     story = (f'<a class="card" href="NewsBreastScreening.dc.html" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; padding: 20px 24px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
              f'<span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 112px; height: 112px; border-radius: 50%; background: #153526; color: #FFFFFF">'
              f'<span style="font-family: {SERIF}; font-weight: 600; font-size: 38px; line-height: 1">19</span><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px; color: #E3BE74">mammograms</span></span>'
