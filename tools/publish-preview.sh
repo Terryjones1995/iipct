@@ -12,6 +12,8 @@
 #     starting at "/", and a CNAME file naming iipct.org so GitHub Pages serves that domain. With nginx instead,
 #     write it with --launch --dry-run <dir> and serve that folder.
 #   Once gh-pages carries a CNAME file (the live site), an ordinary test publish refuses to replace it.
+#   --launch also refuses while LIVE_SITE in tools/generator/lib.py is set (the events reader and the footer sign-in
+#   link are for the GitHub copy only: see live_events_check below).
 #
 # What it does
 #   1. Takes the site files from <commit> (an allow-list): the pages (*.html at the top level), assets/,
@@ -51,6 +53,35 @@ PREVIEW_URL="https://terryjones1995.github.io/iipct/"      # the test site's add
 MANIFEST="tools/redirects/redirect-pages.txt"
 LIVE_HOST="${REAL_URL#https://}"; LIVE_HOST="${LIVE_HOST%/}"   # iipct.org, for the CNAME file
 
+# >>> live_events_check (tools/live-events/test-launch-check.sh runs exactly this block)
+# A live copy never ships the events reader. While LIVE_SITE in tools/generator/lib.py is set, Home and Events & Programs
+# read the events staff publish on the server at that address (assets/js/live-events.js) and every page's footer links
+# to the server's sign-in. That is for the GitHub copy until the domain moves; when iipct.org moves to the server, this
+# static copy is retired. Launched at iipct.org with LIVE_SITE still set, the copy would read from a test server, or
+# (set to the real address) from itself, which has no feed and no sign-in page. So --launch refuses while any LIVE_SITE
+# line is set or cannot be read, or while any page or file still carries the reader or a sign-in link.
+live_events_check() {   # <folder holding the commit's files>
+  local dir="$1" line stale
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if ! printf '%s\n' "$line" | grep -qE "^LIVE_SITE *= *(''|\"\") *(#.*)?$"; then
+      echo "error: --launch refused: tools/generator/lib.py sets the events reader's server address ($line)." >&2
+      echo "       That reader is for the GitHub copy until the domain moves; once iipct.org moves to the server this static copy is" >&2
+      echo "       retired, so a live copy must never ship it. Set LIVE_SITE = \"\" and regenerate first." >&2
+      return 1
+    fi
+  done <<< "$(grep -E '^[[:space:]]*LIVE_SITE[[:space:]]*=' "$dir/tools/generator/lib.py" 2>/dev/null || true)"
+  stale="$(cd "$dir" 2>/dev/null && grep -lE 'live-events|href="[^"]*/login"' -- *.html 2>/dev/null | head -3 | tr '\n' ' ' || true)"
+  [ -e "$dir/assets/js/live-events.js" ] && stale="$stale assets/js/live-events.js"
+  if [ -n "${stale// /}" ]; then
+    echo "error: --launch refused: these files still carry the events reader or the server's sign-in link: $stale" >&2
+    echo "       Set LIVE_SITE = \"\" in tools/generator/lib.py, regenerate and commit first." >&2
+    return 1
+  fi
+  return 0
+}
+# <<< live_events_check
+
 cd "$(git rev-parse --show-toplevel)"
 SHA="$(git rev-parse --verify "$REF^{commit}")"
 SHORT="$(git rev-parse --short "$SHA")"
@@ -61,6 +92,7 @@ mkdir "$TMP/all" "$TMP/site"
 
 # 1. the site files of that commit (an allow-list: anything new in the repo stays private until it is added here)
 git archive "$SHA" | tar -x -C "$TMP/all"
+if [ -n "$LAUNCH" ]; then live_events_check "$TMP/all" || exit 1; fi
 cp "$TMP"/all/*.html "$TMP/site/"
 cp -R "$TMP/all/assets" "$TMP/site/assets"
 for f in sitemap.xml robots.txt; do

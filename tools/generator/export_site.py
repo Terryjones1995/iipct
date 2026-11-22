@@ -247,6 +247,21 @@ def write_if_changed(path, text):
     if not os.path.exists(path) or open(path, encoding='utf-8').read() != text:
         open(path, 'w', encoding='utf-8').write(text)
 
+# ---------------------------------------------------------------- the live events reader (lib.LIVE_SITE)
+# While LIVE_SITE is set, Home and Events & Programs load assets/js/live-events.js (p_events.LIVE_TAG), a copy of
+# tools/generator/live-events.js. With LIVE_SITE empty the copy is removed, so nothing of the reader ships.
+LIVE_JS = OUT + 'assets/js/live-events.js'
+_with_reader = sorted(n for n, b in BODIES.items() if 'assets/js/live-events.js' in b)
+if lib.LIVE_SITE:
+    assert _with_reader == ['events-programs.html', 'index.html'], _with_reader
+    write_if_changed(LIVE_JS, open(os.path.join(HERE, 'live-events.js'), encoding='utf-8').read())
+else:
+    assert not _with_reader, _with_reader
+    if os.path.exists(LIVE_JS):
+        os.remove(LIVE_JS)
+        if not os.listdir(OUT + 'assets/js'):
+            os.rmdir(OUT + 'assets/js')
+
 public = [NAMES[fn] for (_, _, fn, _, _) in PAGES.values() if NAMES[fn] not in seo.NOT_PUBLIC]
 write_if_changed(OUT + 'sitemap.xml', seo.sitemap([(n, last_changed(n), photos(BODIES[n])) for n in public]))
 write_if_changed(OUT + 'robots.txt', seo.robots())

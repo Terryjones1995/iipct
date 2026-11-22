@@ -2,6 +2,7 @@
 Every event below is traceable to a post and, where there is one, a flyer: see notes/static-news.md.
 The Home page's "Upcoming Events" section is built from the same EVENTS list (home_events() below)."""
 import re
+import html as _html
 from datetime import date
 import lib
 from lib import *
@@ -148,13 +149,15 @@ def facebook_line(style=''):
 
 # ------------------------------------------------------------------ Events page
 def date_tile(iso, big=False):
-    d = date.fromisoformat(iso)
+    """iso=None draws the tile with no text (live-events.js fills in month, day and weekday)."""
+    d = date.fromisoformat(iso) if iso else None
+    mon, day, wd = (MONTHS[d.month - 1][:3], d.day, DAYS[d.weekday()][:3]) if d else ('', '', '')
     w, ds = (84, 34) if big else (68, 27)
     return (f'<span class="ev-d" aria-hidden="true" style="flex: none; width: {w}px; padding: 9px 0 10px; border-radius: 12px; background: #FDF8EE; border: 1px solid #D6BC86; '
             f'display: flex; flex-direction: column; align-items: center; gap: 4px; line-height: 1">'
-            f'<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {RUST}">{MONTHS[d.month - 1][:3]}</span>'
-            f'<span style="font-family: {SERIF}; font-size: {ds}px; font-weight: 700; color: {HEAD}">{d.day}</span>'
-            f'<span style="font-size: 12px; font-weight: 600; color: {MUTED}">{DAYS[d.weekday()][:3]}</span></span>')
+            f'<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {RUST}">{mon}</span>'
+            f'<span style="font-family: {SERIF}; font-size: {ds}px; font-weight: 700; color: {HEAD}">{day}</span>'
+            f'<span style="font-size: 12px; font-weight: 600; color: {MUTED}">{wd}</span></span>')
 
 def meta_row(icon, html):
     return (f'<span class="t-s" style="display: flex; align-items: flex-start; gap: 10px; font-size: 14.2px; font-weight: 600; line-height: 1.4; color: {HEAD}">'
@@ -173,23 +176,85 @@ def flyer_link(e):
             + f'<span style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; font-size: 13px; font-weight: 600">'
               f'<span style="text-decoration: underline; text-underline-offset: 3px">Full flyer</span>{ico("arrow", 14, RUST, 1.9)}</span></a>')
 
+# ------------------------------------------------------------------ live events (lib.LIVE_SITE)
+# With LIVE_SITE set, the two events lists follow what staff publish on the server: assets/js/live-events.js (source:
+# tools/generator/live-events.js) reads the server's public events feed and keeps, hides, marks or adds cards. For it
+# the pages carry: each built event's plain title, days and short status as data attributes, an empty hidden status
+# line where the design puts one, <template> copies of the card, "Up next" card, day and row markup (drawn by the same
+# functions as the built ones), and the script tag. With LIVE_SITE empty none of it is written: the pages are exactly
+# what they were before the reader existed.
+LIVE = bool(LIVE_SITE)
+LIVE_TAG = f'<script defer src="assets/js/live-events.js" data-site="{LIVE_SITE}"></script>'
+
+def _plain(t):
+    return _html.unescape(re.sub(r'<[^>]+>', '', t))
+
+def _attr(t):
+    return _html.escape(t, quote=True)
+
+def live_data(e, key_attr=False):
+    """data-ev-* attributes: the event's plain title, its days and its short status (what the reader matches on), and its
+    start, end and place as printed (what the reader compares with the server's dates, to redraw a when or where line
+    the server has changed)."""
+    k = f' data-ev-key="{e["key"]}"' if key_attr else ''
+    return (f'{k} data-ev-title="{_attr(_plain(e["title"]))}" data-ev-days="{" ".join(e["dates"])}"'
+            f' data-ev-status="{_attr(_plain(e.get("status_short") or e.get("status") or ""))}"'
+            f' data-ev-start="{t12(e["start"])}" data-ev-end="{t12(e["end"]) if e["end"] else ""}"'
+            f' data-ev-place="{_attr(_plain(e["place"]))}" data-ev-place-short="{_attr(_plain(e["place_short"]))}"')
+
+def live_slot(markup, name):
+    """_slotted() while LIVE_SITE is set, else the markup unchanged (a built when or where line the reader may redraw)."""
+    return _slotted(markup, name) if LIVE else markup
+
+def slot(name, text):
+    """' data-slot="name"', plus hidden while the slot is empty (only with LIVE_SITE set)."""
+    return (f' data-slot="{name}"' + ('' if text else ' hidden')) if LIVE else ''
+
+EV_STATUS = 'margin: 0; padding: 10px 14px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 14px; font-weight: 600; line-height: 1.4; color: #5A1E10'
+
+def ev_status(text):
+    return f'<p class="t-b"{slot("status", text)} style="{EV_STATUS}">{text}</p>'
+
+def _slotted(markup, name, tag='span'):
+    """Adds data-slot="name" to the first <tag ...> of markup."""
+    assert markup.startswith(f'<{tag} '), markup[:40]
+    return f'<{tag} data-slot="{name}" ' + markup[len(tag) + 2:]
+
+def card_template():
+    """An event only the server lists, drawn like event_card(); live-events.js fills it in as text."""
+    row = lambda icon, name: _slotted(meta_row(icon, ''), name)
+    href = f'{LIVE_SITE}/events-programs/'
+    link = tlink('Event details', href).replace(f' href="{href}"', ' data-slot="link"', 1)
+    assert 'data-slot="link"' in link
+    tag_el = _slotted(tg('', 'tan'), 'tag').replace('white-space: nowrap', 'white-space: normal')
+    return (f'<template id="ev-tpl-card"><article class="ev" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}; overflow-wrap: anywhere">'
+            f'{date_tile(None)}'
+            f'<div class="ev-b" style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">'
+            f'<div class="ev-t" style="display: flex; flex-wrap: wrap; gap: 8px">{tag_el}</div>'
+            f'{_slotted(h3("", 23, "", "t-h3 t-h3l ev-h"), "title", "h3")}'
+            f'<div data-slot="when" style="display: flex; flex-direction: column; gap: 6px">{row("calendar", "when-row")}{row("pin", "where-row")}</div>'
+            f'<p class="t-b" data-slot="summary" style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px"></p>'
+            f'{ev_status("")}'
+            f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 2px">{link}</div>'
+            f'</div></article></template>')
+
 def event_card(e):
     paras = ''.join(f'<p class="t-b" style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px">{t}</p>' for t in e['text'])
-    when = meta_row('calendar', when_text(e)) + (meta_row('clock', e['when_note']) if e.get('when_note') else '') + meta_row('pin', e['place'])
+    when = (live_slot(meta_row('calendar', when_text(e)), 'when-row') + (live_slot(meta_row('clock', e['when_note']), 'note-row') if e.get('when_note') else '')
+            + live_slot(meta_row('pin', e['place']), 'where-row'))
     facts = fact('Who can come', e['who']) + fact('How to take part', e['how'])
-    status = (f'<p class="t-b" style="margin: 0; padding: 10px 14px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 14px; font-weight: 600; line-height: 1.4; color: #5A1E10">'
-              f'{e["status"]}</p>') if e.get('status') else ''
+    status = ev_status(e.get('status', '')) if (e.get('status') or LIVE) else ''
     partner = f'<p class="t-s" style="margin: 0; font-size: 13.6px; font-style: italic; line-height: 1.45; color: {MUTED}">{e["partner"]}</p>' if e.get('partner') else ''
     actions = ''
     if e.get('register'):
         actions += btn(e['register'][0], e['register'][1], 'primary', 'calendar-check', False, 'md')
     actions += tlink('See the Facebook post', e['fb'])
-    return f'''<article class="ev" id="{e['anchor']}" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}">
+    return f'''<article class="ev" id="{e['anchor']}"{live_data(e) if LIVE else ''} style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}">
 {date_tile(e['dates'][0])}
 <div class="ev-b" style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
 <div class="ev-t" style="display: flex; flex-wrap: wrap; gap: 8px">{tg(e['tag'], e['tone'])}</div>
 {h3(e['title'], 23, '', 't-h3 t-h3l ev-h')}
-<div style="display: flex; flex-direction: column; gap: 6px">{when}</div>
+<div{' data-slot="when"' if LIVE else ''} style="display: flex; flex-direction: column; gap: 6px">{when}</div>
 {paras}
 <dl style="margin: 2px 0 0; display: grid; gap: 10px">{facts}</dl>
 {status}{partner}
@@ -247,10 +312,10 @@ def page():
 <section id="upcoming" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 56px 0 56px">
 {sec_head('Upcoming Events', 'Join Us at an Upcoming Event', '', 30)}
 <p class="t-b" style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">Soonest first. Each event says who it is for and how to take part, in IIPCT’s own words.</p>
-<div style="margin-top: 18px; display: flex; flex-direction: column; gap: 18px">
+<div{' id="ev-list"' if LIVE else ''} style="margin-top: 18px; display: flex; flex-direction: column; gap: 18px">
 {cards}
 </div>
-{facebook_line('margin-top: 12px')}
+{facebook_line('margin-top: 12px')}{(chr(10) + card_template() + chr(10) + LIVE_TAG) if LIVE else ''}
 </section>
 <section id="programs" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
 {sec_head('Programs That Repeat', 'Regular Programs', '', 28.6)}
@@ -308,6 +373,52 @@ HOME_SCRIPT = """<script>
 })();
 </script>"""
 
+# The pieces of Home's events block, shared by the built cards and rows and by their <template> copies (live events).
+HOME_CLOSED_CARD = 'margin: 2px 0 0; padding: 7px 12px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 13.6px; font-weight: 600; line-height: 1.4; color: #5A1E10'
+HOME_CLOSED_ROW = 'font-size: 13px; font-weight: 700; line-height: 1.35; color: #8A2E17'
+
+def home_next(attrs, tile, title, when, where, closed, body, link):
+    """An "Up next" card: one per date, all hidden until the script shows the next one."""
+    closed_card = f'<p{slot("status", closed)} style="{HOME_CLOSED_CARD}">{closed + "." if closed else ""}</p>' if (closed or LIVE) else ''
+    return (f'<div{attrs}>'
+            f'<div class="ev" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{tile}'
+            f'<div class="ev-b" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
+            f'<span class="ev-t" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">{eyebrow("Up next")}'
+            f'<span hidden><span class="ev-when" style="display: inline-block; padding: 4px 10px 3px; border-radius: 999px; background: #17402A; color: #FFFFFF; font-size: 12px; font-weight: 700; line-height: 1.2"></span></span></span>'
+            f'{title}'
+            f'{when}{where}{closed_card}'
+            f'{body}'
+            f'{link}</div></div></div>')
+
+def home_group_open(day, label):
+    """A day in "Coming up" (its rows follow; closed with </ul></li>)."""
+    return (f'<li data-group="{day}" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 0 8px; border-top: 1px solid #E6D9BF">'
+            f'<span style="font-size: 12.4px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {RUST}">{label}</span>'
+            f'<ul style="margin: 0; padding: 0; list-style: none">')
+
+def home_row(attrs, href_attr, time, title, place, closed, slots=('', '', '')):
+    """A row in "Coming up": the whole row is the link."""
+    closed_row = f'<span{slot("status", closed)} style="{HOME_CLOSED_ROW}">{closed}</span>' if (closed or LIVE) else ''
+    return (f'<li{attrs}>'
+            f'<a class="tl"{href_attr} style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
+            f'<span class="t-s ev-tm"{slots[0]} style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{time}</span>'
+            f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
+            f'<span class="t-b"{slots[1]} style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{title}</span>'
+            f'<span class="t-s"{slots[2]} style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{place}</span>{closed_row}</span></a></li>')
+
+def home_templates():
+    """<template> copies of the "Up next" card, a day and a row, for dates only the server lists (live-events.js)."""
+    href = f'{LIVE_SITE}/events-programs/'
+    link = tlink('Event details', href, 'arrow', 14).replace(f' href="{href}"', ' data-slot="link"', 1)
+    assert 'data-slot="link"' in link
+    nxt = home_next(' style="overflow-wrap: anywhere"', date_tile(None, True), _slotted(h3('', 22, '', 't-h3 t-h3l ev-h'), 'title', 'h3'),
+                    _slotted(meta_row('calendar', ''), 'when-row'), _slotted(meta_row('pin', ''), 'where-row'), '',
+                    f'<p class="t-b" data-slot="summary" style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}"></p>', link)
+    row = home_row(' style="overflow-wrap: anywhere"', '', '', '', '', '', (' data-slot="time"', ' data-slot="title"', ' data-slot="place"'))
+    return (f'<template id="ev-tpl-next">{nxt}</template>'
+            f'<template id="ev-tpl-group">{home_group_open("", "")}</ul></li></template>'
+            f'<template id="ev-tpl-row">{row}</template>')
+
 def home_events():
     occ = occurrences()
     cards, groups, last = '', '', None
@@ -317,32 +428,19 @@ def home_events():
         href = f'events-programs.html#{e["anchor"]}'   # final file name: the exporter renames only whole-page links
         d = date.fromisoformat(dt)
         when = f'{dlong(dt)} · {trange(e["start"], e["end"])}'
-        closed = e.get('status_short')
-        closed_card = (f'<p style="margin: 2px 0 0; padding: 7px 12px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; '
-                       f'font-size: 13.6px; font-weight: 600; line-height: 1.4; color: #5A1E10">{closed}.</p>') if closed else ''
-        closed_row = f'<span style="font-size: 13px; font-weight: 700; line-height: 1.35; color: #8A2E17">{closed}</span>' if closed else ''
-        cards += (f'<div id="next-{key}" data-wd="{DAYS[d.weekday()]}" hidden>'
-                  f'<div class="ev" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{date_tile(dt, True)}'
-                  f'<div class="ev-b" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
-                  f'<span class="ev-t" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">{eyebrow("Up next")}'
-                  f'<span hidden><span class="ev-when" style="display: inline-block; padding: 4px 10px 3px; border-radius: 999px; background: #17402A; color: #FFFFFF; font-size: 12px; font-weight: 700; line-height: 1.2"></span></span></span>'
-                  f'{h3(e["title"], 22, "", "t-h3 t-h3l ev-h")}'
-                  f'{meta_row("calendar", when)}{meta_row("pin", e["place_short"])}{closed_card}'
-                  f'<p class="t-b" style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
-                  f'<p class="t-s" style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>'
-                  f'{tlink("Event details", href, "arrow", 14)}</div></div></div>')
+        closed = e.get('status_short') or ''
+        cards += home_next(f' id="next-{key}" data-wd="{DAYS[d.weekday()]}" hidden', date_tile(dt, True), h3(e["title"], 22, "", "t-h3 t-h3l ev-h"),
+                           live_slot(meta_row("calendar", when), 'when-row'), live_slot(meta_row("pin", e["place_short"]), 'where-row'), closed,
+                           f'<p class="t-b" style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
+                           f'<p class="t-s" style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>',
+                           tlink("Event details", href, "arrow", 14))
         if dt != last:
             if last: groups += '</ul></li>'
-            groups += (f'<li data-group="{dt}" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 0 8px; border-top: 1px solid #E6D9BF">'
-                       f'<span style="font-size: 12.4px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {RUST}">{dlong(dt)}</span>'
-                       f'<ul style="margin: 0; padding: 0; list-style: none">')
+            groups += home_group_open(dt, dlong(dt))
             last = dt
-        groups += (f'<li data-end="{end}" data-day="{dt}" data-key="{key}">'
-                   f'<a class="tl" href="{href}" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
-                   f'<span class="t-s ev-tm" style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
-                   f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
-                   f'<span class="t-b" style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{e["title"]}</span>'
-                   f'<span class="t-s" style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span>{closed_row}</span></a></li>')
+        groups += home_row(f' data-end="{end}" data-day="{dt}" data-key="{key}"' + (live_data(e, True) if LIVE else ''), f' href="{href}"',
+                           trange(e["start"], e["end"]), e["title"], e["place_short"], closed,
+                           (' data-slot="time"', '', ' data-slot="place"') if LIVE else ('', '', ''))
     if last: groups += '</ul></li>'
     today = date.today().isoformat()
     none_hidden = '' if not any(dt >= today for dt, _ in occ) else ' hidden'
@@ -353,10 +451,10 @@ def home_events():
 <div id="ev-next-col" hidden style="flex: 1 1 380px; min-width: 0">{cards}</div>
 <div style="flex: 1.3 1 400px; min-width: 0">
 <h3 id="ev-list-head" style="margin: 0 0 4px; font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.2; color: {HEAD}">Coming up</h3>
-<ul style="margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #E6D9BF">{groups}</ul>
+<ul{' id="ev-rows"' if LIVE else ''} style="margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #E6D9BF">{groups}</ul>
 <div id="ev-none"{none_hidden}>{note('calendar', 'No upcoming events are posted right now', 'Our regular programs are on the <a href="events-programs.html#programs">Events &amp; Programs page</a>.', 'cream', 'margin-top: 12px')}</div>
 </div>
 </div>
 {facebook_line('margin-top: 12px')}
-{HOME_SCRIPT}
+{HOME_SCRIPT}{(chr(10) + home_templates() + chr(10) + LIVE_TAG) if LIVE else ''}
 </section>'''
