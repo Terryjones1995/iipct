@@ -916,21 +916,36 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 #main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
 #main>.hero-sec+*,#main>.sh+*{margin-top:28px !important}
 #main>.w{padding-top:0 !important}
-.sp-photo{flex:0 0 40% !important}
-.sp-txt{flex:1 1 0 !important;padding:6px 0 10px 28px !important}
-.sp-feat{flex:1 1 100% !important;padding:12px 0 0 !important}
 .fl-list{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px !important}
 .fl-i{flex-direction:column;gap:10px !important}
-.cu-col{flex:1 1 0 !important}
 .ft-col .fl{font-size:14.5px !important}
 .ev-tm{flex-basis:152px !important}
-.cu-col+.cu-col{border-left:1px solid #E6D6BC}
 .gt2{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:16px !important}
 .gt2>:last-child:nth-child(odd){grid-column:1 / -1}
 .gt3{display:grid !important;grid-template-columns:repeat(6,minmax(0,1fr)) !important;gap:16px !important}
 .gt3>*{grid-column:span 2}
 .gt3>:nth-child(3n+1):nth-last-child(2){grid-column:2 / span 2}
 .gt3>:nth-child(3n+1):last-child{grid-column:3 / span 2}
+}
+@container pg (min-width:760px) and (max-width:1099px){
+.sp-photo{flex:0 0 40% !important}
+.sp-txt{flex:1 1 0 !important;padding:6px 0 10px 28px !important}
+.sp-feat{flex:1 1 100% !important;padding:12px 0 0 !important}
+.cu-col{flex:1 1 0 !important}
+.cu-col+.cu-col{border-left:1px solid #E6D6BC}
+.gt2w{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:16px !important}
+}
+@container pg (max-width:759px){
+.tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px !important}
+.tila{padding-bottom:50px !important}
+.g-tiles>.tile:last-child:nth-child(odd){flex-direction:row !important;align-items:center !important;gap:14px !important}
+.tile>.ci{width:46px !important;height:46px !important}
+.tile>.ci svg{width:25px;height:25px}
+.tile-b{padding:0 !important;gap:6px !important}
+.tile .t-h3{font-size:17.5px !important;white-space:normal !important}
+.tile>.ra,.tile>.tile-ar{right:12px !important;bottom:12px !important}
+.tile>img{width:64px !important;height:64px !important}
+.bt>span[aria-hidden]{width:64px !important;height:64px !important;font-size:22px !important}
 }
 @container pg (max-width:599px){
 .w{padding-left:16px !important;padding-right:16px !important}
@@ -961,16 +976,8 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .g-tiles{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
 .g-tiles>:last-child:nth-child(odd){grid-column:1 / -1}
 .g-cards{grid-template-columns:minmax(0,1fr) !important;gap:14px !important}
-.tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px !important}
-.tila{padding-bottom:50px !important}
-.g-tiles>.tile:last-child:nth-child(odd){flex-direction:row !important;align-items:center !important;gap:14px !important}
 .mj{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr))}
 .mj a{width:100%;justify-content:center}
-.tile>.ci{width:46px !important;height:46px !important}
-.tile>.ci svg{width:25px;height:25px}
-.tile-b{padding:0 !important;gap:6px !important}
-.tile .t-h3{font-size:17.5px !important;white-space:normal !important}
-.tile>.ra,.tile>.tile-ar{right:12px !important;bottom:12px !important}
 .ev{display:grid !important;grid-template-columns:auto minmax(0,1fr);gap:12px 14px !important;padding:16px !important}
 .ev-b{display:contents !important}
 .ev-d{grid-column:1;grid-row:1 / span 2;align-self:start}
@@ -1006,11 +1013,11 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .jl{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px !important}
 .jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important}
 .toc ul{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px !important}
-.tile>img{width:64px !important;height:64px !important}
-.bt>span[aria-hidden]{width:64px !important;height:64px !important;font-size:22px !important}
 }
 @container pg (max-width:374px){
 .hero-txt .h1,.sh .h1{font-size:29px !important}
+.loc-g .tl svg{display:none}
+.tl{white-space:normal !important}
 .mb-a{font-size:12.5px}
 }
 @media (max-height:499px){
