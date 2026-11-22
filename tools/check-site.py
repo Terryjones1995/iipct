@@ -96,7 +96,7 @@ for f, p in parsed.items():
             errors.append(f'{f}: link to missing anchor {h}')
     if hashes: strict_errors.append(f'{f}: {hashes} placeholder link(s) href="#"')
     if p.dead_buttons: strict_errors.append(f'{f}: {p.dead_buttons} button(s) that cannot do anything without JavaScript')
-    brackets = re.findall(r'\[[A-Z][^\[\]]{2,90}\]', ' '.join(p.text))
+    brackets = re.findall(r'\[[A-Za-z][^\[\]]{2,400}\]', ' '.join(p.text))
     if brackets and f not in DRAFTS: strict_errors.append(f'{f}: {len(brackets)} bracketed placeholder(s), e.g. {brackets[0][:60]}')
 for t, fs in titles.items():
     if t and len(fs) > 1: errors.append(f'same <title> "{t}" on {", ".join(fs)}')

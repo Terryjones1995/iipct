@@ -16,7 +16,7 @@ def booking():
 <p style="margin: 0; font-size: 15.4px; line-height: 1.5; color: {INK}">Online booking is for patients who are already registered with IIPCT.</p>
 {go}
 <p style="margin: 0; display: flex; align-items: flex-start; gap: 9px; font-size: 13.4px; line-height: 1.45; color: {MUTED}">{ico('lock', 16, '#1F4A2B', 1.9, 'margin-top: 2px')}<span>The button opens Ocean, the booking website IIPCT uses, in a new tab. This website does not ask for your health information.</span></p>
-{note('info', 'Not registered with IIPCT?', 'You can’t book online yet. Call us instead, and reception will help.', 'sage', 'align-self: stretch')}
+{note('info', 'Not registered with IIPCT?', 'You can’t book online yet. Call us instead, and reception will help.', 'sage', 'align-self: stretch; margin-top: auto')}
 </section>'''
     call = f'''<section style="flex: 1 1 340px; min-width: 0; padding: 24px 24px 18px; border-radius: 16px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; box-shadow: {SHADOW}">
 {eyebrow('Booking help', '#E3BE74')}
@@ -80,7 +80,7 @@ def privacy():
         ('who', 'Who we are', P('Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT) provides primary care to Indigenous people and their families in southeastern Ontario. This policy explains what personal information we collect, why, and the choices you have.')),
         ('collect', 'What we collect',
          h3('On this website', 18) + B(['This website has no forms. It does not ask for your name, contact details or health information.', 'If you email us, we receive your email address and your message.', 'If you sign up for the newsletter, Mailchimp collects your email address on its sign-up page.', f'Basic visit statistics, such as pages viewed. {ph("confirm analytics tool, or remove")}'])
-         + h3('When you book or receive care', 18, 'margin-top: 8px') + P('Personal health information, such as your name, date of birth, health card number and health history. Online booking collects only what is needed to find your chart and confirm your appointment.')),
+         + h3('When you book or receive care', 18, 'margin-top: 8px') + P('Personal health information, such as your name, date of birth, health card number and health history. Online booking happens on Ocean, an outside service (see “Services we use” below).')),
         ('use', 'How we use it', B(['To provide and coordinate your care.', 'To book, confirm and follow up on appointments.', 'To answer your questions.', 'To send the newsletter, if you asked for it. You can unsubscribe at any time.', 'To meet our legal and reporting obligations.'])),
         ('phipa', 'Your health information', P('IIPCT follows Ontario’s Personal Health Information Protection Act, 2004 (PHIPA). We collect, use and share your health information only as the Act allows, and with your consent where consent is required.')),
         ('share', 'Who we share it with', P('With the health care providers involved in your care, and with companies that run our systems under agreements that protect your information. We don’t sell personal information.')),
@@ -118,7 +118,7 @@ def accessibility():
         ('policies', 'Policies and training', P(ph('How to request IIPCT’s accessibility policies, and a line on staff training'))),
     ]
     return 'IIPCT — Accessibility', legal('Accessibility', 'Accessibility', 'Our commitment to care and information that everyone can use.', sections,
-                                         'Draft for IIPCT to review. Items in [brackets] need their details before launch.')
+                                         'Draft for IIPCT to review. Items in [brackets] need their details, and the wording needs IIPCT’s sign-off before launch.')
 
 def sitemap():
     def col(title, links, icon):

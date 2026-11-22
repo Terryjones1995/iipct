@@ -785,6 +785,20 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 .g2x{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 .g3x{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:10px !important}
 }
+@container pg (1099px < width <= 1399px){
+.lcg{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+.lcg>*{grid-column:span 2}
+.lcg>:nth-child(3n+1):nth-last-child(2){grid-column:2 / span 2}
+.lcg>:nth-child(3n+1):last-child{grid-column:3 / span 2}
+}
+@container pg (760px < width <= 1099px){
+.lcg{grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+.lcg>*{grid-column:span 2}
+.lcg>:nth-child(odd):last-child{grid-column:2 / span 2}
+}
+@container pg (width <= 760px){
+.lcg{grid-template-columns:minmax(0,1fr) !important}
+}
 """
 
 FONT_HREF = ('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700'

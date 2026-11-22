@@ -535,6 +535,39 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
 }
 
+@media (1099px < width <= 1399px) {
+  .lcg {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+  }
+  .lcg>* {
+    grid-column: span 2;
+  }
+  .lcg>:nth-child(3n+1):nth-last-child(2) {
+    grid-column: 2 / span 2;
+  }
+  .lcg>:nth-child(3n+1):last-child {
+    grid-column: 3 / span 2;
+  }
+}
+
+@media (760px < width <= 1099px) {
+  .lcg {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+  }
+  .lcg>* {
+    grid-column: span 2;
+  }
+  .lcg>:nth-child(odd):last-child {
+    grid-column: 2 / span 2;
+  }
+}
+
+@media (width <= 760px) {
+  .lcg {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+
 /* Skip link */
 .skip {
   position: absolute;

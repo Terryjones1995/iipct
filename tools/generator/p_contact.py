@@ -51,7 +51,7 @@ def location_card(loc, crop):
 {hours_table(loc)}
 {units}
 {extensions(loc)}
-<div style="margin-top: auto; padding-top: 4px">{out_btn('Open in Google Maps', loc['map_url'], f'Open the {loc["name"]} in Google Maps (opens in a new tab)')}</div>
+<div style="padding-top: 4px">{out_btn('Open in Google Maps', loc['map_url'], f'Open the {loc["name"]} in Google Maps (opens in a new tab)')}</div>
 </div>
 </article>'''
 
@@ -124,7 +124,7 @@ def page():
 {vdiv('54px')}
 {p('Each location has its own hours and email. Open “Staff and extensions” to see who works there.', 15.4, INK, 1.4, 'flex: 1 1 360px')}
 </div>
-<div class="g3l g2t g1" style="position: relative; margin-top: 17px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; align-items: stretch">
+<div class="lcg" style="position: relative; margin-top: 17px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; align-items: start">
 {''.join(location_card(l, c) for l, c in zip(LOCATIONS, ['con-tyendinaga', 'con-kingston', 'con-bancroft', 'con-deseronto', 'con-shannonville']))}
 </div>
 </section>

@@ -100,20 +100,37 @@ engines skip the test copy, and pushes. The test site is https://terryjones1995.
 
 **Legal pages.** Privacy Policy and Accessibility are drafts. Highlighted `[bracketed]` items need IIPCT's details
 (privacy officer, analytics, safeguards, accessibility contact, clinic accessibility), and the wording needs their sign-off.
+That includes the plain-text promises IIPCT has not made anywhere yet: the WCAG 2.0 Level AA goal, service animals,
+support persons and assistive devices, notices of service disruptions, and "We don't sell personal information".
+The "Services we use" list names BambooHR because the Careers page is getting its job links; drop that row if it does not.
 
 **Facts to confirm with IIPCT.** Tyendinaga opens at 7:30 am on Fridays (as the current contact page says; every other
 day opens at 8:30). The Deseronto waitlist flyer says "press 3" but the contact page says Deseronto is option 4 (the
 site uses 4). Deseronto's postal code is not printed anywhere by IIPCT, so it is left off. The staff extension lists
 are copied from the current contact page and will go out of date as staff change.
 
-**Other pages.** Placeholder links (`href="#"`) and `[bracketed]` placeholders remain on pages other work packages are
-correcting: Home, Who We Are, Board, Careers, BPSO, Services, Events & Programs and News. Run the checker above to see
-what is left.
+**Events.** `events-programs.html` still shows the sample events from the design mock-ups (dated April to June 2025).
+None of them are real IIPCT events.
+
+**News.** On `news.html` the "View flyer" links go nowhere yet, and the "From Facebook" block is a placeholder.
+The Breast Cancer Screening story still has a placeholder where the list of staff and partners to thank goes.
+
+**TB Testing.** The current page is two images with no text. `tb-testing.html` has a placeholder until that text is
+typed out.
+
+**Other pages.** Placeholder links (`href="#"`) and `[bracketed]` placeholders (staff, board and testimonial names and
+quotes) remain on Home, Who We Are, Board, Careers, BPSO, Services, Immunization, Events & Programs and News. Other work
+packages are correcting them. Run the checker above to see what is left.
 
 **People.** Several pages still use stand-in photos from the design mock-ups. Some show people who are not IIPCT staff
-or clients. Replace them with real photographs before launch.
+or clients. Replace them with real photographs before launch. The banners on the Contact page's location cards are
+stand-in scenery (no people); photos of the real locations would be better (only Deseronto has one so far).
 
 **Logo.** `assets/img/logo-emblem.png` is a cleaned-up copy of a 216 px file. Get the original vector from IIPCT.
 
-**404 page.** It uses relative links, so it is fully styled for missing top-level addresses; an address several folders
-deep shows it without styles. Fine on the test site; check again once the real domain is set.
+**404 page.** `404.html` uses relative links. A missing address at the top level (`.../iipct/old-page.html`) shows it
+with its styles. A missing address one folder deep or more (`.../iipct/contact-us/`) shows it without styles, and its
+links lead to more missing pages. Every old iipct.org bookmark has that folder shape (`/contact-us/`,
+`/who-we-are/career-page/`), so fix this before the domain moves: publish `404.html` with links that start from the
+site root (`/iipct/...` on the test site, `/...` on the real domain). The publish step is the place for it, because it
+knows the address the site is served from.
