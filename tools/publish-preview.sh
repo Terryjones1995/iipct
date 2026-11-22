@@ -12,8 +12,8 @@
 #     starting at "/", and a CNAME file naming iipct.org so GitHub Pages serves that domain. With nginx instead,
 #     write it with --launch --dry-run <dir> and serve that folder.
 #   Once gh-pages carries a CNAME file (the live site), an ordinary test publish refuses to replace it.
-#   --launch also refuses while the pages read their events from a test server (LIVE_SITE in tools/generator/lib.py,
-#   see live_events_check below).
+#   --launch also refuses while LIVE_SITE in tools/generator/lib.py is set (the events reader and the footer sign-in
+#   link are for the GitHub copy only: see live_events_check below).
 #
 # What it does
 #   1. Takes the site files from <commit> (an allow-list): the pages (*.html at the top level), assets/,
@@ -54,27 +54,30 @@ MANIFEST="tools/redirects/redirect-pages.txt"
 LIVE_HOST="${REAL_URL#https://}"; LIVE_HOST="${LIVE_HOST%/}"   # iipct.org, for the CNAME file
 
 # >>> live_events_check (tools/live-events/test-launch-check.sh runs exactly this block)
-# A live copy never ships the events reader pointed at a test server. While LIVE_SITE in tools/generator/lib.py is set,
-# Home and Events & Programs read the events staff publish on the server at that address (assets/js/live-events.js).
-# That is for the GitHub copy until the domain moves; when iipct.org moves to the server, this static copy is retired.
-# Allowed: LIVE_SITE empty, or the real address itself. Anything else (a test address) refuses --launch.
+# A live copy never ships the events reader. While LIVE_SITE in tools/generator/lib.py is set, Home and Events & Programs
+# read the events staff publish on the server at that address (assets/js/live-events.js) and every page's footer links
+# to the server's sign-in. That is for the GitHub copy until the domain moves; when iipct.org moves to the server, this
+# static copy is retired. Launched at iipct.org with LIVE_SITE still set, the copy would read from a test server, or
+# (set to the real address) from itself, which has no feed and no sign-in page. So --launch refuses while any LIVE_SITE
+# line is set or cannot be read, or while any page or file still carries the reader or a sign-in link.
 live_events_check() {   # <folder holding the commit's files>
-  local dir="$1" real="${REAL_URL%/}" line site shipped addr
-  line="$(grep -m 1 -E '^LIVE_SITE *=' "$dir/tools/generator/lib.py" 2>/dev/null || true)"
-  site="$(printf '%s\n' "$line" | sed -nE "s/^LIVE_SITE *= *['\"]([^'\"]*)['\"] *(#.*)?$/\1/p")"
-  if [ -n "$line" ] && [ -z "$site" ] && ! printf '%s\n' "$line" | grep -qE "^LIVE_SITE *= *(''|\"\") *(#.*)?$"; then
-    echo "error: --launch refused: cannot read LIVE_SITE in tools/generator/lib.py ($line)" >&2
-    return 1
-  fi
-  shipped="$(grep -ohE 'src="assets/js/live-events\.js" data-site="[^"]*"' "$dir"/*.html 2>/dev/null | sed -E 's/.*data-site="([^"]*)"/\1/' | sort -u || true)"
-  for addr in $site $shipped; do
-    if [ "$addr" != "$real" ]; then
-      echo "error: --launch refused: the pages read their events from $addr (LIVE_SITE in tools/generator/lib.py), a test address." >&2
+  local dir="$1" line stale
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if ! printf '%s\n' "$line" | grep -qE "^LIVE_SITE *= *(''|\"\") *(#.*)?$"; then
+      echo "error: --launch refused: tools/generator/lib.py sets the events reader's server address ($line)." >&2
       echo "       That reader is for the GitHub copy until the domain moves; once iipct.org moves to the server this static copy is" >&2
-      echo "       retired, so a live copy must never ship it pointed at a test server. Set LIVE_SITE = \"\" and regenerate first." >&2
+      echo "       retired, so a live copy must never ship it. Set LIVE_SITE = \"\" and regenerate first." >&2
       return 1
     fi
-  done
+  done <<< "$(grep -E '^[[:space:]]*LIVE_SITE[[:space:]]*=' "$dir/tools/generator/lib.py" 2>/dev/null || true)"
+  stale="$(cd "$dir" 2>/dev/null && grep -lE 'live-events|href="[^"]*/login"' -- *.html 2>/dev/null | head -3 | tr '\n' ' ' || true)"
+  [ -e "$dir/assets/js/live-events.js" ] && stale="$stale assets/js/live-events.js"
+  if [ -n "${stale// /}" ]; then
+    echo "error: --launch refused: these files still carry the events reader or the server's sign-in link: $stale" >&2
+    echo "       Set LIVE_SITE = \"\" in tools/generator/lib.py, regenerate and commit first." >&2
+    return 1
+  fi
   return 0
 }
 # <<< live_events_check

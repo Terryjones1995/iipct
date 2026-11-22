@@ -122,23 +122,32 @@ test address and this static copy stays the public front end. One constant switc
 - **Set:** Home and Events & Programs load `assets/js/live-events.js` (a copy of `tools/generator/live-events.js`,
   written by the regenerate; never edit the copy). It asks `LIVE_SITE + "/api/public/events"` once (no cookies, at most
   4 seconds, no retry) and checks the answer strictly: JSON of the agreed shape, `site` equal to `LIVE_SITE`, every
-  event link starting with `LIVE_SITE + "/events-programs/"`, real dates, sizes within limits (the whole answer at
-  most 1 MB). Anything wrong, no answer, or no events: the page stays exactly as built (as it does with JavaScript off).
+  event link leading to a page under `LIVE_SITE + "/events-programs/"` (also once resolved, so `../` cannot climb out),
+  real dates, times as the server writes them (an end may say "the next day" or "2 days later"), sizes within limits
+  that sit above what the server can send (the whole answer at most 1 MB). Anything wrong, no answer, or no events:
+  the page stays exactly as built (as it does with JavaScript off).
   Otherwise the server is the truth: a built card whose event the server lists (same title, ignoring case, spaces,
-  dashes and quote marks, and a common day) stays, with the server's status or marked cancelled; a built card the
-  server does not list is hidden; an event only the server lists gets a card in the design's own markup (from a
-  `<template>` in the page), in date order, linking to its page on the server; Home's "Up next" and "Coming up"
-  follow the server's dates. Text from the server is only ever inserted as text. `<html data-live-events>` says what
-  happened: `shown`, `unchanged` or `error`. Every page's footer also gets a "Sign in" link to `LIVE_SITE + "/login"`.
+  dashes and quote marks, and a common day) stays, with the server's status (or none, when the server has none) or
+  marked cancelled; when the server's days, times or place for it differ from the built ones, its when and where lines
+  are redrawn from the server's dates (the rest of the designed text stays; the clock line, such as "Doors open at
+  5:00 pm", goes when the days or times change). A built card the server does not list is hidden; an event only the
+  server lists gets a card in the design's own markup (from a `<template>` in the page), in date order, linking to its
+  page on the server; Home's "Up next" and "Coming up" follow the server's dates, times, places and statuses (an
+  evening that runs past midnight stays listed until it ends). Text from the server is only ever inserted as text.
+  `<html data-live-events>` says what happened: `shown`, `unchanged` or `error`. Every page's footer also gets a
+  "Sign in" link to `LIVE_SITE + "/login"`.
 - **Empty (`LIVE_SITE = ""`):** the feature is off. The regenerate writes no reader, no data attributes, no templates
   and no "Sign in" link: every page is byte-for-byte what it was before the reader existed.
-- **When the domain moves to the server, this static copy is retired.** It must never go live still reading a test
-  address, so `tools/publish-preview.sh --launch` refuses while `LIVE_SITE` (or a page's reader) names anything other
-  than the real address. Set `LIVE_SITE = ""`, regenerate and commit first.
+- **When the domain moves to the server, this static copy is retired.** It must never go live with the reader: pointed
+  at the test address it would show a test server's events, and pointed at iipct.org it would read from itself, which
+  has no feed and no sign-in page. So `tools/publish-preview.sh --launch` refuses while `LIVE_SITE` is set at all, or
+  while any page or file still carries the reader or the "Sign in" link. Set `LIVE_SITE = ""`, regenerate and commit first.
 - Testing: `tools/live-events/` (never published) has a stand-in for the server's feed (`standin.py`), a browser
   proof that loads both pages against it in every state (`run-proof.sh` + `proof.mjs`: feed down, empty, equal to the
-  built events, an event removed, cancelled, a new status, a new event, a start time only, hostile answers) and a
-  test of the `--launch` refusal that does not run the publish script (`test-launch-check.sh`).
+  built events, the server's own wording of them, an event removed, cancelled, a new or cleared status, a new event, a
+  start time only, an end the next day, an evening past midnight, changed times and place, a date dropped, a second
+  session, duplicate records, the longest fields the server can send, hostile answers) and a test of the `--launch`
+  refusal that does not run the publish script (`test-launch-check.sh`).
 
 ## Search engines and sharing
 

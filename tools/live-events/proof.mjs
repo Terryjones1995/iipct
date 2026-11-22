@@ -15,8 +15,9 @@ const pixelmatch = require('pixelmatch');
 
 const [OUT, PORT, SCEN_FILE] = process.argv.slice(2);
 fs.mkdirSync(OUT, { recursive: true });
-const SAME = ['down', 'empty', 'equal', 'slow', 'bad-json', 'html-type', 'wrong-site', 'foreign-href', 'big', 'big-chunked', 'proto'];
-const CHANGED = ['missing', 'cancelled', 'status', 'new', 'startonly', 'markup'];
+const SAME = ['down', 'empty', 'equal', 'seed', 'slow', 'bad-json', 'html-type', 'wrong-site', 'foreign-href', 'dotdot', 'dotdot-encoded', 'big', 'big-chunked', 'proto'];
+const CHANGED = ['missing', 'cancelled', 'status', 'new', 'startonly', 'markup',
+  'nextday', 'longfields', 'midnight', 'timechanged', 'datedropped', 'statuscleared', 'secondsession', 'duplicates'];
 const TILES = new Set(['down', 'empty', 'equal', ...CHANGED]);         // window-sized tiles for these; the rest are proven by pixels
 const HEIGHT = { 360: 800, 390: 844, 768: 1024, 820: 1180, 1440: 900 };
 const ALL_WIDTHS = [[320, 568], [360, 800], [375, 667], [390, 844], [412, 915], [430, 932], [667, 375], [844, 390], [932, 430], [600, 960],
@@ -29,9 +30,30 @@ const browser = await chromium.launch({
 });
 const results = [];
 
+// Fonts come from Google over the network. Two loads can be served font files that render a few glyph edges differently
+// (seen: one capture of 4fcfd8d differing from every page of the run in antialiasing only), so every load in a run gets
+// the same bytes: the first answer for each font address is kept and given to every later request.
+const FONTS = new Map();
+async function fontRoute(route) {
+  const url = route.request().url();
+  try {
+    let hit = FONTS.get(url);
+    if (!hit) {
+      const resp = await route.fetch();
+      const headers = Object.fromEntries(Object.entries(resp.headers()).filter(([k]) => !/^(content-encoding|content-length|transfer-encoding)$/i.test(k)));
+      hit = { status: resp.status(), headers, body: await resp.body() };
+      if (resp.ok()) FONTS.set(url, hit);
+    }
+    await route.fulfill(hit);
+  } catch (e) {
+    await route.abort().catch(() => {});
+  }
+}
+
 async function load(url, w, opts = {}) {
   const ctx = await browser.newContext({ viewport: { width: w, height: HEIGHT[w] || 900 }, deviceScaleFactor: 1, ignoreHTTPSErrors: true,
     hasTouch: w < 1100, javaScriptEnabled: opts.js !== false });
+  await ctx.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, fontRoute);
   const page = await ctx.newPage();
   const log = { console: [], pageerror: [], failed: [] };
   page.on('console', (m) => { if (['error', 'warning'].includes(m.type())) log.console.push(`${m.type()}: ${m.text().slice(0, 200)}`); });
@@ -94,6 +116,10 @@ async function facts(page) {
       imgsInBlock: blk ? blk.querySelectorAll('img').length : -1,
       scriptsInBlock: blk ? blk.querySelectorAll('script').length : -1,
       cards: [...document.querySelectorAll('#ev-list > article')].filter((a) => getComputedStyle(a).display !== 'none').map((a) => a.querySelector('h3').textContent),
+      cardWhen: [...document.querySelectorAll('#ev-list > article')].filter((a) => getComputedStyle(a).display !== 'none').map((a) => a.querySelector('h3').textContent.slice(0, 40) + ' | '
+        + [...a.querySelectorAll('[data-slot="when"] > span')].filter((r) => getComputedStyle(r).display !== 'none').map((r) => r.textContent.replace(/\s+/g, ' ').trim()).join(' / ')
+        + ' | ' + [...a.querySelectorAll('[data-slot="status"]')].filter((x) => !x.hidden && getComputedStyle(x).display !== 'none').map((x) => x.textContent).join(' / ')),
+      upNextWhen: (() => { const c = [...document.querySelectorAll('#ev-next-col > div')].find((d) => !d.hidden); return c ? [...c.querySelectorAll('.t-s, [data-slot="status"]')].filter((x) => !x.hidden && getComputedStyle(x).display !== 'none').map((x) => x.textContent.replace(/\s+/g, ' ').trim()).join(' / ') : null; })(),
       upNext: (() => { const c = [...document.querySelectorAll('#ev-next-col > div')].find((d) => !d.hidden); return c ? c.querySelector('h3').textContent + ' | ' + (c.querySelector('.ev-when') || {}).textContent : null; })(),
       rows: [...document.querySelectorAll('#ev-rows li[data-group]')].filter((g) => getComputedStyle(g).display !== 'none')
         .map((g) => g.firstElementChild.textContent + ': ' + [...g.querySelectorAll('li')].filter((r) => getComputedStyle(r).display !== 'none')

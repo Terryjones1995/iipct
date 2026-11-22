@@ -193,10 +193,18 @@ def _attr(t):
     return _html.escape(t, quote=True)
 
 def live_data(e, key_attr=False):
-    """data-ev-* attributes: the event's plain title, its days and its short status (what the reader matches on)."""
+    """data-ev-* attributes: the event's plain title, its days and its short status (what the reader matches on), and its
+    start, end and place as printed (what the reader compares with the server's dates, to redraw a when or where line
+    the server has changed)."""
     k = f' data-ev-key="{e["key"]}"' if key_attr else ''
     return (f'{k} data-ev-title="{_attr(_plain(e["title"]))}" data-ev-days="{" ".join(e["dates"])}"'
-            f' data-ev-status="{_attr(_plain(e.get("status_short") or e.get("status") or ""))}"')
+            f' data-ev-status="{_attr(_plain(e.get("status_short") or e.get("status") or ""))}"'
+            f' data-ev-start="{t12(e["start"])}" data-ev-end="{t12(e["end"]) if e["end"] else ""}"'
+            f' data-ev-place="{_attr(_plain(e["place"]))}" data-ev-place-short="{_attr(_plain(e["place_short"]))}"')
+
+def live_slot(markup, name):
+    """_slotted() while LIVE_SITE is set, else the markup unchanged (a built when or where line the reader may redraw)."""
+    return _slotted(markup, name) if LIVE else markup
 
 def slot(name, text):
     """' data-slot="name"', plus hidden while the slot is empty (only with LIVE_SITE set)."""
@@ -232,7 +240,8 @@ def card_template():
 
 def event_card(e):
     paras = ''.join(f'<p class="t-b" style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px">{t}</p>' for t in e['text'])
-    when = meta_row('calendar', when_text(e)) + (meta_row('clock', e['when_note']) if e.get('when_note') else '') + meta_row('pin', e['place'])
+    when = (live_slot(meta_row('calendar', when_text(e)), 'when-row') + (live_slot(meta_row('clock', e['when_note']), 'note-row') if e.get('when_note') else '')
+            + live_slot(meta_row('pin', e['place']), 'where-row'))
     facts = fact('Who can come', e['who']) + fact('How to take part', e['how'])
     status = ev_status(e.get('status', '')) if (e.get('status') or LIVE) else ''
     partner = f'<p class="t-s" style="margin: 0; font-size: 13.6px; font-style: italic; line-height: 1.45; color: {MUTED}">{e["partner"]}</p>' if e.get('partner') else ''
@@ -421,7 +430,7 @@ def home_events():
         when = f'{dlong(dt)} · {trange(e["start"], e["end"])}'
         closed = e.get('status_short') or ''
         cards += home_next(f' id="next-{key}" data-wd="{DAYS[d.weekday()]}" hidden', date_tile(dt, True), h3(e["title"], 22, "", "t-h3 t-h3l ev-h"),
-                           meta_row("calendar", when), meta_row("pin", e["place_short"]), closed,
+                           live_slot(meta_row("calendar", when), 'when-row'), live_slot(meta_row("pin", e["place_short"]), 'where-row'), closed,
                            f'<p class="t-b" style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
                            f'<p class="t-s" style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>',
                            tlink("Event details", href, "arrow", 14))
@@ -430,7 +439,8 @@ def home_events():
             groups += home_group_open(dt, dlong(dt))
             last = dt
         groups += home_row(f' data-end="{end}" data-day="{dt}" data-key="{key}"' + (live_data(e, True) if LIVE else ''), f' href="{href}"',
-                           trange(e["start"], e["end"]), e["title"], e["place_short"], closed)
+                           trange(e["start"], e["end"]), e["title"], e["place_short"], closed,
+                           (' data-slot="time"', '', ' data-slot="place"') if LIVE else ('', '', ''))
     if last: groups += '</ul></li>'
     today = date.today().isoformat()
     none_hidden = '' if not any(dt >= today for dt, _ in occ) else ' hidden'
