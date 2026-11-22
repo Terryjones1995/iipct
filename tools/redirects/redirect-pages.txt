@@ -1,0 +1,19 @@
+# Redirect pages at the old iipct.org addresses. Written by tools/generator/export_site.py;
+# tools/publish-preview.sh publishes exactly these files.
+services/index.html
+events-programs/index.html
+contact-us/index.html
+who-we-are/index.html
+who-we-are/career-page/index.html
+who-we-are/board-of-directors/index.html
+no-title/index.html
+primary-medical-care-information/index.html
+publicly-funded-immunization-program/index.html
+well-baby-and-well-child-appointments/index.html
+tb-testing/index.html
+advanced-foot-care-services/index.html
+diabetic-retinopathy-screening/index.html
+outreach-and-community-support/index.html
+our-team-honoured-at-the-iphcc-awards/index.html
+together-were-stronger-breast-cancer-screening-event/index.html
+events/index.html

@@ -74,7 +74,8 @@ Run it from the repo root. It rewrites the pages, `assets/css/site.css` and the 
 files whose content did not change untouched. Never edit a generated `.html` file or `site.css` by hand: change the
 Python (`lib.py` for the shared parts, `p_*.py` for each page family, `facts.py` for the facts) and regenerate.
 Real photographs go in `tools/generator/site-img/<folder>/` (listed with their source in `site-img/SOURCES.md`) and
-are placed with `lib.photo()`. The page list is `PAGES` in `build.py` plus `NAMES` and `DESC` in `export_site.py`.
+are placed with `lib.photo()`. The page list is `PAGES` in `build.py` plus `NAMES` in `export_site.py` and the
+page's row in `seo.py` (title, description, share image).
 
 ## Check the pages
 
@@ -83,8 +84,10 @@ python3 -I tools/check-site.py . --strict
 ```
 
 It fails on broken links and anchors, missing images, duplicate ids, missing alt text, missing titles or
-descriptions, and in `--strict` also on `href="#"` links, buttons that cannot work without JavaScript, and
-`[bracketed]` placeholder text (allowed only on the two draft legal pages). `--online` also tries every outside link.
+descriptions, and the search and sharing rules below (canonical, title and description lengths, share images,
+structured data, sitemap, robots, redirect pages). In `--strict` it also fails on `href="#"` links, buttons that cannot
+work without JavaScript, and `[bracketed]` placeholder text (allowed only on the two draft legal pages). `--online`
+also tries every outside link. `--preview <folder>` checks a test copy written by the publish dry run.
 
 ## Publish the test site
 
@@ -92,9 +95,63 @@ descriptions, and in `--strict` also on `href="#"` links, buttons that cannot wo
 tools/publish-preview.sh
 ```
 
-It copies the pages and `assets/` from the current commit to the `gh-pages` branch, adds a `noindex` tag so search
-engines skip the test copy, and pushes. The test site is https://terryjones1995.github.io/iipct/ .
-`tools/publish-preview.sh --dry-run <empty-folder>` writes the files without committing.
+It copies the pages, `assets/`, `sitemap.xml`, `robots.txt` and the old-address redirect pages from the current commit
+to the `gh-pages` branch, keeps the test copy out of search engines (a `noindex` tag on every page and a robots.txt
+that disallows everything), points the share tags at the test address so pasted test links show their preview card,
+and pushes. The test site is https://terryjones1995.github.io/iipct/ .
+`tools/publish-preview.sh --dry-run <empty-folder>` writes the files without committing; check them with
+`python3 -I tools/check-site.py <empty-folder> --preview`.
+That is the TEST copy: never point iipct.org at it. The live copy is `tools/publish-preview.sh --launch` (see "At
+launch" below).
+
+## Search engines and sharing
+
+- **One table.** Every page's title (15 to 60 characters), description (70 to 160), share-image heading and photo
+  are a row in `PAGES` in `tools/generator/seo.py`. Edit the row and regenerate. Everything search engines read uses
+  the real address, `https://iipct.org/` (`SITE_URL`).
+- **In each page's head:** canonical address, Open Graph and Twitter tags (each on its own line), theme colour,
+  home-screen icon, and structured data (JSON-LD): the organization on every page, the five locations with their
+  hours on Contact (from `facts.py`, the same hours the page prints), breadcrumbs that match the visible ones, the
+  news posts as articles, and upcoming dated events from the Events page's `EVENTS` list when it has one.
+- **Share images:** `assets/img/og/<page>.jpg`, 1200 x 630, in the site's look, with the page's own photograph where
+  it has a real one. Make them with `python3 tools/generator/og_cards.py .` (needs Google Chrome and an internet
+  connection for the fonts; on the IIPCT server run it through `hof-heavy`). Re-run it when a row's heading or photo
+  changes or a page is added; the regenerate prints a NOTE when a page has no share image yet.
+- **Root files:** `sitemap.xml` (every public page, the date it last changed in git, its photographs) and
+  `robots.txt` (allow all, points to the sitemap).
+- **Old addresses keep working:** a small redirect page sits at each old iipct.org address (`contact-us/index.html`,
+  `who-we-are/career-page/index.html` and so on; the list is `OLD_URLS` in `seo.py`). The same list as permanent
+  (301) redirects for nginx is `tools/redirects/nginx-old-urls.conf`, with one more rule for the old calendar's
+  `/event/...` pages.
+- **Speed:** every image has its width and height, images below the first screen load lazily, and the hero image
+  loads first.
+- No tracking or verification code is on the site: Search Console and analytics need IIPCT's own Google account.
+
+**At launch (when iipct.org points at this site):**
+
+1. Publish the LIVE copy, never the test copy. The ordinary publish marks every page `noindex`, makes robots.txt say
+   `Disallow: /`, points the canonical and share tags at the github.io address and roots the not-found page's links
+   at `/iipct/`: pointed at iipct.org, that tells Google not to index the real site. The live copy is the repo's files
+   unchanged (no `noindex`, the repo's robots.txt with its sitemap line, every address on `https://iipct.org/`) with
+   the not-found page's links starting at `/`:
+   - Kept on GitHub Pages: run `tools/publish-preview.sh --launch`. It also writes a `CNAME` file naming iipct.org,
+     which gives the site that custom domain (GitHub advises adding the domain before changing DNS). Then point the
+     iipct.org DNS records at GitHub Pages and, once the certificate is ready, turn on "Enforce HTTPS" under the
+     repo's Settings > Pages. From then on an ordinary test publish refuses to run, so the test copy cannot replace
+     the live site by mistake.
+   - Served by nginx: `tools/publish-preview.sh --launch --dry-run <empty-folder>`, serve that folder, and set
+     `error_page 404 /404.html;` in the server block.
+   Check either with `python3 -I tools/check-site.py <folder> --launch` (for the GitHub one, a `--dry-run` of the
+   same command), and confirm `https://iipct.org/robots.txt` shows `Allow: /` and the sitemap line.
+2. Signed in with IIPCT's Google account, add the property for iipct.org in Google Search Console, then submit
+   `https://iipct.org/sitemap.xml` under Sitemaps.
+3. Confirm the old addresses redirect: https://iipct.org/contact-us/ and https://iipct.org/who-we-are/career-page/
+   must land on the new pages. With nginx, include `tools/redirects/nginx-old-urls.conf` in the server block and check
+   that `curl -sI https://iipct.org/contact-us/` answers `301`.
+4. In Search Console, inspect `https://iipct.org/` and request indexing of the home page.
+
+If the real address is ever different (`www.iipct.org`, say), change `SITE_URL` in `seo.py`, `REAL` in
+`tools/check-site.py` and `REAL_URL` in `tools/publish-preview.sh`, then regenerate.
 
 ## Before this goes live
 
@@ -128,9 +185,7 @@ stand-in scenery (no people); photos of the real locations would be better (only
 
 **Logo.** `assets/img/logo-emblem.png` is a cleaned-up copy of a 216 px file. Get the original vector from IIPCT.
 
-**404 page.** `404.html` uses relative links. A missing address at the top level (`.../iipct/old-page.html`) shows it
-with its styles. A missing address one folder deep or more (`.../iipct/contact-us/`) shows it without styles, and its
-links lead to more missing pages. Every old iipct.org bookmark has that folder shape (`/contact-us/`,
-`/who-we-are/career-page/`), so fix this before the domain moves: publish `404.html` with links that start from the
-site root (`/iipct/...` on the test site, `/...` on the real domain). The publish step is the place for it, because it
-knows the address the site is served from.
+**404 page.** `404.html` uses relative links in the repo. The publish step rewrites them to start at the site root
+(`/iipct/...` on the test site, `/...` with `--launch`), so the page keeps its styles and working links at a missing
+address of any depth. The old iipct.org addresses (`/contact-us/`, `/who-we-are/career-page/` and the rest) do not
+reach it at all: each has a redirect page to its new page (see "Old addresses keep working" above).
