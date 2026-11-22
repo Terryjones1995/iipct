@@ -24,27 +24,27 @@ expect() {   # <name> <0 = allowed | 1 = refused>
   if [ "$rc" = "$2" ]; then echo "ok    $1 -> $([ "$rc" = 0 ] && echo allowed || echo refused)${out:+: ${out%%$'\n'*}}"
   else echo "FAIL  $1 -> exit $rc, wanted $2: $out"; fails=$((fails + 1)); fi
 }
-site test-address 'LIVE_SITE = "https://iipct.taylordunning.ca"' 'https://iipct.taylordunning.ca';           expect test-address 1
-site test-address-single-quotes "LIVE_SITE = 'https://iipct.taylordunning.ca'  # comment" '';           expect test-address-single-quotes 1
+site test-address 'LIVE_SITE = "https://taylordunning.ca"' 'https://taylordunning.ca';           expect test-address 1
+site test-address-single-quotes "LIVE_SITE = 'https://taylordunning.ca'  # comment" '';           expect test-address-single-quotes 1
 site off 'LIVE_SITE = ""' '';                                                                         expect off 0
 site off-single-quotes "LIVE_SITE = ''  # off" '';                                                    expect off-single-quotes 0
-site off-but-stale-pages 'LIVE_SITE = ""' 'https://iipct.taylordunning.ca';                              expect off-but-stale-pages 1
+site off-but-stale-pages 'LIVE_SITE = ""' 'https://taylordunning.ca';                              expect off-but-stale-pages 1
 site real-address 'LIVE_SITE = "https://iipct.org"' 'https://iipct.org';                              expect real-address 1
 site real-address-no-pages 'LIVE_SITE = "https://iipct.org"' '';                                      expect real-address-no-pages 1
 site unreadable 'LIVE_SITE = os.environ["X"]' '';                                                     expect unreadable 1
-site twice "$(printf 'LIVE_SITE = ""\nLIVE_SITE = "https://iipct.taylordunning.ca"')" '';               expect twice 1
-site indented "$(printf 'if True:\n    LIVE_SITE = "https://iipct.taylordunning.ca"')" '';             expect indented 1
+site twice "$(printf 'LIVE_SITE = ""\nLIVE_SITE = "https://taylordunning.ca"')" '';               expect twice 1
+site indented "$(printf 'if True:\n    LIVE_SITE = "https://taylordunning.ca"')" '';             expect indented 1
 site before-the-feature '' '';                                                                        expect before-the-feature 0
-site no-constant-but-reader '' 'https://iipct.taylordunning.ca';                                         expect no-constant-but-reader 1
+site no-constant-but-reader '' 'https://taylordunning.ca';                                         expect no-constant-but-reader 1
 # a page with the reader's attributes in the other order, a reader file with no page tag, a footer sign-in link alone
 site swapped-attrs 'LIVE_SITE = ""' ''
-printf '<script defer data-site="https://iipct.taylordunning.ca" src="assets/js/live-events.js"></script>\n' > "$TMP/swapped-attrs/index.html"
+printf '<script defer data-site="https://taylordunning.ca" src="assets/js/live-events.js"></script>\n' > "$TMP/swapped-attrs/index.html"
 expect swapped-attrs 1
 site js-file-only 'LIVE_SITE = ""' ''
 mkdir -p "$TMP/js-file-only/assets/js"; printf 'x' > "$TMP/js-file-only/assets/js/live-events.js"
 expect js-file-only 1
 site sign-in-only 'LIVE_SITE = ""' ''
-printf '<footer><a class="fl" href="https://iipct.taylordunning.ca/login">Sign in</a></footer>\n' > "$TMP/sign-in-only/about.html"
+printf '<footer><a class="fl" href="https://taylordunning.ca/login">Sign in</a></footer>\n' > "$TMP/sign-in-only/about.html"
 expect sign-in-only 1
 for dir in "$@"; do   # real commits: name the expectation in the folder name (…-refused / …-allowed)
   case "$dir" in *-refused) want=1 ;; *-allowed) want=0 ;; *) echo "skip $dir (name it …-refused or …-allowed)"; continue ;; esac

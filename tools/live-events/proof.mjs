@@ -26,7 +26,7 @@ const PAGES = { 'index.html': '#ev-home', 'events-programs.html': '#upcoming' };
 
 const browser = await chromium.launch({
   executablePath: '/usr/bin/google-chrome', headless: true,
-  args: ['--no-sandbox', '--disable-gpu', `--host-resolver-rules=MAP iipct.taylordunning.ca 127.0.0.1:${PORT},MAP terryjones1995.github.io 127.0.0.1:${PORT}`],
+  args: ['--no-sandbox', '--disable-gpu', `--host-resolver-rules=MAP taylordunning.ca 127.0.0.1:${PORT},MAP terryjones1995.github.io 127.0.0.1:${PORT}`],
 });
 const results = [];
 

@@ -10,7 +10,7 @@ from facts import (LOCATIONS, EXTENSIONS, MAIN_PHONE, MAIN_TEL, GENERAL_EMAIL, B
 # the server's public events feed (tools/generator/live-events.js, copied to assets/js/), and the footer links to the
 # server's sign-in. Empty = the feature is off and every page is exactly what it is without it.
 # tools/publish-preview.sh --launch refuses while this is a test address (README: "Live events from the server").
-LIVE_SITE = "https://iipct.taylordunning.ca"
+LIVE_SITE = "https://taylordunning.ca"
 assert LIVE_SITE == '' or re.fullmatch(r'https://[a-z0-9.-]+', LIVE_SITE), 'LIVE_SITE: an https:// origin with no path or trailing slash, or ""'
 
 A = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets') + '/'

@@ -5,7 +5,7 @@ usage: python3 -I standin.py <site-dir> <base-dir> <port> <cert.pem> <key.pem> <
 
 One HTTPS server on 127.0.0.1:<port>. The browser under test maps both host names below to it
 (--host-resolver-rules) and accepts its self-signed certificate:
-  https://iipct.taylordunning.ca/api/public/events    the feed, in the shape the static spec fixes; which answer it gives
+  https://taylordunning.ca/api/public/events    the feed, in the shape the static spec fixes; which answer it gives
                                                    is the scenario named in <scenario-file> (read on every request)
   https://terryjones1995.github.io/iipct/...       the static site from <site-dir>, at the address it is published at,
                                                    so the feed's CORS rule (that one origin) is tested for real
@@ -240,7 +240,7 @@ class H(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.send_header('Cache-Control', 'no-store')
         for k, v in extra: self.send_header(k, v)
-        if self.host() == 'iipct.taylordunning.ca': self.cors()
+        if self.host() == 'taylordunning.ca': self.cors()
         self.end_headers()
         self.wfile.write(body)
 
@@ -249,7 +249,7 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         h, path = self.host(), self.path.split('?')[0]
-        if h == 'iipct.taylordunning.ca' and path == '/api/public/events':
+        if h == 'taylordunning.ca' and path == '/api/public/events':
             return self.feed()
         if h == 'terryjones1995.github.io':
             for prefix, root in (('/iipct/', SITE_DIR), ('/base/', BASE_DIR)):
