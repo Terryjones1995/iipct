@@ -22,6 +22,7 @@ fi
 REF="${1:-HEAD}"
 REMOTE="origin"
 BRANCH="gh-pages"
+PREVIEW_BASE="/iipct/"      # the path the test site is served under on GitHub Pages
 ROBOTS='<meta name="robots" content="noindex, nofollow">'
 
 cd "$(git rev-parse --show-toplevel)"
@@ -55,6 +56,17 @@ for f in "$TMP"/site/*.html; do
 done
 [ "$pages" -gt 0 ] || { echo "error: no pages found in $SHORT" >&2; exit 1; }
 [ -f "$TMP/site/index.html" ] || { echo "error: no index.html in $SHORT" >&2; exit 1; }
+
+# The "page not found" page is shown for ANY missing address, however deep (/iipct/contact-us/ for example), so its
+# own links must not be relative. On the test site everything lives under /iipct/. (After the domain move the same
+# rewrite uses "/" instead.) Links to other sites, mail, phone and in-page anchors are left alone.
+if [ -f "$TMP/site/404.html" ]; then
+  perl -pi -e 's{(href|src)="(?![a-z][a-z0-9+.-]*:|#|/)}{$1="'"$PREVIEW_BASE"'}g' "$TMP/site/404.html"
+  if grep -qE '(href|src)="(assets/|[a-z0-9-]+\.html)' "$TMP/site/404.html"; then
+    echo "error: 404.html still has relative links after the rewrite" >&2
+    exit 1
+  fi
+fi
 
 if [ -n "$DRY" ]; then
   if [ -e "$DRY" ] && [ -n "$(ls -A "$DRY" 2>/dev/null)" ]; then
