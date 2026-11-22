@@ -162,7 +162,7 @@ def meta_row(icon, html):
 
 def fact(label, html):
     return (f'<div style="display: flex; flex-direction: column; gap: 3px"><dt style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {RUST}">{label}</dt>'
-            f'<dd class="t-b" style="margin: 0; font-size: 14.2px; line-height: 1.5; color: {INK}">{html}</dd></div>')
+            f'<dd class="t-b" style="margin: 0; font-size: 14.2px; line-height: 1.5; color: {INK}"><p style="margin: 0">{html}</p></dd></div>')   # the p keeps phone and email links inline in the sentence on touch screens
 
 def flyer_link(e):
     th, w, h, full = e['flyer']
