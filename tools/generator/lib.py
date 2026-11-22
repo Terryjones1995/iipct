@@ -705,7 +705,7 @@ def icon_item(icon, tone, title, text, more=''):
 
 def link_card(icon, tone, title, text, href):
     """Whole card is the link to a child page."""
-    return (f'<a class="card tile" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 15px; min-height: 112px; padding: 18px 46px 18px 18px; border-radius: 14px; '
+    return (f'<a class="card tile tila" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 15px; min-height: 112px; padding: 18px 46px 18px 18px; border-radius: 14px; '
             f'{CARD}; color: {INK}; text-decoration: none">{circ(icon, tone, 56, 29, 1.5)}'
             f'<span class="tile-b" style="min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px">'
             f'<span class="t-h3" style="font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</span>'
@@ -961,7 +961,11 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .g-tiles{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
 .g-tiles>:last-child:nth-child(odd){grid-column:1 / -1}
 .g-cards{grid-template-columns:minmax(0,1fr) !important;gap:14px !important}
-.tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px 14px 50px !important}
+.tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px !important}
+.tila{padding-bottom:50px !important}
+.g-tiles>.tile:last-child:nth-child(odd){flex-direction:row !important;align-items:center !important;gap:14px !important}
+.mj{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr))}
+.mj a{width:100%;justify-content:center}
 .tile>.ci{width:46px !important;height:46px !important}
 .tile>.ci svg{width:25px;height:25px}
 .tile-b{padding:0 !important;gap:6px !important}

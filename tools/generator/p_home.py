@@ -8,7 +8,7 @@ def svc_card(icon, tone, title, text, href='Services.dc.html'):
     """A small tile: the whole card is the link (the round arrow is drawn, not a second link)."""
     arrow = round_arrow(23, 'arrow', '', href, 'position: absolute; right: 16px; bottom: 11px')
     arrow = arrow.replace(f'<a class="ra" href="{href}" aria-label=""', '<span class="ra" aria-hidden="true"', 1).replace('</a>', '</span>')
-    return f'''<a class="card tile" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); color: {INK}; text-decoration: none">
+    return f'''<a class="card tile tila" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); color: {INK}; text-decoration: none">
 {circ(icon, tone, 66)}
 <div class="tile-b" style="display: flex; flex-direction: column; gap: 6px; padding-top: 2px; padding-right: 18px">
 <h3 class="t-h3" style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 17.4px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}; white-space: nowrap">{title}</h3>

@@ -35,8 +35,8 @@ def page():
     cards = ''.join(job_card(t, pl, nt, hr, tone) for (t, pl, nt, hr, src), tone in zip(JOBS, ['sage', 'rust', 'gold', 'forest']))
     s += f'''
 <section id="jobs" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 56px 0 68px">
-<div style="padding-left: 20px">{sec_head('Current Opportunities', 'Join Our Team', '', 31.6)}</div>
-{p('Each posting opens on IIPCT’s hiring page, where you can read the full job description and apply.', 15, INK, 1.45, 'max-width: 640px; margin: 8px 0 0 20px')}
+<div class="p0" style="padding-left: 20px">{sec_head('Current Opportunities', 'Join Our Team', '', 31.6)}</div>
+{p('Each posting opens on IIPCT’s hiring page, where you can read the full job description and apply.', 15, INK, 1.45, 'max-width: 640px; margin: 8px 0 0 20px', 't-b m0')}
 <div class="g-cards gt2" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 18px">{cards}</div>
 </section>
 <div style="margin-top: 30px">'''

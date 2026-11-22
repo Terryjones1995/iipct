@@ -941,7 +941,23 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     align-items: flex-start !important;
     gap: 10px !important;
     min-height: 0 !important;
-    padding: 14px 14px 50px !important;
+    padding: 14px !important;
+  }
+  .tila {
+    padding-bottom: 50px !important;
+  }
+  .g-tiles>.tile:last-child:nth-child(odd) {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px !important;
+  }
+  .mj {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .mj a {
+    width: 100%;
+    justify-content: center;
   }
   .tile>.ci {
     width: 46px !important;
