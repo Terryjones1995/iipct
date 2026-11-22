@@ -14,7 +14,7 @@ const [OUT, PORT, SCEN, ...SITES] = process.argv.slice(2);
 const results = [];
 for (const anchoring of [true, false]) {
   const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', headless: true,
-    args: ['--no-sandbox', '--disable-gpu', `--host-resolver-rules=MAP iipct.pixelelite.ca 127.0.0.1:${PORT},MAP terryjones1995.github.io 127.0.0.1:${PORT}`,
+    args: ['--no-sandbox', '--disable-gpu', `--host-resolver-rules=MAP iipct.taylordunning.ca 127.0.0.1:${PORT},MAP terryjones1995.github.io 127.0.0.1:${PORT}`,
       ...(anchoring ? [] : ['--disable-features=ScrollAnchoring'])] });
   for (const site of SITES) {
     for (const sc of ['missing', 'new']) {

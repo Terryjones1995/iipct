@@ -117,7 +117,7 @@ launch" below).
 
 Until iipct.org moves, the server version of the site (the events staff publish, sign-ups, staff sign-in) runs at a
 test address and this static copy stays the public front end. One constant switches the link between them:
-`LIVE_SITE` in `tools/generator/lib.py` (now `"https://iipct.pixelelite.ca"`).
+`LIVE_SITE` in `tools/generator/lib.py` (now `"https://iipct.taylordunning.ca"`).
 
 - **Set:** Home and Events & Programs load `assets/js/live-events.js` (a copy of `tools/generator/live-events.js`,
   written by the regenerate; never edit the copy). It asks `LIVE_SITE + "/api/public/events"` once (no cookies, at most
