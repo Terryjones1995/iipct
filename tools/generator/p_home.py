@@ -2,7 +2,7 @@
 the events section comes from p_events (IIPCT's own Facebook posts and flyers)."""
 from lib import *
 from p_events import site_hero, home_events, nl_band
-from p_news import AWARD_ALT
+from p_news import AWARD_ALT, tlink
 
 def svc_card(icon, tone, title, text, href='Services.dc.html'):
     return f'''<div class="card" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05)">
@@ -17,8 +17,8 @@ def svc_card(icon, tone, title, text, href='Services.dc.html'):
 def loc_card(name, kind):
     return f'''<div class="card" style="padding: 10px 8px 11px 16px; border-radius: 10px; background: #FCF7EC; border: 1px solid #CFC9A8; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); display: flex; flex-direction: column; gap: 2px">
 <span style="display: flex; align-items: center; gap: 9px">{pin_fill(17)}<span style="font-size: 14.8px; font-weight: 700; color: {HEAD}; line-height: 1.15">{name}</span></span>
-<span style="padding-left: 26px; font-size: 11.1px; color: {INK}; line-height: 1.3">{kind}</span>
-<span style="padding-left: 26px; margin-top: 4px">{textlink('View Location', 'Contact.dc.html', 10.8, 'gap: 8px')}</span>
+<span style="padding-left: 26px; font-size: 12px; color: {INK}; line-height: 1.3">{kind}</span>
+<span style="padding-left: 26px">{tlink('View Location', 'Contact.dc.html', 'arrow', 12.4, 'gap: 7px')}</span>
 </div>'''
 
 def green_band_photo(pic, eyebrow_txt, title, text_html, right_html, style='', photo_w='40.6%', min_h=186, title_size=27.5, text_pad='16px 26px 17px 54px'):
@@ -63,7 +63,7 @@ def page():
                           ('people', 'Who We Serve', 'People who identify as Indigenous, and their<br>families. All our services are status blind.')])
     s += split_section(arc_photo('home-smudge', 'Smudge bowl with sage, sweetgrass braid and a woven blanket on a rock', 'flex: 1; min-height: 281px'),
                        'About IIPCT', 'A Place for<br>Good Medicine', body,
-                       btn('Learn More About Us', 'WhoWeAre.dc.html', 'primary', None, True, 'sm', 'padding: 0 24px; gap: 14px'), feats, 'margin-top: 18px')
+                       btn('Learn More About Us', 'WhoWeAre.dc.html', 'primary', None, True, 'md', 'padding: 0 24px; gap: 14px'), feats, 'margin-top: 18px')
     # Community Highlight: the old site's IPHCC awards post (2025-10-09) and its photo.
     right = (f'<div class="gb-cta" style="position: relative; flex: none; display: flex; align-items: center; gap: 34px; padding: 18px 28px 18px 0">'
              f'{vdiv("78px", "#B8935A", "align-self: center; height: 78px")}{btn("Read the Full Story", "NewsIPHCCAwards.dc.html", "gold", None, True, "md", "padding: 0 20px; gap: 12px")}</div>')

@@ -30,6 +30,11 @@ def meta(date, by='IIPCT'):
             f'<span aria-hidden="true" style="width: 1px; height: 13px; background: #C9B691"></span><span>{by}</span></span>')
 
 
+def tg(text, tone='tan'):
+    """lib.tag() at 12 px, so the label stays readable on phones."""
+    return tag(text, tone).replace('font-size: 10.6px', 'font-size: 12px')
+
+
 def tlink(label, href, icon='arrow', size=14, style=''):
     """A standalone text link, at least 40 px tall so it is easy to tap."""
     icn = ico('external', size, RUST, 1.9) if href.startswith('http') else ico(icon, size + 1, RUST, 1.9)
@@ -41,7 +46,7 @@ def story(date, cat, tone, title, text, href, pic):
     return (f'<article class="card" style="display: flex; flex-direction: column; align-items: flex-start; gap: 11px; padding: 10px 10px 18px; border-radius: 14px; {CARD}">'
             + photo(pic[0], pic[1], 'width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 9px', '', pic[2], pic[3])
             + f'<div style="padding: 4px 12px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px">'
-            f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tag(cat, tone)}{meta(date)}</div>'
+            f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tg(cat, tone)}{meta(date)}</div>'
             f'<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 23px; line-height: 1.12; letter-spacing: -0.018em; color: {HEAD}">{title}</h3>'
             f'<p style="margin: 0; font-size: 14.4px; line-height: 1.5; color: {INK}">{text}</p>'
             f'{tlink("Read the story", href, "arrow", 14)}</div></article>')
@@ -53,6 +58,27 @@ def follow_card():
             f'<h2 style="margin: 0; font-family: {SERIF}; font-weight: 500; font-size: 25px; line-height: 1.1; letter-spacing: -0.012em; color: #FFFFFF">Follow IIPCT</h2>'
             f'<p style="margin: 0; font-size: 13.8px; line-height: 1.48; color: #F4F1E8">New events, flyers and notices go on our Facebook page first.</p>'
             f'<div style="margin-top: 2px">{social_row(dark=True, label="")}</div></div>')
+
+
+# Press coverage: each article opened on 2026-11-22 and checked to be about IIPCT (title, date and link as published).
+PRESS = [
+    ('Napanee Today', 'April 27, 2026', 'Ontario boosts primary care access for thousands in Tyendinaga',
+     'Provincial funding to expand the team’s primary care, allied health support and traditional healing.', 'https://www.napaneetoday.ca/2026/04/27/97117/'),
+    ('Kingstonist', 'April 24, 2026', 'New Deseronto clinic, mobile care expansion aim to connect 2,100 patients in Tyendinaga',
+     'A provincial funding announcement for the Deseronto clinic and mobile care.',
+     'https://www.kingstonist.com/news/new-deseronto-clinic-mobile-care-expansion-aim-to-connect-2100-patients-in-tyendinaga/'),
+    ('Bancroft This Week', 'December 10, 2025', 'Indigenous health clinic offers culturally grounded care in Bancroft',
+     'The opening of the new Bancroft clinic.', 'https://www.bancroftthisweek.com/indigenous-health-clinic-offers-culturally-grounded-care-in-bancroft/'),
+]
+
+
+def in_the_news():
+    rows = ''.join(f'<li style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 0 6px; border-top: 1px solid #E6D9BF">'
+                   f'<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {RUST}">{src} · {d}</span>'
+                   f'<span style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}">{t}</span>'
+                   f'<span style="font-size: 13.4px; line-height: 1.45; color: {INK}">{s}</span>{tlink("Read the article", u, "arrow", 13.4)}</li>'
+                   for src, d, t, s, u in PRESS)
+    return f'<div style="padding: 20px 22px 8px; border-radius: 14px; {CARD}">{h3("In the news", 19)}<ul style="margin: 10px 0 0; padding: 0; list-style: none">{rows}</ul></div>'
 
 
 def aside_news(extra=''):
@@ -135,7 +161,7 @@ def update(u):
     head = html.escape(u['head'], quote=False).replace("'", '’')
     return (f'<article id="{u["id"]}" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; padding: 20px 22px; border-radius: 14px; {CARD}">'
             f'{pic}<div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px">'
-            f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tag(u["cat"], "sage" if u["cat"] in ("Recap", "Award") else "tan" if u["cat"] == "Announcement" else "rust" if u["cat"] == "Health" else "cream")}{meta(dlong(u["date"]))}</div>'
+            f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tg(u["cat"], "sage" if u["cat"] in ("Recap", "Award") else "tan" if u["cat"] == "Announcement" else "rust" if u["cat"] == "Health" else "cream")}{meta(dlong(u["date"]))}</div>'
             f'<h4 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.16; letter-spacing: -0.016em; color: {HEAD}">{head}</h4>'
             f'{body}<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 20px">{links}</div></div></article>')
 
@@ -174,7 +200,7 @@ def news():
     s += sub_hero([HOME, ('News &amp; Updates', None)], 'News &amp; Updates', 'Stories and updates from Tsi Kanonhkhwatsheríyo, including our posts from Facebook.',
                   'evt-featured', 'A canoe on a misty lake at sunrise', 'News', pos='center center')
     s += (f'<div style="{WRAP}; padding: 34px 48px 8px 83px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 34px 48px">'
-          f'<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">{main}</div>{aside_news()}</div>')
+          f'<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">{main}</div>{aside_news(in_the_news())}</div>')
     s += f'<div style="margin-top: 40px">{nl_band()}</div>'
     s += footer()
     return 'IIPCT — News &amp; Updates', s
@@ -189,7 +215,7 @@ BREAST_ALT = 'The event table, with a pink cloth, three pots of flowers, framed 
 def post(title, date, cat, tone, lead, body, other):
     more = link_list('More news', [other, ('All news and updates', 'News.dc.html')])
     s = header('events')
-    s += sub_hero([HOME, NEWS, (cat, None)], title, lead, extra=f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tag(cat, tone)}{meta(date)}</div>',
+    s += sub_hero([HOME, NEWS, (cat, None)], title, lead, extra=f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px">{tg(cat, tone)}{meta(date)}</div>',
                   title_size=42, lead_w=700)
     s += (f'<div style="{WRAP}; padding: 34px 48px 8px 83px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 34px 56px">'
           f'<article style="flex: 999 1 560px; min-width: 0; max-width: 780px; display: flex; flex-direction: column; gap: 22px">{body}'

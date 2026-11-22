@@ -5,7 +5,7 @@ import re
 from datetime import date
 import lib
 from lib import *
-from p_news import update_href, tlink, nl_band
+from p_news import update_href, tlink, nl_band, tg
 
 PHONE = getattr(lib, 'MAIN_PHONE', '(343) 478-0196')
 TEL = getattr(lib, 'MAIN_TEL', 'tel:+13434780196')
@@ -183,7 +183,7 @@ def event_card(e):
     return f'''<article id="{e['anchor']}" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}">
 {date_tile(e['dates'][0])}
 <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
-<div style="display: flex; flex-wrap: wrap; gap: 8px">{tag(e['tag'], e['tone'])}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">{tg(e['tag'], e['tone'])}</div>
 {h3(e['title'], 23)}
 <div style="display: flex; flex-direction: column; gap: 6px">{when}</div>
 {paras}
