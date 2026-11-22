@@ -118,12 +118,12 @@ def when_text(e):
 
 # ------------------------------------------------------------------ shared pieces (Home uses these too)
 def site_hero(path, wh, alt, photo_w, min_h, h1, lead, buttons, obj='center center', h1_size=46, lead_size=18.6, lead_w=600, text_w=680,
-              pad='36px 0 30px 83px', gap=14, lead_lh=1.32, btn_mt=8, lead_weight=450, sq_mt=0, narrow_pos=None):
+              pad='36px 0 30px 83px', gap=14, lead_lh=1.32, btn_mt=8, lead_weight=450, sq_mt=0, narrow_pos=None, narrow_ratio=None):
     """lib.hero() with a real photograph from site-img/ instead of a mock-up crop (same markup and classes).
     narrow_pos: the photo's crop once it sits in its own box (phones and tablets), like lib.hero()'s narrow_pos."""
     np_st, np_cls = (f'; --np: {narrow_pos}', ' hp-np') if narrow_pos else ('', '')
     pic = hero_pic(photo(path, alt, f'position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}{np_st}',
-                         'hero-photo' + np_cls, wh[0], wh[1], lazy=False))
+                         'hero-photo' + np_cls, wh[0], wh[1], lazy=False), narrow_ratio)
     return f'''
 <section class="hero-sec" style="position: relative; min-height: {min_h}px">
 {pic}

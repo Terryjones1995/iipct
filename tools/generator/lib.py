@@ -454,7 +454,7 @@ def action_bar():
 
 # ---------------------------------------------------------------- shared sections
 def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h1_size=46, lead_size=18.6, lead_w=600, text_w=680, pad='36px 0 30px 83px', gap=14, sub_size=27.5, lead_lh=1.32, btn_mt=8, obj='right center', lead_weight=450, extra='', sq_mt=0,
-         site_photo=None, photo_alt='', photo_wh=None, narrow_pos=None):
+         site_photo=None, photo_alt='', photo_wh=None, narrow_pos=None, narrow_ratio=None):
     """photo = a mock-up crop name; or site_photo = a real photograph under site-img/ (with photo_alt and photo_wh=(w, h))."""
     eb = eyebrow(eyebrow_txt, RUST, 'font-size: 12.5px; letter-spacing: 0.14em; margin-bottom: 2px') if eyebrow_txt else ''
     sb = (f'<p class="hsub" style="margin: 0; font-family: {SERIF}; font-weight: 620; font-size: {sub_size}px; line-height: 1.2; letter-spacing: -0.014em; color: {H1C}">{sub}</p>') if sub else ''
@@ -464,7 +464,7 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
     fade_l = 100 - photo_w
     return f'''
 <section class="hero-sec" style="position: relative; min-height: {min_h}px">
-{_hero_img(photo, photo_w, obj, site_photo, photo_alt, photo_wh, narrow_pos)}
+{_hero_img(photo, photo_w, obj, site_photo, photo_alt, photo_wh, narrow_pos, narrow_ratio)}
 <div class="hero-fade" aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {fade_l}%; width: 7%; background: linear-gradient(90deg, #FBF3E8 0%, rgba(251, 243, 232, 0) 100%)"></div>
 {branch(168, '#A5B195', 0.58, 'left: -84px; top: -12px; transform: rotate(8deg)')}
 {branch(100, '#ADB89E', 0.5, 'left: -40px; bottom: -30px; transform: rotate(-12deg) scaleX(-1)')}
@@ -479,10 +479,11 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
 {hero_horizon()}
 </section>'''
 
-def hero_pic(img_html):
+def hero_pic(img_html, ratio=None):
     """The hero photograph's box. Takes no part in the desktop layout (display: contents, the image is placed by its
     own inline style); on phones and tablets it becomes the box with the arched corner and the gold arc line."""
-    return f'<div class="hero-pic">{img_html}</div>'
+    st = f' style="--nr: {ratio}"' if ratio else ''       # tablets: the box's shape when it sits beside the text (default 5 / 4)
+    return f'<div class="hero-pic"{st}>{img_html}</div>'
 
 def hero_call():
     """The hero's quiet second action on phones: the main line as a text link (shown under 600 px only)."""
@@ -490,7 +491,7 @@ def hero_call():
             f'font-size: 15px; font-weight: 700; color: {RUST}; text-decoration: none">{ico("phone", 18, RUST, 1.8)}'
             f'<span style="text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px">Call {MAIN_PHONE}</span></a>')
 
-def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None):
+def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None, narrow_ratio=None):
     """narrow_pos: object-position once the photo stacks above the text (tablets and phones), when the default 60% 30% crops it badly."""
     st = f'position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}'
     cls = 'hero-photo'
@@ -498,8 +499,8 @@ def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None):
         st += f'; --np: {narrow_pos}'; cls += ' hp-np'
     if site_photo:
         w, h = wh or (None, None)
-        return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False))
-    return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">')
+        return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False), narrow_ratio)
+    return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">', narrow_ratio)
 
 def rust_band(icon, title, sub, right, style='', sub_size=13.1):
     return f'''
@@ -799,6 +800,8 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 .hz-sun{animation:hz-rise 1.6s cubic-bezier(.2,.7,.2,1) .25s both}
 .sh-photo{position:relative}
 .sh-photo img{position:relative;z-index:1;margin-top:5px;width:calc(100% - 6px) !important;border:none !important;border-radius:0 !important;border-top-right-radius:58% 46% !important}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #10291F;outline-offset:2px;box-shadow:0 0 0 5px #F2D49A}
+.pg h1,.pg h2,.pg h3,.pg h4,.hsub{text-wrap:balance}
 .t-b{font-size:16px !important;line-height:1.55 !important}
 .t-s{font-size:14.5px !important;line-height:1.45 !important}
 .crumb{font-size:14px !important}
@@ -896,21 +899,11 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .lcg{grid-template-columns:minmax(0,1fr) !important}
 }
 @container pg (min-width:600px) and (max-width:1099px){
-.hero-sec{display:grid !important;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
-.hero-sec>.w{grid-column:1;grid-row:1;align-self:center;padding-right:28px !important}
-.hero-pic{grid-column:2;grid-row:1;margin:22px 32px 4px 0;min-height:300px}
-.hero-hz{grid-column:1 / -1;grid-row:2;margin-top:8px}
-.hero-txt{padding:24px 0 20px !important}
 .hero-txt .h1{font-size:clamp(34px,4.4vw,44px) !important;line-height:1.05 !important}
 .hero-txt .lead{font-size:17px !important;line-height:1.45 !important}
 .hz-t{display:block}
-.sh-row{flex-wrap:nowrap !important;align-items:center !important;gap:32px !important}
-.sh-txt{flex:1 1 0 !important}
-.sh-photo{flex:0 0 42% !important}
-.sh-photo img{aspect-ratio:4 / 3 !important}
-.sh .h1{font-size:40px !important}
 .h2{font-size:30px !important}
-.t-b{max-width:68ch}
+#main :is(p,li,dd,figcaption){max-width:60ch !important}
 #main>*{margin-top:48px !important}
 #main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
 #main>.hero-sec+*,#main>.sh+*{margin-top:28px !important}
@@ -927,12 +920,46 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .gt3>:nth-child(3n+1):last-child{grid-column:3 / span 2}
 }
 @container pg (min-width:760px) and (max-width:1099px){
+.hero-sec{display:grid !important;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.hero-sec>.w{grid-column:1;grid-row:1;align-self:center;padding-right:28px !important}
+.hero-pic{grid-column:2;grid-row:1;align-self:center;margin:24px 32px 8px 0;aspect-ratio:var(--nr,5 / 4)}
+.hero-hz{grid-column:1 / -1;grid-row:2;margin-top:8px}
+.hero-txt{padding:24px 0 20px !important}
+.sh-row{flex-wrap:nowrap !important;align-items:center !important;gap:32px !important}
+.sh-txt{flex:1 1 0 !important}
+.sh-photo{flex:0 0 42% !important}
+.sh-photo img{aspect-ratio:4 / 3 !important}
+.sh .h1{font-size:40px !important}
+.tila .tile-b{padding-right:50px !important}
+.g-steps{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+.g-steps>*{flex-direction:column;gap:12px !important}
+.aside>:last-child:nth-child(odd){grid-column:1 / -1}
+.aside>:last-child:nth-child(odd) ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}
 .sp-photo{flex:0 0 40% !important}
 .sp-txt{flex:1 1 0 !important;padding:6px 0 10px 28px !important}
 .sp-feat{flex:1 1 100% !important;padding:12px 0 0 !important}
 .cu-col{flex:1 1 0 !important}
 .cu-col+.cu-col{border-left:1px solid #E6D6BC}
 .gt2w{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:16px !important}
+}
+@container pg (min-width:600px) and (max-width:759px){
+.hero-sec{display:flex !important;flex-direction:column;padding-top:12px}
+.hero-pic{margin-right:20px;aspect-ratio:16 / 9}
+.hero-txt{padding:20px 0 8px !important;gap:11px !important}
+.sh-row{padding-top:14px !important;padding-bottom:20px !important;gap:0 !important}
+.sh-photo{order:-1;flex:1 1 100% !important;max-width:none !important;margin:0 0 18px -20px;width:calc(100% + 20px)}
+.sh-photo img{aspect-ratio:16 / 9 !important}
+.sh .h1{font-size:36px !important}
+}
+@container pg (max-width:759px){
+.g-steps{grid-template-columns:minmax(0,1fr) !important}
+}
+@container pg (min-width:600px) and (max-width:899px){
+.ft-row{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+.ft-contact{grid-column:auto !important}
+}
+@container pg (min-width:900px) and (max-width:1099px){
+.ft-row{grid-template-columns:repeat(4,minmax(0,1fr)) !important}
 }
 @container pg (max-width:759px){
 .tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px !important}
@@ -969,7 +996,10 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .sh-photo img{aspect-ratio:16 / 9 !important}
 .sh-txt{gap:10px !important}
 .t-h3{font-size:20px !important;line-height:1.2 !important}
-.t-h3l{font-size:22px !important}
+.t-h3l{font-size:22px !important;line-height:1.15 !important}
+.t-h3t{font-size:17.5px !important;line-height:1.2 !important}
+.t-hs{font-size:15.5px !important;line-height:1.3 !important}
+.h2{font-size:26px !important;line-height:1.1 !important}
 .tl{font-size:15px !important}
 .crumb .tl{font-size:14px !important}
 .g-tiles{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
@@ -1012,6 +1042,19 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .jl{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px !important}
 .jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important}
 .toc ul{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px !important}
+.btn{font-size:15px !important;white-space:normal !important;line-height:1.25 !important;text-align:center;padding-top:9px !important;padding-bottom:9px !important}
+.g-tm{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
+.tm{padding:12px !important;gap:10px !important}
+.tm-h{flex-direction:column;align-items:flex-start !important;gap:10px !important}
+.tm-h>:first-child{width:76px !important;height:76px !important;border-radius:10px !important;font-size:25px !important}
+.tm-n{font-size:17.5px !important;line-height:1.16 !important}
+.tm-d{margin-top:auto}
+.tm-d>summary{font-size:14.5px !important;line-height:1.3 !important;padding:10px 0 !important}
+.g-tm>.tm:last-child:nth-child(odd),.g-tm>.tm:has(>details[open]){grid-column:1 / -1}
+.g-tm>.tm:last-child:nth-child(odd)>.tm-h,.g-tm>.tm:has(>details[open])>.tm-h{flex-direction:row;align-items:center !important;gap:14px !important}
+.lt{flex-direction:row !important}
+.lt-band{flex:none;width:54px;height:auto !important}
+.mfoot{position:sticky;bottom:-18px;margin:8px -16px 0 !important;padding:12px 16px 18px !important;background:#FFFDF8;box-shadow:0 -10px 14px -10px rgba(40,30,10,.25)}
 }
 @container pg (max-width:374px){
 .hero-txt .h1,.sh .h1{font-size:29px !important}
@@ -1019,7 +1062,11 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .tl{white-space:normal !important}
 .mb-a{font-size:12.5px}
 }
+@media (max-width:1119px){
+html{scroll-padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+}
 @media (max-height:499px){
+html{scroll-padding-bottom:0}
 .mbar{display:none !important}
 .ft-dark{padding-bottom:0 !important}
 .hd-book{display:inline-flex !important}
@@ -1028,7 +1075,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .mbar{display:none !important}
 }
 @media (prefers-reduced-motion:reduce){
-*,*::before,*::after{animation:none !important;transition:none !important}
+.hz-sun{animation:none !important}
 }
 """
 
@@ -1050,7 +1097,7 @@ BASE_CSS = ('body{margin:0;background:#FBF4EA}\n*,*::before,*::after{box-sizing:
             '.fl{transition:color .15s}.fl:hover{color:#E3BE74 !important}.faq:hover{border-color:#C8A15A !important;background:#FFF8EA !important}\n'
             '.toc a:hover{background:#F1E7D3}\n'
             'input:focus,textarea:focus,select:focus{outline:2px solid #C8A15A;outline-offset:1px}'
-            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #10291F;outline-offset:2px;box-shadow:0 0 0 5px #F2D49A}\n' + RESP_CSS)
+            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #C8A15A;outline-offset:2px}\n' + RESP_CSS)
 
 _TAG = re.compile(r'<[a-zA-Z][^<>]*>')
 def _hook(m):
@@ -1101,11 +1148,38 @@ def _role(m):
         return t.replace(cm.group(0), f' class="{cm.group(1)} {role}"', 1)
     return re.sub(r'^<(\w+)', rf'<\1 class="{role}"', t, count=1)
 
+HEAD_ROLES = {'h1', 'h2', 't-h3', 't-h3l', 't-h3t', 't-hs', 'tm-n', 'hsub'}
+def _head(m):
+    """One heading scale on phones (sizes in RESP_CSS, under 600 px; wider screens keep the inline sizes): display h1 31,
+    section h2 26, panel and featured-card titles t-h3l 22, card titles t-h3 20, tile and feature titles t-h3t 17.5,
+    small sans headings t-hs 15.5. Helpers set h1, h2 and t-h3 themselves; any other h2/h3/h4 gets its step here: a serif
+    h2 without the section class sits in a band or a panel (t-h3l); a serif h3/h4 from 23 px is a featured title (t-h3l),
+    from 17 px a card title (t-h3), smaller a feature title (t-h3t); a sans heading is a small heading (t-hs)."""
+    t = m.group(0)
+    tag = t[1:3]
+    if tag not in ('h2', 'h3', 'h4') or t[3:4] not in (' ', '>') or ' style="' not in t:
+        return t
+    cm = re.search(r' class="([^"]*)"', t)
+    if cm and HEAD_ROLES & set(cm.group(1).split()):
+        return t
+    st = t.split(' style="', 1)[1]
+    f = _FS.findall(st)
+    if not f:
+        return t
+    size = float(f[-1])
+    if 'Newsreader' in st:
+        role = 't-h3l' if (tag == 'h2' or size >= 23) else ('t-h3' if size >= 17 else 't-h3t')
+    else:
+        role = 't-hs'
+    if cm:
+        return t.replace(cm.group(0), f' class="{cm.group(1)} {role}"', 1)
+    return re.sub(r'^<(\w+)', rf'<\1 class="{role}"', t, count=1)
+
 _TXT = re.compile(r'(<[a-zA-Z/!][^<>]*>)')
-_PHONE = re.compile(r'\(\d{3}\) \d{3}-\d{4}(?: ext\. \d+)?|\d{3}-\d{3}-\d{4}(?: ext\. \d+)?')
+_PHONE = re.compile(r'\(\d{3}\) \d{3}-\d{4}(?: ext\. \d+)?|\d{3}-\d{3}-\d{4}(?: ext\. \d+)?|\b[A-Z]\d[A-Z] \d[A-Z]\d\b')
 _TELEXT = re.compile(r'(<a [^>]*href="tel:[^"]*"[^>]*>[^<]*</a>)( ext\. \d+)')
 def _nobreak(body):
-    """Phone numbers and "ext. 213" never split across lines (class nb, nowrap under 1100 px only, so wide layouts are
+    """Phone numbers, "ext. 213" and postal codes (K0K 1X0) never split across lines (class nb, nowrap under 1100 px only, so wide layouts are
     unchanged). Only text between tags is touched, never attributes or scripts. Email addresses are left as they are:
     an element inside an address changes how the browser measures it, and wide layouts must not change; under 1100 px
     mailto links may break anywhere if one does not fit on its line (RESP_CSS)."""
@@ -1124,10 +1198,12 @@ def _nobreak(body):
 
 def responsive(body):
     """Hooks the narrow-width rules need: every page-width wrapper gets class w, text set below 12 px gets class fsu
-    (lifted to 12 px on phones, except the logo lockup, class lk), body copy gets a type role (_role), phone numbers get
+    (lifted to 12 px on phones, except the logo lockup, class lk), headings get a step of the phone scale (_head), body
+    copy gets a type role (_role), phone numbers get
     their no-break rule (_nobreak), and forced line breaks keep a space when they are switched off."""
     body = _TAG.sub(_hook, body)
     body = _TAG.sub(_fsu, body)
+    body = _TAG.sub(_head, body)
     body = _TAG.sub(_role, body)
     body = _nobreak(body)
     return body.replace('<br>', ' <br>')

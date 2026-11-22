@@ -155,7 +155,7 @@ def tb():
         icon_item('syringe', 'rust', 'The skin test', 'Testing is done with a skin test (the Mantoux test). A small amount of solution is injected under a few layers of skin, creating a bleb (a small raised bump).'),
         icon_item('clock', 'gold', 'Come back in 48 to 72 hours', 'You will have to return to the clinic after 48 to 72 hours, so we can check for induration: an area of skin that has become hard.'),
         icon_item('review', 'sage', 'Reading the result', 'For the test to be positive, the induration must be 10 mm or greater.'),
-    ], 250)
+    ], 250, 16, '', 'g-steps')
     positive = panel(h3('What a positive test means', 19)
                      + prose('A positive test shows that a person has the TB germs. A physical exam, chest x-ray and sputum samples are then collected and checked for TB disease. '
                              'A positive test does not mean the person has active TB: it could be latent TB.', size=14.4, style='margin-top: 8px'), pad='20px 22px 22px')
@@ -186,7 +186,7 @@ def retino():
         icon_item('user', 'sage', 'Done by a trained nurse', 'A trained nurse examines the retina (the back of the eye) using non-invasive techniques.'),
         icon_item('clock', 'gold', 'Quick and safe', 'Screening is quick, safe and usually does not need any special preparation.'),
         icon_item('review', 'rust', 'Results and follow-up', 'Your results are reviewed with you. Follow-up care or referrals are provided if needed.'),
-    ], 250)
+    ], 250, 16, '', 'g-steps')
     prog = panel(prose('This service is part of the Eye Health Screening Initiative (EHSI), delivered in partnership with Vision Loss Rehabilitation Canada (VLRC) and the Indigenous Diabetes Health Circle (IDHC).',
                        'The program was developed with guidance from local Indigenous partners, so that care is accessible, culturally safe and responsive to community needs. '
                        'IIPCT is honoured to be one of the participating communities offering this service.', size=14.6, style='margin-bottom: 10px'))

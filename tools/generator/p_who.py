@@ -75,8 +75,8 @@ def location_tile(key, aid, label, tone):
     count = sum(1 for m in TEAM if m[1] == key)
     link = lambda t, h: (f'<a class="tl" href="{h}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 13.8px; font-weight: 600; '
                          f'color: {RUST}; text-decoration: none"><span style="text-decoration: underline; text-underline-offset: 3px">{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
-    return (f'<article style="display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}">'
-            f'<div aria-hidden="true" style="height: 58px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 20%, {hi} 0%, {lo} 85%)">'
+    return (f'<article class="lt" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}">'
+            f'<div class="lt-band" aria-hidden="true" style="height: 58px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 20%, {hi} 0%, {lo} 85%)">'
             f'{pin_fill(28, "#FCF2DF", lo)}</div>'
             f'<div style="flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 16px 10px">'
             f'<h3 style="margin: 0 0 4px; font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.15; letter-spacing: -0.014em; color: {HEAD}">{label}</h3>'

@@ -56,7 +56,8 @@ def page():
     s += site_hero('home/hero-team-thunder-bay.jpg', (1600, 840),
                    'Five IIPCT team members standing together outdoors beside a pond, two of them in ribbon skirts',
                    59.8, 366, 'Wholistic Care<br>Blending Medicine,<br>Culture, and Wellness',
-                   'Inclusive healthcare with a focus on Indigenous<br>communities across southeastern Ontario.', buttons, obj='center 40%')
+                   'Inclusive healthcare with a focus on Indigenous<br>communities across southeastern Ontario.', buttons, obj='center 40%',
+                   narrow_pos='22% 40%')
     # Service cards: old site services page (four key programs).
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 16px">

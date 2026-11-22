@@ -149,14 +149,14 @@ def member_card(person):
     more = ''
     if bio:
         paras = ''.join(f'<p style="margin: 0; font-size: 14px; line-height: 1.55; color: {INK}">{t}</p>' for t in bio)
-        more = (f'<details style="border-top: 1px solid #E6D9BF">'
+        more = (f'<details class="tm-d" style="border-top: 1px solid #E6D9BF">'
                 f'<summary style="padding: 10px 2px; min-height: 40px; line-height: 20px; font-size: 14px; font-weight: 600; color: {RUST}; cursor: pointer">Read more about {short}</summary>'
                 f'<div style="display: flex; flex-direction: column; gap: 10px; padding: 2px 2px 6px">{paras}</div></details>')
-    return (f'<article id="{a}" style="scroll-margin-top: 16px; display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: 14px; {CARD}">'
-            f'<div style="display: flex; align-items: center; gap: 16px">{portrait(person)}'
+    return (f'<article id="{a}" class="tm" style="scroll-margin-top: 16px; display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: 14px; {CARD}">'
+            f'<div class="tm-h" style="display: flex; align-items: center; gap: 16px">{portrait(person)}'
             f'<div style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px">'
-            f'<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.014em; color: {HEAD}; overflow-wrap: anywhere">{name}</h3>'
-            f'<p style="margin: 0; font-size: 14px; line-height: 1.35; color: {INK}; overflow-wrap: anywhere">{role}</p>{lv}</div></div>{more}</article>')
+            f'<h3 class="tm-n" style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.014em; color: {HEAD}; overflow-wrap: anywhere">{name}</h3>'
+            f'<p class="t-s" style="margin: 0; font-size: 14px; line-height: 1.35; color: {INK}; overflow-wrap: anywhere">{role}</p>{lv}</div></div>{more}</article>')
 
 def jump_links():
     pill = (f'display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; background: #FFFDF8; '
@@ -178,7 +178,7 @@ def page():
                  f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-bottom: 10px; border-bottom: 1px solid {GOLDL}">'
                  + swap(h2(label, 27, HEAD, 'flex: 1 1 auto', 'h2'), '<h2 ', f'<h2 id="{aid}-h" ')
                  + f'<span style="font-size: 13.6px; font-weight: 600; color: {MUTED}">{len(people)} {"person" if len(people) == 1 else "people"}</span>{where}</div>'
-                 f'<div class="g-cards gt2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px">'
+                 f'<div class="g-tm gt2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px">'
                  + ''.join(member_card(m) for m in people) + '</div></section>')
     s += f'''
 <div style="{WRAP}; padding: 30px 48px 8px 83px; display: flex; flex-direction: column; gap: 40px">
