@@ -29,8 +29,8 @@
   var own = Object.prototype.hasOwnProperty;
 
   // ------------------------------------------------------------------ ask once
-  var settled = false, ctl = window.AbortController ? new AbortController() : null;
-  var timer = setTimeout(function () { settled = true; if (ctl) ctl.abort(); }, WAIT_MS);
+  var settled = false, applying = false, ctl = window.AbortController ? new AbortController() : null;
+  var timer = setTimeout(function () { settled = true; if (ctl) ctl.abort(); done('unchanged'); }, WAIT_MS);
   fetch(FEED, { method: 'GET', credentials: 'omit', mode: 'cors', redirect: 'error', signal: ctl ? ctl.signal : undefined })
     .then(function (res) {
       if (settled || !res.ok || !/^application\/json\b/i.test(res.headers.get('content-type') || '')) throw new Error('feed');
@@ -43,13 +43,23 @@
       settled = true;
       clearTimeout(timer);
       var events = check(JSON.parse(body));
-      if (events.length) apply(events);
+      if (!events.length) return done('unchanged');
+      applying = true;
+      apply(events);
+      done('shown');
     })
     .catch(function () {
       settled = true;
       clearTimeout(timer);
       if (ctl) ctl.abort();
+      done(applying ? 'error' : 'unchanged');
     });
+
+  /** What happened, on <html data-live-events>, for anyone checking (and the tests): shown, unchanged or error. */
+  function done(state) {
+    var root = document.documentElement;
+    if (!root.hasAttribute('data-live-events')) root.setAttribute('data-live-events', state);
+  }
 
   /** The answer's text, read up to MAX_BYTES (anything longer is refused part way, not downloaded whole). */
   function readCapped(res) {

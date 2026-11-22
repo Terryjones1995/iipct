@@ -12,6 +12,8 @@
 #     starting at "/", and a CNAME file naming iipct.org so GitHub Pages serves that domain. With nginx instead,
 #     write it with --launch --dry-run <dir> and serve that folder.
 #   Once gh-pages carries a CNAME file (the live site), an ordinary test publish refuses to replace it.
+#   --launch also refuses while the pages read their events from a test server (LIVE_SITE in tools/generator/lib.py,
+#   see live_events_check below).
 #
 # What it does
 #   1. Takes the site files from <commit> (an allow-list): the pages (*.html at the top level), assets/,
@@ -51,6 +53,32 @@ PREVIEW_URL="https://terryjones1995.github.io/iipct/"      # the test site's add
 MANIFEST="tools/redirects/redirect-pages.txt"
 LIVE_HOST="${REAL_URL#https://}"; LIVE_HOST="${LIVE_HOST%/}"   # iipct.org, for the CNAME file
 
+# >>> live_events_check (tools/live-events/test-launch-check.sh runs exactly this block)
+# A live copy never ships the events reader pointed at a test server. While LIVE_SITE in tools/generator/lib.py is set,
+# Home and Events & Programs read the events staff publish on the server at that address (assets/js/live-events.js).
+# That is for the GitHub copy until the domain moves; when iipct.org moves to the server, this static copy is retired.
+# Allowed: LIVE_SITE empty, or the real address itself. Anything else (a test address) refuses --launch.
+live_events_check() {   # <folder holding the commit's files>
+  local dir="$1" real="${REAL_URL%/}" line site shipped addr
+  line="$(grep -m 1 -E '^LIVE_SITE *=' "$dir/tools/generator/lib.py" 2>/dev/null || true)"
+  site="$(printf '%s\n' "$line" | sed -nE "s/^LIVE_SITE *= *['\"]([^'\"]*)['\"] *(#.*)?$/\1/p")"
+  if [ -n "$line" ] && [ -z "$site" ] && ! printf '%s\n' "$line" | grep -qE "^LIVE_SITE *= *(''|\"\") *(#.*)?$"; then
+    echo "error: --launch refused: cannot read LIVE_SITE in tools/generator/lib.py ($line)" >&2
+    return 1
+  fi
+  shipped="$(grep -ohE 'src="assets/js/live-events\.js" data-site="[^"]*"' "$dir"/*.html 2>/dev/null | sed -E 's/.*data-site="([^"]*)"/\1/' | sort -u || true)"
+  for addr in $site $shipped; do
+    if [ "$addr" != "$real" ]; then
+      echo "error: --launch refused: the pages read their events from $addr (LIVE_SITE in tools/generator/lib.py), a test address." >&2
+      echo "       That reader is for the GitHub copy until the domain moves; once iipct.org moves to the server this static copy is" >&2
+      echo "       retired, so a live copy must never ship it pointed at a test server. Set LIVE_SITE = \"\" and regenerate first." >&2
+      return 1
+    fi
+  done
+  return 0
+}
+# <<< live_events_check
+
 cd "$(git rev-parse --show-toplevel)"
 SHA="$(git rev-parse --verify "$REF^{commit}")"
 SHORT="$(git rev-parse --short "$SHA")"
@@ -61,6 +89,7 @@ mkdir "$TMP/all" "$TMP/site"
 
 # 1. the site files of that commit (an allow-list: anything new in the repo stays private until it is added here)
 git archive "$SHA" | tar -x -C "$TMP/all"
+if [ -n "$LAUNCH" ]; then live_events_check "$TMP/all" || exit 1; fi
 cp "$TMP"/all/*.html "$TMP/site/"
 cp -R "$TMP/all/assets" "$TMP/site/assets"
 for f in sitemap.xml robots.txt; do
