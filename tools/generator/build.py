@@ -11,6 +11,7 @@ MOCK = '/home/claude/iipct_src/zip/IIPCT_Full_Desktop_Rebrand_Package/01_Desktop
 PAGES = {
  'home': ('p_home', 'page', 'Main.dc.html', '01_Home.png', 'Home'),
  'who': ('p_who', 'page', 'WhoWeAre.dc.html', '02_Who_We_Are.png', 'Who We Are'),
+ 'team': ('p_team', 'page', 'Team.dc.html', None, 'Our Team'),
  'services': ('p_services', 'page', 'Services.dc.html', '03_Services.png', 'Services'),
  'events': ('p_events', 'page', 'Events.dc.html', '04_Events_Programs.png', 'Events & Programs'),
  'contact': ('p_contact', 'page', 'Contact.dc.html', '05_Contact_Us.png', 'Contact Us'),

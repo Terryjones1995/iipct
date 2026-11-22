@@ -256,7 +256,7 @@ NAV = [('Home', 'Main.dc.html', False, 'home'), ('Who We Are', 'WhoWeAre.dc.html
 
 NEWSLETTER_URL = 'https://mailchi.mp/iipct/iipct-newsletter'
 MENUS = {
- 'who': [('About IIPCT', 'WhoWeAre.dc.html', 0), ('Career Opportunities', 'Careers.dc.html', 0), ('Board of Directors', 'Board.dc.html', 0), ('Best Practice Spotlight (BPSO)', 'BPSO.dc.html', 0)],
+ 'who': [('About IIPCT', 'WhoWeAre.dc.html', 0), ('Our Team', 'Team.dc.html', 0), ('Career Opportunities', 'Careers.dc.html', 0), ('Board of Directors', 'Board.dc.html', 0), ('Best Practice Spotlight (BPSO)', 'BPSO.dc.html', 0)],
  'services': [('All Services', 'Services.dc.html', 0), ('Primary Medical Care', 'PrimaryCare.dc.html', 0), ('Immunization Program', 'Immunization.dc.html', 1),
               ('Well Baby &amp; Well Child', 'WellBaby.dc.html', 1), ('TB Testing', 'TBTesting.dc.html', 1), ('Advanced Foot Care', 'FootCare.dc.html', 1),
               ('Diabetic Retinopathy Screening', 'Retinopathy.dc.html', 1), ('Outreach &amp; Community Support', 'Outreach.dc.html', 1)],

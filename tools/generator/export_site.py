@@ -12,7 +12,7 @@ ns = {}
 exec(src[src.index('PAGES = {'):src.index("FRAMES = {")], ns)
 PAGES = ns['PAGES']
 
-NAMES = {'Main.dc.html': 'index.html', 'WhoWeAre.dc.html': 'who-we-are.html', 'Services.dc.html': 'services.html', 'Events.dc.html': 'events-programs.html',
+NAMES = {'Main.dc.html': 'index.html', 'WhoWeAre.dc.html': 'who-we-are.html', 'Team.dc.html': 'our-team.html', 'Services.dc.html': 'services.html', 'Events.dc.html': 'events-programs.html',
          'Contact.dc.html': 'contact.html', 'Careers.dc.html': 'careers.html', 'Board.dc.html': 'board-of-directors.html', 'BPSO.dc.html': 'bpso.html',
          'PrimaryCare.dc.html': 'primary-medical-care.html', 'Immunization.dc.html': 'immunization.html', 'WellBaby.dc.html': 'well-baby-well-child.html',
          'TBTesting.dc.html': 'tb-testing.html', 'FootCare.dc.html': 'advanced-foot-care.html', 'Retinopathy.dc.html': 'diabetic-retinopathy-screening.html',
@@ -22,6 +22,7 @@ NAMES = {'Main.dc.html': 'index.html', 'WhoWeAre.dc.html': 'who-we-are.html', 'S
 DESC = {
  'home': 'Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT): Indigenous-centred primary care for individuals, families and communities across southeastern Ontario.',
  'who': 'Who IIPCT is: an Indigenous-led, community-grounded primary care team serving Indigenous people and families across southeastern Ontario.',
+ 'team': 'The people of IIPCT: physicians, nurse practitioners, nurses, traditional healing, mental health and community staff at each clinic.',
  'services': 'IIPCT services: cultural services, primary medical care, mental health services and health support services.',
  'events': 'Events and programs from IIPCT: wellness, learning and community connection rooted in culture and care.',
  'contact': 'Contact IIPCT: phone, email and clinic locations in Tyendinaga, Deseronto, Kingston, Bancroft and Shannonville.',
