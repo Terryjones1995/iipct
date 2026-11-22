@@ -1,121 +1,164 @@
+"""Who We Are. Vision, Mission, Core Values, Who We Serve and the service area in the old iipct.org page's own words
+(content/old-site/pages/who-we-are.md); the people come from p_team.TEAM. Real photographs only: the staff group photo
+that headed the old page, the old service-area map and the staff's own portraits."""
 from lib import *
+from p_team import TEAM, LOCATIONS, TEAM_PAGE, swap, real_hero
 
-def info_card(icon, tone, title, text):
-    return f'''<div class="card" style="position: relative; display: flex; align-items: flex-start; gap: 22px; min-height: 140px; padding: 22px 16px 18px 24px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05)">
-{circ(icon, tone, 90, 44, 1.3)}
-<div style="display: flex; flex-direction: column; gap: 7px; padding-top: 1px">
-<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}">{title}</h3>
-<p style="margin: 0; padding-right: 30px; font-size: 14.4px; line-height: 1.3; color: {INK}">{text}</p>
-</div>
-{round_arrow(26, 'arrow', title, '#', 'position: absolute; right: 14px; bottom: 12px')}
-</div>'''
+def value_list(items, ordered=False):
+    tag_ = 'ol' if ordered else 'ul'
+    pad = 'padding-left: 22px' if ordered else 'padding-left: 18px'
+    rows = ''.join(f'<li style="padding-left: 2px">{t}</li>' for t in items)
+    return f'<{tag_} style="margin: 0; {pad}; display: flex; flex-direction: column; gap: 7px; font-size: 14.6px; line-height: 1.5; color: {INK}">{rows}</{tag_}>'
 
-def pillar(icon, color, title, text, first=False):
-    bl = '' if first else 'border-left: 1px solid #E6D6BC; '
-    return f'''<div style="{bl}padding: 4px 8px 4px 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px">
-{ico(icon, 42, color, 1.25)}
-<h3 style="margin: 2px 0 0; font-family: {SERIF}; font-weight: 700; font-size: 16.6px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</h3>
-<p style="margin: 0; font-size: 13.6px; line-height: 1.32; color: {INK}">{text}</p>
-</div>'''
+def value_head(icon, tone, title):
+    return (f'<div style="display: flex; align-items: center; gap: 16px">{circ(icon, tone, 58, 29, 1.4)}'
+            f'<h2 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 23px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}">{title}</h2></div>')
 
-def team_card(photo, role):
-    return f'''<div class="card" style="position: relative; display: flex; align-items: stretch; min-height: 104px; border-radius: 14px; background: #FCF6EC; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); overflow: hidden">
-<div style="flex: 0 0 41%; position: relative">{img(photo, 'Placeholder portrait', 'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%')}</div>
-<div style="flex: 1; min-width: 0; padding: 22px 12px 12px 22px; display: flex; flex-direction: column; gap: 5px">
-<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}">[Staff name]</h3>
-<p style="margin: 0; font-size: 14.2px; line-height: 1.25; color: {INK}">{role}</p>
-</div>
-{round_arrow(24, 'arrow', role, '#', 'position: absolute; right: 13px; bottom: 12px')}
-</div>'''
+def value_intro(text):
+    return f'<p style="margin: 0; font-size: 14.6px; line-height: 1.5; color: {INK}">{text}</p>'
 
-def clinic_card(photo, title, text):
-    return f'''<article class="card" style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 0 22px; padding: 7px; border-radius: 14px; background: #FCF6EC; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05)">
-<div class="fbs mh-s" style="flex: 0 0 46.5%; min-width: min(240px, 100%); position: relative; min-height: 137px">{img(photo, 'Placeholder clinic exterior', 'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 8px')}</div>
-<div class="pads2" style="flex: 1 1 220px; min-width: 0; padding: 12px 14px 11px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px">
-<h3 style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: {SERIF}; font-weight: 700; font-size: 18px; line-height: 1.1; letter-spacing: -0.02em; color: {HEAD}; white-space: nowrap">{pin_fill(18)}<span>{title}</span></h3>
-<p style="margin: 0; font-size: 12.6px; line-height: 1.3; color: {INK}">{text}</p>
-{btn('Learn More', 'Contact.dc.html', 'sage', None, True, 'xs', 'margin-top: 3px; padding: 0 22px; gap: 12px; font-size: 12.6px')}
-</div>
-</article>'''
+def value_card(icon, tone, title, intro, items, ordered=False, flex='flex: 1 1 420px'):
+    return (f'<div style="{flex}; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; border-radius: 14px; {CARD}">'
+            + value_head(icon, tone, title) + value_intro(intro) + value_list(items, ordered) + '</div>')
 
-COMMUNITIES = ['Tyendinaga Mohawk Territory', 'Napanee', 'Deseronto', 'Belleville', 'Trenton', 'Picton', 'Kingston', 'Perth', 'Gananoque', 'Smiths Falls', 'Madoc', 'North Hastings']
+def values_band(icon, tone, title, intro, items):
+    """The same card laid out across the full width (heading left, text right), for the short Core Values under Vision and Mission."""
+    return (f'<div style="flex: 1 1 100%; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 44px; padding: 20px 22px 22px; border-radius: 14px; {CARD}">'
+            f'<div style="flex: 0 1 300px; min-width: 0">{value_head(icon, tone, title)}</div>'
+            f'<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px">{value_intro(intro)}{value_list(items)}</div></div>')
+
+# Six people in the strip, so its rows are always full: six across when each card gets about 140 px, three across when
+# that no longer fits, two across on phones (each value is "a share of the row, less the gaps"; the 999 multiplier
+# switches between them at the container widths 920 px and 470 px; the 1 px keeps rounding from pushing a card down).
+STRIP_BASIS = ('clamp(calc((100% - 80px) / 6 - 1px), calc((920px - 100%) * 999), '
+               'clamp(calc((100% - 32px) / 3 - 1px), calc((470px - 100%) * 999), calc((100% - 16px) / 2 - 1px)))')
+
+WHERE = ('<ul style="margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; list-style: disc">'
+         '<li><strong>Geographically</strong> – care that sees no boundaries and is status blind;</li>'
+         '<li><strong>Emotionally</strong> – care that is provided in a safe place defined by the client;</li>'
+         '<li><strong>Culturally</strong> – care that respects wherever clients are in their spiritual journey and cultural identity;</li>'
+         '<li><strong>Physically</strong> – care that treats all medical needs and addresses complexity of care.</li></ul>')
+VISION = ['All Indigenous people receive friendly, warm care “where they are”:' + WHERE,
+          'Generosity of time and skills is shared freely.',
+          'Traditional ways of knowing and being are valued and celebrated.']
+MISSION = ['Provides excellence in wholistic primary healthcare;', 'Equally values traditional healing and clinical supports;',
+           'Connects Indigenous people to regional services and professionals whom they can trust;',
+           'Engages with all Indigenous communities across the region; and',
+           'Shapes care and services based on the needs determined by the people/communities in our regions.']
+VALUES = ['Everyone who walks in the door is treated as family;', 'Community builds community.']
+SERVE = ('Our priority population are all the people who identify as Indigenous as well as their families, in our regions, with a special focus on '
+         'people at risk for and living with chronic diseases as well as people living with mental health conditions and/or addictions. '
+         'All our services are status blind.')
+# sub-regions and communities exactly as the old page lists them ('Smiths Falls' corrected from the old 'Smith Falls')
+REGIONS = [('Rural Frontenac, Lennox and Addington', ['Tyendinaga Mohawk Territory (MBQ)', 'Napanee', 'Deseronto', 'Ardoch Algonquin First Nation']),
+           ('Rural Hastings', ['Kijicho Manito Madaouskarini Algonquin First Nation', 'Madoc', 'North Hastings']),
+           ('Quinte', ['Belleville', 'Trenton', 'Picton']),
+           ('Kingston', ['City of Kingston']),
+           ('Leeds, Lanark, and Grenville', ['Perth', 'Gananoque', 'Smiths Falls'])]
+STRIP = [1, 2, 15, 29, 39, 43]   # leadership, then one person per location in the order of the tiles below: Tera Osborne,
+                                 # Kiowa Sager, Andrew Alkenbrack, Kristine Canty, Jessi Baker, Dr. Ryan McConnell
+LOC_NAME = {k: label for k, aid, label in LOCATIONS}
+LOC_ID = {k: aid for k, aid, label in LOCATIONS}
+
+def strip_card(m):
+    num, sec, a, name, short, role, leave, photo_file, bio = m
+    where = '' if sec == 'leadership' else f'<span style="font-size: 13px; line-height: 1.3; color: {MUTED}">{LOC_NAME[sec]}</span>'
+    # the photo's alt is empty: the link text right under it already names the person
+    return (f'<a class="card" href="{TEAM_PAGE}#{a}" style="flex: 1 1 {STRIP_BASIS}; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
+            + photo(f'people/{photo_file}.jpg', '', f'width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid {LINE}', w=600, h=600)
+            + f'<span style="display: flex; flex-direction: column; gap: 4px; padding: 13px 14px 15px; overflow-wrap: break-word; hyphens: auto">'
+            f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 18px; line-height: 1.12; letter-spacing: -0.014em; color: {HEAD}">{name}</span>'
+            f'<span style="font-size: 14px; line-height: 1.3; color: {INK}">{role}</span>{where}</span></a>')
+
+def location_tile(key, aid, label, tone):
+    hi, lo = CIRC[tone]
+    count = sum(1 for m in TEAM if m[1] == key)
+    link = lambda t, h: (f'<a class="tl" href="{h}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 13.8px; font-weight: 600; '
+                         f'color: {RUST}; text-decoration: none"><span style="text-decoration: underline; text-underline-offset: 3px">{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
+    return (f'<article style="display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}">'
+            f'<div aria-hidden="true" style="height: 58px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 20%, {hi} 0%, {lo} 85%)">'
+            f'{pin_fill(28, "#FCF2DF", lo)}</div>'
+            f'<div style="flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 16px 10px">'
+            f'<h3 style="margin: 0 0 4px; font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.15; letter-spacing: -0.014em; color: {HEAD}">{label}</h3>'
+            f'{link(f"Meet the team ({count})", f"{TEAM_PAGE}#{aid}")}{link("Address, phone and hours", "Contact.dc.html")}</div></article>')
 
 def page():
-    buttons = btn('Schedule Your Visit', 'Contact.dc.html', 'primary', 'calendar-check') + btn('Book an Appointment', 'Contact.dc.html', 'outline', 'calendar-dot', False)
+    buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + btn('Meet Our Team', 'Team.dc.html', 'outline', 'people', False)
     s = header('who')
-    s += hero('hero-who', 59.7, 345, 'Who We Are',
-              'IIPCT is an Indigenous-led, community-grounded primary care<br>team providing comprehensive, culturally safe, and wholistic<br>care for Indigenous people and families across southeastern Ontario.',
-              buttons, sub='Indigenous-centred,<br>wholistic care for healthy<br>people, families, and communities', h1_size=53, lead_size=15.3, lead_lh=1.4, sub_size=28.2,
-              pad='20px 0 30px 83px', gap=8, btn_mt=4, obj='center center')
+    h = hero('hero-who', 59.7, 345, 'Who We Are',
+             'Tsi Kanonhkhwatsheríyo offers inclusive healthcare with a focus on Indigenous communities. Our team provides accessible support across multiple disciplines, ensuring respectful and coordinated care for all who visit our clinic.',
+             buttons, sub='Meet the experts combining traditional knowledge and modern healthcare.', h1_size=53, lead_size=15.8, lead_lh=1.45, sub_size=26,
+             lead_w=560, pad='24px 0 30px 83px', gap=10, btn_mt=6, obj='center 35%')
+    s += real_hero(h, 'hero-who', 'about/team-group.jpg', 'IIPCT staff together in a group photo, standing and seated on a sofa')
+    # Who We Serve: lib's arc photo, with the mock-up smudge-bowl crop swapped for the old Who We Are page's own tipi photograph
+    tipi = arc_photo('who-smudge', '', 'flex: 1; min-height: 259px')
+    tipi = swap(tipi, f'src="{BLOB["who-smudge"]}" alt=""',
+                'src="/_site/about/tipi-sunset.jpg" alt="A white canvas tipi with its door open and a fire burning inside, in a grassy field at sunset" '
+                'width="926" height="1100" loading="lazy" decoding="async"')
+    tipi = swap(tipi, 'object-fit: cover;', 'object-fit: cover; object-position: center 70%;')   # keeps the open door and the fire in the crop
+    # Vision and Mission side by side (about the same length, so neither card is left half empty), Core Values across the full width below
     s += f'''
-<section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 16px">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 16px">
-{info_card('sprout', 'sage', 'Our Vision', 'Thriving Indigenous individuals, families, and communities in southeastern Ontario, supported by culturally safe, wholistic primary care.')}
-{info_card('heart', 'rust', 'Our Mission', 'To provide Indigenous-centred, wholistic, team-based primary care that honours culture, community, and self-determination.')}
-{info_card('people', 'gold', 'Our Core Values', 'Culture &nbsp;•&nbsp; Respect &nbsp;•&nbsp; Relationships<br>Wholistic Wellness &nbsp;•&nbsp; Equity<br>Community &nbsp;•&nbsp; Self-Determination')}
+<section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 18px">
+<div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 16px">
+{value_card('sprout', 'sage', 'Our Vision', 'We envision vibrant communities where:', VISION, True, 'flex: 1.15 1 520px')}
+{value_card('heart', 'rust', 'Our Mission', 'To accomplish this vision, the regional team:', MISSION)}
+{values_band('people', 'gold', 'Our Core Values', 'To accomplish our vision and mission, the regional team upholds these values:', VALUES)}
+</div>
+</section>
+<section style="position: relative; {WRAP}; margin-top: 22px">
+{branch(104, '#B5BFA6', 0.5, 'right: -58px; bottom: -22px; transform: rotate(-14deg)')}
+<div style="position: relative; display: flex; flex-wrap: wrap; align-items: stretch">
+<div class="sp-photo" style="flex: 0 0 29.9%; min-width: min(300px, 100%); display: flex">{tipi}</div>
+<div class="sp-txt" style="flex: 1 1 380px; min-width: 0; padding: 14px 48px 20px 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 11px; justify-content: center">
+{eyebrow('Who We Serve')}
+{h2('Indigenous People and Families<br>Across Southeastern Ontario', 32)}
+{p(SERVE, 15.8, INK, 1.5, 'max-width: 720px')}
+<div style="margin-top: 6px">{btn('Learn More About Our Services', 'Services.dc.html', 'primary', None, True, 'sm', 'padding: 0 24px; gap: 14px; min-height: 40px')}</div>
+</div>
 </div>
 </section>'''
-    body = p('We provide primary care and wellness supports for Indigenous people of all ages — from children and youth to adults and Elders — including individuals, families, and community members living in the urban, rural, and remote communities we serve.', 15.8, INK, 1.25, 'max-width: 500px')
-    feats = feature_list([('feather', 'Culturally Safe Care', 'Rooted in Indigenous knowledge,<br>traditions, and ways of being.'),
-                          ('infinity', 'Wholistic Supports', 'Care that honours the whole person —<br>mind, body, spirit, and emotions.'),
-                          ('people', 'For All Life Stages', 'Primary care and wellness supports for<br>children, youth, adults, and Elders.')], 44, 17.4, 16, 13.4)
-    s += split_section(arc_photo('who-smudge', 'Smudge bowl with smoke rising, resting on a rock beside sweetgrass', 'flex: 1; min-height: 259px'),
-                       'Who We Serve', 'Indigenous People and Families<br>Across Southeastern Ontario', body,
-                       btn('Learn More About Our Services', 'Services.dc.html', 'primary', None, True, 'sm', 'padding: 0 24px; gap: 14px'), feats, 'margin-top: 14px', 32, '29.9%')
-    dots = ''.join(f'<li style="display: flex; align-items: center; gap: 13px"><span aria-hidden="true" style="flex: none; width: 9px; height: 9px; border-radius: 50%; background: #C89B4E; border: 2px solid #E8D1A4"></span><span>{c}</span></li>' for c in COMMUNITIES)
+    regions = ''.join(f'<li style="display: flex; flex-direction: column; gap: 4px"><h4 style="margin: 0; font-size: 13.6px; font-weight: 700; line-height: 1.25; color: {HEAD}">{r}</h4>'
+                      f'<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">'
+                      + ''.join(f'<li style="display: flex; align-items: baseline; gap: 9px; font-size: 13.4px; line-height: 1.3"><span aria-hidden="true" style="flex: none; width: 7px; height: 7px; border-radius: 50%; background: #C89B4E; transform: translateY(-1px)"></span><span>{c}</span></li>' for c in cs)
+                      + '</ul></li>' for r, cs in REGIONS)
     s += f'''
-<section style="{WRAP}; padding: 0 37px 0 46px; margin-top: 7px">
-<div class="mapc" style="position: relative; overflow: hidden; border-radius: 16px; min-height: 287px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; box-shadow: 0 1px 2px rgba(20, 40, 25, 0.20)">
-<div class="map-bg" aria-hidden="true" style="position: absolute; top: 0; bottom: 0; right: 0; width: 24%; background: #E4E0C7"></div>
-{img('who-map', 'Illustrated map of southeastern Ontario with pins on the communities IIPCT serves', 'position: absolute; top: 0; left: 21.7%; width: 61.6%; height: 100%; object-fit: cover; object-position: left center; mask-image: linear-gradient(90deg, #000 95%, transparent 100%)').replace('<img ', '<img class="map-img" ')}
-<div class="map-curve" aria-hidden="true" style="position: absolute; top: -12%; bottom: -12%; left: -6%; width: 44%; border-radius: 0 50% 50% 0 / 0 50% 50% 0; background: #153526"></div>
-<div class="map-txt" style="position: relative; width: 33%; min-width: min(320px, 100%); padding: 26px 0 26px 39px; display: flex; flex-direction: column; align-items: flex-start; gap: 9px">
+<section style="{WRAP}; padding: 0 37px 0 46px; margin-top: 18px">
+<div style="position: relative; overflow: hidden; border-radius: 16px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; box-shadow: 0 1px 2px rgba(20, 40, 25, 0.20); padding: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 22px 26px">
+{branch(118, '#2C5A40', 0.9, 'left: 6px; bottom: -92px; transform: rotate(-24deg)')}
+<div class="pads2" style="position: relative; flex: 1 1 280px; min-width: 0; padding: 4px 0 4px 17px; display: flex; flex-direction: column; align-items: flex-start; gap: 9px">
 {eyebrow('Our Service Area', '#E3BE74')}
 {h2('Caring Across<br>Southeastern Ontario', 33, '#FFFFFF', 'font-weight: 500')}
-{p('IIPCT provides primary care and wellness services to Indigenous people and communities across southeastern Ontario, including the communities and areas shown on the map.', 15.8, '#F4F1E8', 1.33, 'max-width: 372px; margin-top: 3px')}
-{btn('Explore Our Service Area', '#', 'gold', None, True, 'sm', 'margin-top: 10px; padding: 0 22px; gap: 12px; min-height: 41px; font-size: 14px')}
+{p('We serve five sub-regions. The map shows where they are, and the list names the communities in each.', 15.4, '#F4F1E8', 1.45, 'max-width: 340px; margin-top: 3px')}
 </div>
-<div class="map-list" style="position: absolute; top: 10px; bottom: 12px; right: 9px; width: 16.6%; min-width: 222px; padding: 12px 8px 10px 14px; border-radius: 12px; background: #FBF4E8; border: 1px solid #CDBF9C; box-shadow: 0 1px 3px rgba(20, 35, 20, 0.28); color: {INK}; display: flex; flex-direction: column; gap: 9px">
-<h3 style="margin: 0; display: flex; align-items: center; gap: 7px; font-size: 11.4px; font-weight: 700; color: {HEAD}; white-space: nowrap">{pin_fill(15)}<span>Communities &amp; Areas We Serve</span></h3>
-<ul style="margin: 0; padding: 0 0 0 4px; list-style: none; display: flex; flex-direction: column; gap: 2.6px; font-size: 12.7px; line-height: 1.2">{dots}</ul>
+<figure style="position: relative; flex: 1.3 1 340px; min-width: 0; margin: 0; padding: 10px; border-radius: 12px; background: #FBF4E8; border: 1px solid #CDBF9C">
+{photo('about/service-area-map.png', 'Map of the five sub-regions IIPCT serves: Rural Hastings, Rural Frontenac, Lennox and Addington, Lanark, Leeds and Grenville, Quinte, and Kingston', 'width: 100%; height: auto; margin: 0 auto; max-width: 640px', w=640, h=471)}
+</figure>
+<div style="position: relative; flex: 1 1 300px; min-width: 0; padding: 16px 16px 16px 18px; border-radius: 12px; background: #FBF4E8; border: 1px solid #CDBF9C; color: {INK}">
+<h3 style="margin: 0 0 10px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: {HEAD}">{pin_fill(16)}<span>Communities &amp; Areas We Serve</span></h3>
+<ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px 18px">{regions}</ul>
 </div>
 </div>
+</section>'''
+    strip = ''.join(strip_card(next(m for m in TEAM if m[0] == n)) for n in STRIP)
+    tiles = ''.join(location_tile(k, aid, label, tone) for (k, aid, label), tone in zip(LOCATIONS[1:], ['sage', 'rust', 'forest', 'gold', 'sage']))
+    s += f'''
+<section id="team" style="{WRAP}; padding: 30px 55px 0 66px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 26px">
+{h2('Meet Our Team', 30)}
+<span class="hide-s" aria-hidden="true" style="flex: 1; height: 1px; background: {GOLDL}"></span>
+{textlink('Meet the full team', 'Team.dc.html', 14.4, 'min-height: 40px')}
+</div>
+{p('Our team is made up of highly trained and culturally safe professionals eager to provide care to the communities we serve.', 15.4, INK, 1.45, 'max-width: 720px; margin-top: 6px')}
+<div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 16px">{strip}</div>
 </section>
-<section style="{WRAP}; padding: 15px 55px 0 72px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 30px">
-<div style="flex: 0 0 372px; max-width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 8px">
-{eyebrow('Our People')}
-{h2('Our Leadership &amp; Team', 31)}
-{p('IIPCT is guided by Indigenous leadership and a skilled, multidisciplinary team of health and wellness professionals who work together to provide comprehensive, culturally safe care.', 14.6, INK, 1.3, 'max-width: 372px')}
-{btn('Meet Our Team', '#team', 'primary', None, True, 'sm', 'margin-top: 4px; padding: 0 24px; gap: 14px')}
-</div>
-{vdiv('120px')}
-<div style="flex: 1 1 560px; min-width: 0; padding: 14px 10px 16px 6px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px 0">
-{pillar('people', RUSTI, 'Indigenous<br>Leadership', 'Community-grounded<br>direction and oversight.', True)}
-{pillar('leaf', '#4F6B48', 'Interprofessional Team', 'A collaborative team<br>of primary care, allied<br>health, and wellness<br>providers.')}
-{pillar('heart', RUSTI, 'Culturally Informed', 'Care that integrates<br>Indigenous knowledge,<br>values, and healing practices.')}
-{pillar('sunrise', '#B5632F', 'Community Focused', 'Working in partnership<br>with individuals, families,<br>and communities.')}
-</div>
+<section style="{WRAP}; padding: 30px 55px 0 66px">
+{eyebrow('Our Clinics &amp; Teams')}
+{h2('Five Locations', 30, HEAD, 'margin-top: 6px')}
+<div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px">{tiles}</div>
 </section>
-<section id="team" style="{WRAP}; padding: 20px 55px 0 66px">
-<div style="display: flex; align-items: center; gap: 26px">
-{h2('Meet Our Team', 25.4)}
-<span aria-hidden="true" style="flex: 1; height: 1px; background: {GOLDL}"></span>
-{textlink('View the Full Team', '#', 14.4)}
-</div>
-<div style="margin-top: 13px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 22px">
-{team_card('who-team-1', 'Family Physician')}{team_card('who-team-2', 'Nurse Practitioner')}{team_card('who-team-3', 'Registered Nurse')}{team_card('who-team-4', 'Social Worker')}
-</div>
-</section>
-<section style="{WRAP}; padding: 18px 55px 0 57px">
-{eyebrow('Our Clinics &amp; Teams', RUST, 'padding-left: 15px')}
-<div style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 22px">
-{clinic_card('who-clinic-tyendinaga', 'Tyendinaga Clinic', 'Our primary care clinic in the Tyendinaga Mohawk Territory provides comprehensive, Indigenous-centred care for individuals and families in the community and surrounding areas.')}
-{clinic_card('who-clinic-shannonville', 'Shannonville Allied Health Team', 'A team-based clinic offering a range of allied health and wellness services, including mental health, chronic disease supports, health promotion, and more.')}
-</div>
-</section>
-<div style="margin-top: 16px">'''
-    right = (btn('Schedule Your Visit', 'Contact.dc.html', 'primary', 'calendar-check', True, 'md', 'border-color: #C8A15A; min-width: 226px')
-             + btn('Book an Appointment', 'Contact.dc.html', 'light', 'calendar-dot', False, 'md', 'min-width: 236px; font-size: 15px'))
+<div style="margin-top: 26px">'''
+    right = (btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check', True, 'md', 'border-color: #C8A15A; min-width: 226px')
+             + btn('Contact Us', 'Contact.dc.html', 'light', 'phone', False, 'md', 'min-width: 200px; font-size: 15px'))
     s += rust_band('mail', 'Connect with IIPCT', 'Have questions about who we are, our team, or how to access care? We’re here to help.', right, 'padding-right: 100px', 14.3) + '</div>'
     s += footer()
     return 'IIPCT — Who We Are', s
