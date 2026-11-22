@@ -59,7 +59,7 @@ def legal(crumb, title, lead, sections, draft):
     s += draft_bar(draft)
     s += sub_hero([HOME, (crumb, None)], title, lead, extra=updated, title_size=44, lead_w=620)
     s += f'''<div style="{WRAP}; padding: 34px 48px 48px 83px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 30px 56px">
-<nav class="toc" aria-label="On this page" style="flex: 1 1 230px; max-width: 280px; padding: 16px 12px 12px; border-radius: 14px; {CARD}">
+<nav class="toc fbs" aria-label="On this page" style="flex: 1 1 230px; max-width: 280px; padding: 16px 12px 12px; border-radius: 14px; {CARD}">
 <span style="display: block; padding: 0 12px 8px; font-size: 11.6px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: {RUST}">On this page</span>
 <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1px">{toc}</ul>
 </nav>
@@ -112,8 +112,8 @@ def accessibility():
         ('disruptions', 'Service disruptions', P('If something you rely on is temporarily unavailable at a clinic, we’ll post a notice here and at the location, with the reason and how long we expect it to last.')),
         ('feedback', 'Feedback', P('Tell us where you ran into a barrier, or how we can do better.')
          + f'<div style="display: flex; flex-wrap: wrap; gap: 10px 28px; font-size: 15px; font-weight: 700">'
-           f'<a class="tl" href="tel:+13434780196" style="display: inline-flex; align-items: center; gap: 10px; color: {HEAD}; text-decoration: none">{ico("phone", 19, RUSTI, 1.7)}<span>(343) 478-0196</span></a>'
-           f'<a class="tl" href="mailto:info@iipct.com" style="display: inline-flex; align-items: center; gap: 10px; color: {HEAD}; text-decoration: none">{ico("mail", 20, RUSTI, 1.7)}<span>info@iipct.com</span></a></div>'
+           f'<a class="tl" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 10px; color: {HEAD}; text-decoration: none">{ico("phone", 19, RUSTI, 1.7)}<span>{MAIN_PHONE}</span></a>'
+           f'<a class="tl" href="mailto:{GENERAL_EMAIL}" style="display: inline-flex; align-items: center; gap: 10px; color: {HEAD}; text-decoration: none">{ico("mail", 20, RUSTI, 1.7)}<span>{GENERAL_EMAIL}</span></a></div>'
          + P(f'Accessibility contact: {ph("name and role")}.')),
         ('policies', 'Policies and training', P(ph('How to request IIPCT’s accessibility policies, and a line on staff training'))),
     ]

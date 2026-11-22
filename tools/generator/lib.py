@@ -693,7 +693,7 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .fl{display:inline-flex !important;align-items:center;min-height:40px !important}
 .ft-col{gap:2px !important}
 .tl,.cl,a[href^="tel:"],a[href^="mailto:"]{min-height:40px !important}
-.tl{min-width:40px}
+nav[aria-label="Breadcrumb"] a{min-width:40px}
 .tl:not([style*="display"]):not(p .tl):not(li .tl),a[href^="tel:"]:not([style*="display"]):not(p a):not(li a),a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a){display:inline-flex;align-items:center}
 .btn{min-height:40px !important}
 .ra{width:40px !important;height:40px !important}

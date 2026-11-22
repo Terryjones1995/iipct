@@ -212,7 +212,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .tl, .cl, a[href^="tel:"], a[href^="mailto:"] {
     min-height: 40px !important;
   }
-  .tl {
+  nav[aria-label="Breadcrumb"] a {
     min-width: 40px;
   }
   .tl:not([style*="display"]):not(p .tl):not(li .tl), a[href^="tel:"]:not([style*="display"]):not(p a):not(li a), a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a) {

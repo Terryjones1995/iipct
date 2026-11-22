@@ -82,7 +82,7 @@ def page():
               f'One phone number reaches all {len(LOCATIONS)} of our locations. Call, then press the number for the location you need. You can also email the location directly.',
               buttons, eyebrow_txt='Contact Us', h1_size=45, lead_size=16.4, lead_lh=1.34, lead_w=520, pad='24px 0 40px 84px', gap=10, btn_mt=6, sq_mt=-1, obj='center 80%',
               site_photo='contact/deseronto-clinic.jpg', photo_wh=(872, 606), narrow_pos='50% 85%',
-              photo_alt='The Deseronto Clinic at 331 Dundas Street: a one-storey building of stone and blue siding, with a ramp to the front door')
+              photo_alt=f'The Deseronto Clinic at {BY_KEY["deseronto"]["street"]}: a one-storey building of stone and blue siding, with a ramp to the front door')
     w = WAITLIST
     wl = BY_KEY[w['location']]
     s += f'''
