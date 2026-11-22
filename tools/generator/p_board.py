@@ -23,7 +23,7 @@ def tile(name, n, size=96):
 def member_card(name, role, n):
     rl = (f'<span style="font-size: 15px; font-style: italic; line-height: 1.2; color: {INK}; padding-bottom: 1px; border-bottom: 1.5px solid #C79A3D">{role}</span>'
           if role else '')
-    return (f'<article style="display: flex; align-items: center; gap: 18px; padding: 14px; border-radius: 14px; {CARD}">{tile(name, n)}'
+    return (f'<article class="tile bt" style="display: flex; align-items: center; gap: 18px; padding: 14px; border-radius: 14px; {CARD}">{tile(name, n)}'
             f'<div style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px">'
             f'<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.1; letter-spacing: -0.02em; color: {HEAD}">{name}</h3>{rl}</div></article>')
 
@@ -35,7 +35,7 @@ def page():
              'Meet the members of the Board of Directors of Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT).', buttons,
              h1_size=50.6, lead_size=19, lead_lh=1.4, lead_w=520, pad='40px 0 38px 86px', gap=11, btn_mt=10, sq_mt=2, obj='center 60%')
     s += real_hero(h, 'hero-board', 'about/field-sunset.jpg')
-    grid = lambda cards: f'<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px">{cards}</div>'
+    grid = lambda cards: f'<div class="g-tiles gt3" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px">{cards}</div>'
     s += f'''
 <section id="members" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 62px 0 60px; display: flex; flex-direction: column; gap: 18px">
 <div style="padding-left: 4px">{sec_head('Our Board', 'Officers', '', 32)}</div>

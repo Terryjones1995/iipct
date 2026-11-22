@@ -5,21 +5,27 @@ from p_events import site_hero, home_events, nl_band
 from p_news import AWARD_ALT, tlink
 
 def svc_card(icon, tone, title, text, href='Services.dc.html'):
-    return f'''<div class="card" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05)">
+    """A small tile: the whole card is the link (the round arrow is drawn, not a second link)."""
+    arrow = round_arrow(23, 'arrow', '', href, 'position: absolute; right: 16px; bottom: 11px')
+    arrow = arrow.replace(f'<a class="ra" href="{href}" aria-label=""', '<span class="ra" aria-hidden="true"', 1).replace('</a>', '</span>')
+    return f'''<a class="card tile tila" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); color: {INK}; text-decoration: none">
 {circ(icon, tone, 66)}
-<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 2px; padding-right: 18px">
-<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 17.4px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}; white-space: nowrap">{title}</h3>
-<p style="margin: 0; font-size: 12.3px; line-height: 1.5; letter-spacing: -0.016em; color: {INK}">{text}</p>
+<div class="tile-b" style="display: flex; flex-direction: column; gap: 6px; padding-top: 2px; padding-right: 18px">
+<h3 class="t-h3" style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 17.4px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}; white-space: nowrap">{title}</h3>
+<p class="t-s" style="margin: 0; font-size: 12.3px; line-height: 1.5; letter-spacing: -0.016em; color: {INK}">{text}</p>
 </div>
-{round_arrow(23, 'arrow', 'Learn about ' + title, href, 'position: absolute; right: 16px; bottom: 11px')}
-</div>'''
+{arrow}
+</a>'''
 
-def loc_card(name, kind):
-    return f'''<div class="card" style="padding: 10px 8px 11px 16px; border-radius: 10px; background: #FCF7EC; border: 1px solid #CFC9A8; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); display: flex; flex-direction: column; gap: 2px">
-<span style="display: flex; align-items: center; gap: 9px">{pin_fill(17)}<span style="font-size: 14.8px; font-weight: 700; color: {HEAD}; line-height: 1.15">{name}</span></span>
-<span style="padding-left: 26px; font-size: 12px; color: {INK}; line-height: 1.3">{kind}</span>
-<span style="padding-left: 26px">{tlink('View Location', 'Contact.dc.html', 'arrow', 12.4, 'gap: 7px')}</span>
-</div>'''
+def loc_card(name, kind, key):
+    """A small tile: the whole card is the link to that location on the Contact page ("View Location" is drawn as a link)."""
+    more = tlink('View Location', 'Contact.dc.html', 'arrow', 12.4, 'gap: 7px')
+    more = more.replace('<a class="tl" href="Contact.dc.html"', '<span class="tl"', 1).replace('</a>', '</span>')
+    return f'''<a class="card" href="Contact.dc.html#{key}" style="padding: 10px 8px 11px 16px; border-radius: 10px; background: #FCF7EC; border: 1px solid #CFC9A8; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); display: flex; flex-direction: column; gap: 2px; color: {INK}; text-decoration: none">
+<span style="display: flex; align-items: center; gap: 9px">{pin_fill(17)}<span class="t-b" style="font-size: 14.8px; font-weight: 700; color: {HEAD}; line-height: 1.15">{name}</span></span>
+<span class="t-s" style="padding-left: 26px; font-size: 12px; color: {INK}; line-height: 1.3">{kind}</span>
+<span style="padding-left: 26px">{more}</span>
+</a>'''
 
 def green_band_photo(pic, eyebrow_txt, title, text_html, right_html, style='', photo_w='40.6%', min_h=186, title_size=27.5, text_pad='16px 26px 17px 54px'):
     """lib.green_band() with a real photograph (pic = lib.photo(...) markup) instead of a mock-up crop.
@@ -42,17 +48,20 @@ def green_band_photo(pic, eyebrow_txt, title, text_html, right_html, style='', p
 </section>'''
 
 def page():
-    buttons = btn('Schedule Your Visit', 'Contact.dc.html', 'primary', 'calendar-check') + btn('Book an Appointment', 'Contact.dc.html', 'outline', 'calendar-dot', False)
+    # On phones the second button (same destination as the first) gives way to the main line as a quiet link.
+    buttons = (btn('Schedule Your Visit', 'Contact.dc.html', 'primary', 'calendar-check')
+               + btn('Book an Appointment', 'Contact.dc.html', 'outline', 'calendar-dot', False, cls='hide-p') + hero_call())
     s = header('home')
     # Hero: IIPCT team members at the BPSO gathering in Thunder Bay (old site, BPSO page photo); see site-img/SOURCES.md.
     s += site_hero('home/hero-team-thunder-bay.jpg', (1600, 840),
                    'Five IIPCT team members standing together outdoors beside a pond, two of them in ribbon skirts',
                    59.8, 366, 'Wholistic Care<br>Blending Medicine,<br>Culture, and Wellness',
-                   'Inclusive healthcare with a focus on Indigenous<br>communities across southeastern Ontario.', buttons, obj='center 40%')
+                   'Inclusive healthcare with a focus on Indigenous<br>communities across southeastern Ontario.', buttons, obj='center 40%',
+                   narrow_pos='22% 40%')
     # Service cards: old site services page (four key programs).
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 16px">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
+<div class="g-tiles gt2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
 {svc_card('bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support, and cultural learning.')}
 {svc_card('stethoscope', 'rust', 'Primary Medical Care', 'Physicians, nurse practitioners, and nurses, with partner supports.')}
 {svc_card('lotus', 'sage', 'Mental Health Services', 'Short-term support for our adult clients, 18 and older.')}
@@ -86,8 +95,8 @@ def page():
 {p('Caring for communities across southeastern Ontario.', 15.6, INK, 1.3, 'max-width: 240px')}
 </div>
 {vdiv('70px')}
-<div style="flex: 1 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px">
-{loc_card('Tyendinaga', 'Clinic')}{loc_card('Deseronto', 'Clinic')}{loc_card('Kingston', 'Clinic')}{loc_card('Bancroft', 'Clinic')}{loc_card('Shannonville', 'Office (Allied Health Team)')}
+<div class="g-tiles gt3 loc-g" style="flex: 1 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px">
+{loc_card('Tyendinaga', 'Clinic', 'tyendinaga')}{loc_card('Deseronto', 'Clinic', 'deseronto')}{loc_card('Kingston', 'Clinic', 'kingston')}{loc_card('Bancroft', 'Clinic', 'bancroft')}{loc_card('Shannonville', 'Office (Allied Health Team)', 'shannonville')}
 </div>
 </div>
 </section>

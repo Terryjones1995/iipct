@@ -177,7 +177,7 @@ def updates_section():
                    f'border: 1px solid #C9B691; font-size: 13.4px; font-weight: 600; color: {HEAD}; text-decoration: none; white-space: nowrap">{label(m)}</a></li>' for m, _ in months)
     out = (f'<p style="margin: 0; max-width: 700px; font-size: 14.8px; line-height: 1.55; color: {INK}">Posts from IIPCT’s Facebook page from April to November 2026, newest first, in their own words. '
            f'Older posts could not be collected. Closures and posts shared from other organizations are not repeated here.</p>'
-           f'<nav aria-label="Updates by month"><ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px">{jump}</ul></nav>')
+           f'<nav aria-label="Updates by month"><ul class="mj" style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px">{jump}</ul></nav>')
     for m, us in months:
         out += (f'<div id="m-{m}" style="scroll-margin-top: 16px; display: flex; flex-direction: column; gap: 14px; padding-top: 8px">'
                 f'<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 24px; line-height: 1.1; color: {HEAD}">{label(m)}</h3>'
@@ -194,7 +194,7 @@ def news():
         story('October 9, 2025', 'Community health', 'sage', 'Together We’re Stronger: Breast Cancer Screening Event',
               '19 mammograms were completed, with our partners the Mohawks of the Bay of Quinte, the South East Indigenous Cancer Program and Kingston Health Sciences Centre.', BREAST,
               ('news/breast-screening-event-table-640.jpg', BREAST_ALT, 640, 426)),
-    ], 300, 18)
+    ], 300, 18, '', 'g-cards gt2')
     main = section('Stories', stories, 'From IIPCT') + section('Updates', f'<div style="display: flex; flex-direction: column; gap: 14px">{updates_section()}</div>', 'From our Facebook page')
     s = header('events')
     s += sub_hero([HOME, ('News &amp; Updates', None)], 'News &amp; Updates', 'Stories and updates from Tsi Kanonhkhwatsheríyo, including our posts from Facebook.',

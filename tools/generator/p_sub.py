@@ -36,15 +36,15 @@ def page_hero(trail, title, lead, pic='', **kw):
         s = s.replace(medal_box, '<div class="hide-t" aria-hidden="true" style="flex: 0 0 200px')
     if not pic:
         return s
-    tail = '\n\n</div>\n</section>'
-    assert s.endswith(tail), 'lib.sub_hero() markup changed: update p_sub.page_hero()'
-    return s[:-len(tail)] + '\n' + pic + '\n</div>\n</section>'
+    tail = '\n\n</div>\n<div class="hero-hz"'
+    assert s.count(tail) == 1, 'lib.sub_hero() markup changed: update p_sub.page_hero()'
+    return s.replace(tail, '\n' + pic + '\n</div>\n<div class="hero-hz"', 1)
 
 def related(current):
-    tiles = [(f'<a class="card" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; border-radius: 12px; {CARD}; '
+    tiles = [(f'<a class="card t-s" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; border-radius: 12px; {CARD}; '
               f'font-size: 14px; font-weight: 600; line-height: 1.25; color: {HEAD}; text-decoration: none"><span>{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
              for t, h in [PC] + [(t, h) for t, h in SUBS if h != current]]
-    return section('More in primary care', grid(tiles, 230, 12), size=23)
+    return section('More in primary care', grid(tiles, 230, 12, '', 'g-tiles gt3'), size=23)
 
 def shell(file, crumb, title, lead, main, aside_title='Book this service', pic='', **hero_kw):
     buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + btn('Contact a Clinic', 'Contact.dc.html', 'outline', 'phone', False)
@@ -80,7 +80,7 @@ def primary():
         link_card('foot', 'sage', 'Advanced Foot Care', 'Assessment and care from nurses with specialized certification.', 'FootCare.dc.html'),
         link_card('eye', 'rust', 'Diabetic Retinopathy Screening', 'Monthly eye screening clinics for people with diabetes.', 'Retinopathy.dc.html'),
         link_card('map', 'gold', 'Outreach &amp; Community Support', 'Screening and support out in the community.', 'Outreach.dc.html'),
-    ], 330)
+    ], 330, 16, '', 'g-tiles gt2')
     col = lambda t, items: (f'<div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 10px">{sub_title(t)}{bullets(items, "check", "#1F4A2B", 14.2, 8)}</div>')
     blood = panel(f'<div style="display: flex; align-items: center; gap: 16px">{circ("droplet", "rust", 52, 27, 1.5)}{h3("Blood draws (phlebotomy)", 21)}</div>'
                   + prose('A nurse or doctor uses a needle to take blood from a vein, usually in your arm. The blood is sent to a lab to help diagnose conditions.', size=14.4, style='margin-top: 14px')
@@ -155,7 +155,7 @@ def tb():
         icon_item('syringe', 'rust', 'The skin test', 'Testing is done with a skin test (the Mantoux test). A small amount of solution is injected under a few layers of skin, creating a bleb (a small raised bump).'),
         icon_item('clock', 'gold', 'Come back in 48 to 72 hours', 'You will have to return to the clinic after 48 to 72 hours, so we can check for induration: an area of skin that has become hard.'),
         icon_item('review', 'sage', 'Reading the result', 'For the test to be positive, the induration must be 10 mm or greater.'),
-    ], 250)
+    ], 250, 16, '', 'g-steps')
     positive = panel(h3('What a positive test means', 19)
                      + prose('A positive test shows that a person has the TB germs. A physical exam, chest x-ray and sputum samples are then collected and checked for TB disease. '
                              'A positive test does not mean the person has active TB: it could be latent TB.', size=14.4, style='margin-top: 8px'), pad='20px 22px 22px')
@@ -186,7 +186,7 @@ def retino():
         icon_item('user', 'sage', 'Done by a trained nurse', 'A trained nurse examines the retina (the back of the eye) using non-invasive techniques.'),
         icon_item('clock', 'gold', 'Quick and safe', 'Screening is quick, safe and usually does not need any special preparation.'),
         icon_item('review', 'rust', 'Results and follow-up', 'Your results are reviewed with you. Follow-up care or referrals are provided if needed.'),
-    ], 250)
+    ], 250, 16, '', 'g-steps')
     prog = panel(prose('This service is part of the Eye Health Screening Initiative (EHSI), delivered in partnership with Vision Loss Rehabilitation Canada (VLRC) and the Indigenous Diabetes Health Circle (IDHC).',
                        'The program was developed with guidance from local Indigenous partners, so that care is accessible, culturally safe and responsive to community needs. '
                        'IIPCT is honoured to be one of the participating communities offering this service.', size=14.6, style='margin-bottom: 10px'))

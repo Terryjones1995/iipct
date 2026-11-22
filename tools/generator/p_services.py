@@ -53,7 +53,7 @@ def page():
     s = header('services')
     extra = p('Our services draw equally from both Indigenous and mainstream ways of knowing and being.', 15.4, INK, 1.36, 'margin-top: 8px; max-width: 470px')
     top = hero('hero-services', 60.2, 344, 'Services', 'Explore four key programs supporting health, wellness, and community care.', buttons,
-               h1_size=57, lead_size=20.6, lead_w=470, lead_lh=1.3, lead_weight=500, extra=extra, pad='24px 0 34px 90px', gap=9, btn_mt=12, sq_mt=0, obj='center 30%')
+               h1_size=57, lead_size=20.6, lead_w=470, lead_lh=1.3, lead_weight=500, extra=extra, pad='24px 0 34px 90px', gap=9, btn_mt=12, sq_mt=0, obj='center 30%', narrow_ratio='3 / 2')
     # lib.hero() takes only mock-up crops: put IIPCT's own photograph in place of the stand-in (people who are not IIPCT's)
     stand_in = f'<img class="hero-photo" src="{BLOB["hero-services"]}" alt=""'
     assert stand_in in top, 'lib.hero() markup changed: update p_services.page()'
@@ -79,7 +79,7 @@ def page():
     ]
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 40px; margin-top: 16px">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px">
+<div class="g-cards gt2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px">
 {''.join(cards)}
 </div>
 </section>'''
