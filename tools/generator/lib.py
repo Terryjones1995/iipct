@@ -803,7 +803,6 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 .t-s{font-size:14.5px !important;line-height:1.45 !important}
 .crumb{font-size:14px !important}
 .nb{white-space:nowrap}
-.wb::after{content:"\\200B"}
 a[href^="mailto:"]{overflow-wrap:anywhere}
 .mbar{display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#153526;border-top:1px solid #C8A15A;padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);box-shadow:0 -4px 16px rgba(12,39,29,.22)}
 .mb-a{flex:1 1 0;min-width:0;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px !important;color:#FFFFFF;text-decoration:none;font-size:13px;font-weight:700;line-height:1.1;letter-spacing:.01em}
@@ -1105,11 +1104,11 @@ def _role(m):
 _TXT = re.compile(r'(<[a-zA-Z/!][^<>]*>)')
 _PHONE = re.compile(r'\(\d{3}\) \d{3}-\d{4}(?: ext\. \d+)?|\d{3}-\d{3}-\d{4}(?: ext\. \d+)?')
 _TELEXT = re.compile(r'(<a [^>]*href="tel:[^"]*"[^>]*>[^<]*</a>)( ext\. \d+)')
-_MAIL = re.compile(r'([\w.+-]+@)([\w-]+\.[\w.-]+)')
 def _nobreak(body):
-    """Phone numbers and "ext. 213" never split across lines (class nb), and email addresses may break after the @
-    (class wb: an empty span that holds a zero-width space there). Both rules apply under 1100 px only, so wide layouts
-    are unchanged. Only text between tags is touched, never attributes or scripts."""
+    """Phone numbers and "ext. 213" never split across lines (class nb, nowrap under 1100 px only, so wide layouts are
+    unchanged). Only text between tags is touched, never attributes or scripts. Email addresses are left as they are:
+    an element inside an address changes how the browser measures it, and wide layouts must not change; under 1100 px
+    mailto links may break anywhere if one does not fit on its line (RESP_CSS)."""
     body = _TELEXT.sub(r'<span class="nb">\1\2</span>', body)
     parts = _TXT.split(body)
     inside_script = False
@@ -1120,14 +1119,13 @@ def _nobreak(body):
             continue
         if inside_script or not part.strip():
             continue
-        part = _PHONE.sub(lambda m: f'<span class="nb">{m.group(0)}</span>', part)
-        parts[i] = _MAIL.sub(r'\1<span class="wb"></span>\2', part)
+        parts[i] = _PHONE.sub(lambda m: f'<span class="nb">{m.group(0)}</span>', part)
     return ''.join(parts)
 
 def responsive(body):
     """Hooks the narrow-width rules need: every page-width wrapper gets class w, text set below 12 px gets class fsu
-    (lifted to 12 px on phones, except the logo lockup, class lk), body copy gets a type role (_role), phone numbers and
-    emails get their break rules (_nobreak), and forced line breaks keep a space when they are switched off."""
+    (lifted to 12 px on phones, except the logo lockup, class lk), body copy gets a type role (_role), phone numbers get
+    their no-break rule (_nobreak), and forced line breaks keep a space when they are switched off."""
     body = _TAG.sub(_hook, body)
     body = _TAG.sub(_fsu, body)
     body = _TAG.sub(_role, body)

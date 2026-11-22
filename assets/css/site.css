@@ -355,9 +355,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .nb {
     white-space: nowrap;
   }
-  .wb::after {
-    content: "\200B";
-  }
   a[href^="mailto:"] {
     overflow-wrap: anywhere;
   }
