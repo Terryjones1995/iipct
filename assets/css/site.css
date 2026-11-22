@@ -123,6 +123,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .pg {
   min-width: 320px;
 }
+.pg {
+  padding-left: env(safe-area-inset-left,0px);
+  padding-right: env(safe-area-inset-right,0px);
+}
 .hero-pic {
   display: contents;
 }

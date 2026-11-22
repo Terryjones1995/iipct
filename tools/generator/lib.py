@@ -741,6 +741,7 @@ def draft_bar(text):
 # Narrow-width rules. They key off the page's own width (a container query), so a page behaves the same in a
 # phone-width frame on the canvas as it does in a real phone-width window.
 RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
+.pg{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .hero-pic{display:contents}
 .hero-hz,.hz-p,.hz-t,.mbar{display:none}
 .show-p{display:none !important}
