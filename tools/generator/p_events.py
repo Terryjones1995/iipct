@@ -43,7 +43,7 @@ EVENTS = [
                'Music with DJ Reese, winter crafts, pizza (while supplies last), a family photo keepsake, Christmas tree prizes, and smoking trivia and tobacco awareness activities. This is a drug- and alcohol-free event.'],
          who='Open to MBQ members and on-territory residents only. All youth must be accompanied by an adult.',
          how='For more information, contact Hannah Hill, CHR, at <a href="mailto:chrcwb@mbq-tmt.org">chrcwb@mbq-tmt.org</a>.',
-         partner='A partner event: the flyer carries the IIPCT logo with two partner logos, and the contact is MBQ’s Community Health Representative.',
+         partner='A partner event: the flyer shows two partner logos beside IIPCT’s.',
          flyer=('news/2026-11-02-candy-cane-lane-family-dance.jpg', 640, 853, 'news/2026-11-02-candy-cane-lane-family-dance-full.jpg'),
          fb='https://www.facebook.com/IIPCT.TMT/posts/pfbid0cEYMWakrxb7BdDRuRRKNnJVcT8ck2uV9p4Fy5afRJQvjVGns2i39T4douAoXDuSEl'),
     dict(key='will-planning', anchor='will-planning-presentation', tag='Workshop', tone='tan',
@@ -63,7 +63,7 @@ EVENTS = [
          when_note='Doors open at 5:00 pm. Turkey dinner will be available.',
          text=['Gather your team of 4 for a holiday-themed puzzle challenge. Teams race to finish the puzzle the fastest, and there are prizes to be won!'],
          who='Teams of 4. At least one team member must be an IIPCT rostered patient (have a doctor or nurse practitioner with one of our clinics).',
-         status='Registration is closed: IIPCT posted on November 16 that all spots are taken.',
+         status='Registration is closed (IIPCT’s post of November 16).',
          how='For questions, contact Allison Loft at <a href="mailto:allison.loft@iipct.com">allison.loft@iipct.com</a> or 613-827-5178.',
          flyer=('news/2026-11-10-santa-s-puzzle-palooza-is-coming-get-your-team-r.jpg', 640, 828, 'news/2026-11-10-santa-s-puzzle-palooza-is-coming-get-your-team-r-full.jpg'),
          fb='https://www.facebook.com/IIPCT.TMT/posts/pfbid025LjJNBvPmWdCbkW2RNDFaTJBp4R3YDjB3SK9MvcyAS5EszucokUvYvPmTDAQiir4l'),
@@ -170,7 +170,7 @@ def flyer_link(e):
               f'<span style="text-decoration: underline; text-underline-offset: 3px">Full flyer</span>{ico("arrow", 14, RUST, 1.9)}</span></a>')
 
 def event_card(e):
-    paras = ''.join(f'<p style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}">{t}</p>' for t in e['text'])
+    paras = ''.join(f'<p style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px">{t}</p>' for t in e['text'])
     when = meta_row('calendar', when_text(e)) + (meta_row('clock', e['when_note']) if e.get('when_note') else '') + meta_row('pin', e['place'])
     facts = fact('Who can come', e['who']) + fact('How to take part', e['how'])
     status = (f'<p style="margin: 0; padding: 10px 14px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 14px; font-weight: 600; line-height: 1.4; color: #5A1E10">'
@@ -249,7 +249,7 @@ def page():
 {facebook_line('margin-top: 12px')}
 </section>
 <section id="programs" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
-{sec_head('Programs That Repeat', 'What Comes Around Again', '', 28.6)}
+{sec_head('Programs That Repeat', 'Regular Programs', '', 28.6)}
 <p style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">These programs have run more than once this year. The next dates are posted on Facebook when they are set.</p>
 {grid([program_card(*pr) for pr in PROGRAMS], 330, 14, 'margin-top: 16px')}
 </section>
@@ -297,7 +297,7 @@ HOME_SCRIPT = """<script>
   for (i = 0; i !== days.length; i++) {
     var vis = 0, r = days[i].querySelectorAll('[data-end]');
     for (var j = 0; j !== r.length; j++) if (r[j].style.display !== 'none') vis++;
-    if (!vis || shown === 6) days[i].style.display = 'none';
+    if (!vis || shown === 5) days[i].style.display = 'none';
     else shown++;
   }
   if (!shown) document.getElementById('ev-list-head').style.display = 'none';
@@ -320,6 +320,8 @@ def home_events():
                   f'<span hidden><span class="ev-when" style="display: inline-block; padding: 4px 10px 3px; border-radius: 999px; background: #17402A; color: #FFFFFF; font-size: 12px; font-weight: 700; line-height: 1.2"></span></span></span>'
                   f'{h3(e["title"], 22)}'
                   f'{meta_row("calendar", when)}{meta_row("pin", e["place_short"])}'
+                  f'<p style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
+                  f'<p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>'
                   f'{tlink("Event details", href, "arrow", 14)}</div></div></div>')
         if dt != last:
             if last: groups += '</ul></li>'

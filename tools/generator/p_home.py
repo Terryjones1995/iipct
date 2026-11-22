@@ -7,7 +7,7 @@ from p_news import AWARD_ALT
 def svc_card(icon, tone, title, text, href='Services.dc.html'):
     return f'''<div class="card" style="position: relative; display: flex; align-items: flex-start; gap: 13px; min-height: 124px; padding: 18px 8px 16px 16px; border-radius: 14px; background: #F7F0E3; border: 1px solid #DCCBAB; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05)">
 {circ(icon, tone, 66)}
-<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 2px; padding-right: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 2px; padding-right: 18px">
 <h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 17.4px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}; white-space: nowrap">{title}</h3>
 <p style="margin: 0; font-size: 12.3px; line-height: 1.5; letter-spacing: -0.016em; color: {INK}">{text}</p>
 </div>
@@ -49,10 +49,10 @@ def page():
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 16px">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
-{svc_card('bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support,<br>and cultural learning.')}
-{svc_card('stethoscope', 'rust', 'Primary Medical Care', 'Physicians, nurse practitioners,<br>and nurses, with partner supports.')}
-{svc_card('lotus', 'sage', 'Mental Health Services', 'Short-term services for adults<br>aged 18 and older.')}
-{svc_card('people', 'gold', 'Health Support Services', 'Care coordination and wellness<br>programs, plus help with forms.')}
+{svc_card('bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support, and cultural learning.')}
+{svc_card('stethoscope', 'rust', 'Primary Medical Care', 'Physicians, nurse practitioners, and nurses, with partner supports.')}
+{svc_card('lotus', 'sage', 'Mental Health Services', 'Short-term services for adults aged 18 and older.')}
+{svc_card('people', 'gold', 'Health Support Services', 'Care coordination and wellness programs, plus help with forms.')}
 </div>
 </section>'''
     # "A Place for Good Medicine" and "Wholistic Care for All": old site home page; "status blind": who-we-are page.
