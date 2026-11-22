@@ -146,8 +146,9 @@ test address and this static copy stays the public front end. One constant switc
   proof that loads both pages against it in every state (`run-proof.sh` + `proof.mjs`: feed down, empty, equal to the
   built events, the server's own wording of them, an event removed, cancelled, a new or cleared status, a new event, a
   start time only, an end the next day, an evening past midnight, changed times and place, a date dropped, a second
-  session, duplicate records, the longest fields the server can send, hostile answers) and a test of the `--launch`
-  refusal that does not run the publish script (`test-launch-check.sh`).
+  session, duplicate records, the longest fields the server can send, hostile answers), a proof that a visitor on a
+  card's `#anchor` stays on it while cards change above it (`run-anchor.sh` + `anchor.mjs`) and a test of the
+  `--launch` refusal that does not run the publish script (`test-launch-check.sh`).
 
 ## Search engines and sharing
 

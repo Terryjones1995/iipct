@@ -10,7 +10,7 @@ One HTTPS server on 127.0.0.1:<port>. The browser under test maps both host name
   https://terryjones1995.github.io/iipct/...       the static site from <site-dir>, at the address it is published at,
                                                    so the feed's CORS rule (that one origin) is tested for real
   https://terryjones1995.github.io/base/...        the pages of 4fcfd8d (before the reader), from <base-dir>
-Scenario names: see SCENARIOS at the bottom. Event data comes from the built pages' own list (p_events.EVENTS), so
+Scenario names: see SCENARIOS at the bottom ("name@ms" answers that many ms late). Event data comes from the built pages' own list (p_events.EVENTS), so
 "equal" is the built events exactly; the test-only events carry "(stand-in test)" in their titles."""
 import sys, os, json, ssl, time, uuid, re, html, mimetypes, socket
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
@@ -264,6 +264,9 @@ class H(BaseHTTPRequestHandler):
 
     def feed(self):
         name = open(SCENARIO_FILE).read().strip()
+        if '@' in name:   # "missing@2000": answer as "missing", 2000 ms late (the page has landed on its #anchor by then)
+            name, ms = name.split('@', 1)
+            time.sleep(min(int(ms), 3500) / 1000)
         if name == 'down':   # the server cannot be reached: the connection closes with no answer
             self.close_connection = True
             try: self.connection.shutdown(socket.SHUT_RDWR)
