@@ -32,6 +32,7 @@ PAGES = {
  'privacy': ('p_legal', 'privacy', 'Privacy.dc.html', None, 'Privacy Policy'),
  'access': ('p_legal', 'accessibility', 'Accessibility.dc.html', None, 'Accessibility'),
  'sitemap': ('p_legal', 'sitemap', 'SiteMap.dc.html', None, 'Site Map'),
+ 'notfound': ('p_legal', 'notfound', 'NotFound.dc.html', None, 'Page Not Found'),
 }
 FRAMES = {'tablet': 820, 'phone': 390}      # extra artboards: the same page held to a device width
 os.makedirs(OUT, exist_ok=True); os.makedirs(PREV, exist_ok=True)

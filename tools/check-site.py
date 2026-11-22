@@ -7,7 +7,8 @@ Always fails on: a link to a page or file that does not exist, a link to an anch
 an image or stylesheet that does not exist, duplicate ids on a page, an image with no alt attribute, two pages with
 the same <title>, a page with no description.
 --strict also fails on: placeholder links (href="#"), buttons that cannot do anything (the site has no JavaScript,
-so a <button> outside a form that submits is dead), and bracketed placeholder text like "[Staff name]".
+so a <button> outside a form that submits is dead), and bracketed placeholder text like "[Staff name]"
+(allowed on the two draft legal pages listed in DRAFTS, whose wording IIPCT must supply).
 --online also requests every outside link once and reports the ones that do not answer 2xx/3xx (never fails the run:
 other sites block scripted requests).
 """
@@ -18,6 +19,8 @@ args = [a for a in sys.argv[1:] if not a.startswith('--')]
 SITE = os.path.abspath(args[0] if args else '.') + '/'
 STRICT = '--strict' in sys.argv
 ONLINE = '--online' in sys.argv
+# Pages whose wording IIPCT must still supply: their [bracketed] items are expected until launch.
+DRAFTS = ('privacy-policy.html', 'accessibility.html')
 
 
 class Page(HTMLParser):
@@ -94,7 +97,7 @@ for f, p in parsed.items():
     if hashes: strict_errors.append(f'{f}: {hashes} placeholder link(s) href="#"')
     if p.dead_buttons: strict_errors.append(f'{f}: {p.dead_buttons} button(s) that cannot do anything without JavaScript')
     brackets = re.findall(r'\[[A-Z][^\[\]]{2,90}\]', ' '.join(p.text))
-    if brackets: strict_errors.append(f'{f}: {len(brackets)} bracketed placeholder(s), e.g. {brackets[0][:60]}')
+    if brackets and f not in DRAFTS: strict_errors.append(f'{f}: {len(brackets)} bracketed placeholder(s), e.g. {brackets[0][:60]}')
 for t, fs in titles.items():
     if t and len(fs) > 1: errors.append(f'same <title> "{t}" on {", ".join(fs)}')
 

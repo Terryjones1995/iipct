@@ -1,5 +1,8 @@
 """Shared building blocks for the IIPCT rebrand artboards (inline-styled markup)."""
 import json, os, re, math, random
+import facts
+from facts import (LOCATIONS, EXTENSIONS, MAIN_PHONE, MAIN_TEL, GENERAL_EMAIL, BOOKING_URL, ORG_NAME, ORG_EN, ORG_SHORT,
+                   hours_rows, address, option_text)
 
 A = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets') + '/'
 BLOB = json.load(open(A + 'blobs.json'))
@@ -254,7 +257,7 @@ NAV = [('Home', 'Main.dc.html', False, 'home'), ('Who We Are', 'WhoWeAre.dc.html
        ('Events &amp; Programs', 'Events.dc.html', True, 'events'), ('Careers', 'Careers.dc.html', False, 'careers'), ('Board', 'Board.dc.html', False, 'board'),
        ('BPSO', 'BPSO.dc.html', False, 'bpso'), ('Contact', 'Contact.dc.html', False, 'contact')]
 
-NEWSLETTER_URL = 'https://mailchi.mp/iipct/iipct-newsletter'
+NEWSLETTER_URL = facts.NEWSLETTER_URL
 MENUS = {
  'who': [('About IIPCT', 'WhoWeAre.dc.html', 0), ('Our Team', 'Team.dc.html', 0), ('Career Opportunities', 'Careers.dc.html', 0), ('Board of Directors', 'Board.dc.html', 0), ('Best Practice Spotlight (BPSO)', 'BPSO.dc.html', 0)],
  'services': [('All Services', 'Services.dc.html', 0), ('Primary Medical Care', 'PrimaryCare.dc.html', 0), ('Immunization Program', 'Immunization.dc.html', 1),
@@ -307,8 +310,8 @@ def _mobile(active):
             f'box-shadow: 0 18px 30px rgba(40, 30, 10, 0.18)"><nav aria-label="Menu" style="display: flex; flex-direction: column; gap: 1px">{rows}</nav>'
             f'<div style="margin-top: 14px; padding-top: 16px; border-top: 1px solid {LINE}; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px">'
             f'<a class="btn bp" href="Booking.dc.html" style="{book}; flex: 1 1 220px; min-height: 48px; font-size: 15px">{ico("calendar-check", 18, "currentColor", 1.8)}<span>Schedule Your Visit</span></a>'
-            f'<a href="tel:+13434780196" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 16px; font-weight: 700; color: #10291F; text-decoration: none">'
-            f'{ico("phone", 19, "#9C4530", 1.8)}<span>(343) 478-0196</span></a></div></div></details></div>')
+            f'<a href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 16px; font-weight: 700; color: #10291F; text-decoration: none">'
+            f'{ico("phone", 19, "#9C4530", 1.8)}<span>{MAIN_PHONE}</span></a></div></div></details></div>')
 
 NAV_SIZE = 14
 def header(active):
@@ -328,7 +331,7 @@ def header(active):
 {img('logo-emblem', 'IIPCT logo: a turtle carrying a medicine wheel, with a stethoscope shaped like a heart', 'width: 80px; height: auto').replace('<img ', '<img class="hd-logo" ')}
 <span style="display: flex; flex-direction: column; gap: 5px">
 <span style="font-family: {SERIF}; font-weight: 700; font-size: 30px; line-height: 0.95; letter-spacing: -0.012em; color: {H1C}">IIPCT</span>
-<span class="hd-tag" style="font-size: 9.6px; font-weight: 700; letter-spacing: 0.035em; line-height: 1.22; text-transform: uppercase; color: {INK}">Indigenous Interprofessional<br class="k">Primary Care Team</span>
+<span class="hd-tag lk" style="font-size: 9.6px; font-weight: 700; letter-spacing: 0.035em; line-height: 1.22; text-transform: uppercase; color: {INK}">Indigenous Interprofessional<br class="k">Primary Care Team</span>
 </span>
 </a>
 <span class="hd-div" aria-hidden="true" style="flex: none; width: 1px; height: 60px; background: {GOLDL}; margin: 0 8px 0 2px"></span>
@@ -358,20 +361,20 @@ def footer(top_h=90, pre='', tall=False):
 <span style="flex: none; width: 94px; height: 94px; border-radius: 50%; background: #FBF4EA; display: flex; align-items: center; justify-content: center">{img('logo-emblem', 'IIPCT logo', 'width: 76px; height: auto')}</span>
 <span style="display: flex; flex-direction: column; gap: 6px">
 <span style="font-family: {SERIF}; font-weight: 600; font-size: 33px; line-height: 0.95; letter-spacing: -0.01em; color: #FFFFFF">IIPCT</span>
-<span style="font-size: 9.6px; font-weight: 600; letter-spacing: 0.06em; line-height: 1.25; text-transform: uppercase; color: #FFFFFF">Indigenous Interprofessional<br class="k">Primary Care Team</span>
+<span class="lk" style="font-size: 9.6px; font-weight: 600; letter-spacing: 0.06em; line-height: 1.25; text-transform: uppercase; color: #FFFFFF">Indigenous Interprofessional<br class="k">Primary Care Team</span>
 </span>
 </a>
 {social_row(dark=True)}
 </div>
 <div class="ft-col ft-contact" style="flex: none; width: 278px; min-height: 110px; padding: 2px 10px 2px 40px; border-left: 1px solid rgba(200, 161, 90, 0.75); display: flex; flex-direction: column; gap: 10px">
 <span style="font-size: 13.2px; font-weight: 700; color: #FFFFFF; margin-bottom: 3px">Contact Us</span>
-{crow('phone', '(343) 478-0196', 'tel:+13434780196')}
-{crow('mail', 'info@iipct.com', 'mailto:info@iipct.com')}
-{crow('pin', 'Southeastern Ontario', 'Contact.dc.html')}
-{crow('clock', 'Mon – Fri, 8:30 AM – 4:30 PM', 'Contact.dc.html')}
+{crow('phone', MAIN_PHONE, 'tel:' + MAIN_TEL)}
+{crow('mail', GENERAL_EMAIL, 'mailto:' + GENERAL_EMAIL)}
+{crow('pin', f'{len(LOCATIONS)} locations in southeastern Ontario', 'Contact.dc.html#locations')}
+{crow('clock', 'Hours differ by location', 'Contact.dc.html#locations')}
 </div>
 {_fcol('Quick Links', [('Home', 'Main.dc.html'), ('Who We Are', 'WhoWeAre.dc.html'), ('Services', 'Services.dc.html'), ('Events &amp; Programs', 'Events.dc.html'), ('News &amp; Updates', 'News.dc.html'), ('Newsletter', NEWSLETTER_URL)], 196, 42)}
-{_fcol('Clinic Links', [('Tyendinaga Clinic', 'Contact.dc.html'), ('Deseronto Clinic', 'Contact.dc.html'), ('Kingston Clinic', 'Contact.dc.html'), ('Bancroft Clinic', 'Contact.dc.html'), ('Shannonville Clinic', 'Contact.dc.html')], 198, 41)}
+{_fcol('Our Locations', [(l['name'], 'Contact.dc.html#' + l['key']) for l in LOCATIONS], 198, 41)}
 {_fcol('More', [('Careers', 'Careers.dc.html'), ('Board', 'Board.dc.html'), ('BPSO', 'BPSO.dc.html'), ('Contact', 'Contact.dc.html')], 127, 41)}
 <div class="ft-col ft-art" style="flex: none; min-height: 110px; padding-left: 34px; border-left: 1px solid rgba(200, 161, 90, 0.75); display: flex; align-items: center; gap: 20px">
 {img('feather-gold', '', 'width: 70px; height: auto; margin-top: -4px')}
@@ -381,7 +384,7 @@ def footer(top_h=90, pre='', tall=False):
 </div>
 </div>
 <div style="border-top: 1px solid rgba(255, 255, 255, 0.42); padding: 15px 0 19px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; font-size: 12.4px; color: #F4EFE4">
-<span>© 2026 IIPCT – Indigenous Interprofessional Primary Care Team. All rights reserved.</span>
+<span>© 2026 {ORG_NAME} ({ORG_SHORT}). All rights reserved.</span>
 {pipe}<a class="fl" href="Privacy.dc.html" style="color: #F4EFE4; text-decoration: none">Privacy Policy</a>
 {pipe}<a class="fl" href="Accessibility.dc.html" style="color: #F4EFE4; text-decoration: none">Accessibility</a>
 {pipe}<a class="fl" href="SiteMap.dc.html" style="color: #F4EFE4; text-decoration: none">Site Map</a>
@@ -393,7 +396,9 @@ def footer(top_h=90, pre='', tall=False):
 </footer>'''
 
 # ---------------------------------------------------------------- shared sections
-def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h1_size=46, lead_size=18.6, lead_w=600, text_w=680, pad='36px 0 30px 83px', gap=14, sub_size=27.5, lead_lh=1.32, btn_mt=8, obj='right center', lead_weight=450, extra='', sq_mt=0):
+def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h1_size=46, lead_size=18.6, lead_w=600, text_w=680, pad='36px 0 30px 83px', gap=14, sub_size=27.5, lead_lh=1.32, btn_mt=8, obj='right center', lead_weight=450, extra='', sq_mt=0,
+         site_photo=None, photo_alt='', photo_wh=None, narrow_pos=None):
+    """photo = a mock-up crop name; or site_photo = a real photograph under site-img/ (with photo_alt and photo_wh=(w, h))."""
     eb = eyebrow(eyebrow_txt, RUST, 'font-size: 12.5px; letter-spacing: 0.14em; margin-bottom: 2px') if eyebrow_txt else ''
     sb = (f'<p style="margin: 0; font-family: {SERIF}; font-weight: 620; font-size: {sub_size}px; line-height: 1.2; letter-spacing: -0.014em; color: {H1C}">{sub}</p>') if sub else ''
     sq = f'<span style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>'
@@ -402,7 +407,7 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
     fade_l = 100 - photo_w
     return f'''
 <section class="hero-sec" style="position: relative; min-height: {min_h}px">
-<img class="hero-photo" src="{BLOB[photo]}" alt="" style="display: block; position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}">
+{_hero_img(photo, photo_w, obj, site_photo, photo_alt, photo_wh, narrow_pos)}
 <div class="hero-fade" aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {fade_l}%; width: 7%; background: linear-gradient(90deg, #FBF3E8 0%, rgba(251, 243, 232, 0) 100%)"></div>
 {branch(168, '#A5B195', 0.58, 'left: -84px; top: -12px; transform: rotate(8deg)')}
 {branch(100, '#ADB89E', 0.5, 'left: -40px; bottom: -30px; transform: rotate(-12deg) scaleX(-1)')}
@@ -415,6 +420,17 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
 </div>
 </div>
 </section>'''
+
+def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None):
+    """narrow_pos: object-position once the photo stacks above the text (tablets and phones), when the default 60% 30% crops it badly."""
+    st = f'position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}'
+    cls = 'hero-photo'
+    if narrow_pos:
+        st += f'; --np: {narrow_pos}'; cls += ' hp-np'
+    if site_photo:
+        w, h = wh or (None, None)
+        return photo(site_photo, alt, st, cls, w, h, lazy=False)
+    return f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">'
 
 def rust_band(icon, title, sub, right, style='', sub_size=13.1):
     return f'''
@@ -431,10 +447,13 @@ def rust_band(icon, title, sub, right, style='', sub_size=13.1):
 </div>
 </section>'''
 
-def newsletter(sub='Get the latest news, events, programs, and wellness updates from our team.'):
-    right = (f'<label for="nl-email" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Email address</label>'
-             f'<input id="nl-email" type="email" placeholder="Enter your email address" style="flex: 1 1 240px; min-width: 0; width: 346px; max-width: 100%; height: 36px; padding: 0 18px; border-radius: 9px; border: 1px solid #F3E4D2; background: #FFFDF8; font-family: inherit; font-size: 12.4px; color: {INK}">'
-             f'<button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 12px; height: 40px; min-width: 156px; padding: 0 22px; border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)"><span>Subscribe</span>{ico("arrow", 15, "#FFFFFF", 2)}</button>')
+def newsletter(sub='Get our news, events and programs by email. Sign up on our newsletter page.'):
+    """Newsletter band. A static page cannot sign anyone up, so the band links to the Mailchimp sign-up page (new tab)."""
+    right = (f'<a class="btn bp nl-btn" href="{NEWSLETTER_URL}" aria-label="Sign up for the newsletter (opens in a new tab)" '
+             f'style="display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; padding: 0 22px; border-radius: 9px; '
+             f'border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-size: 13.6px; font-weight: 600; '
+             f'line-height: 1; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
+             f'{ico("mail", 17, "#FFFFFF", 1.8)}<span>Sign up for the newsletter</span>{ico("external", 15, "#FFFFFF", 2)}</a>')
     return rust_band('mail', 'Stay Connected with IIPCT', sub, right)
 
 def feature_list(items, icon_size=46, title_size=15.6, gap=22, text_size=12.5, icon_gap=33):
@@ -483,14 +502,21 @@ def sec_head(eyebrow_txt, title, right='', size=30.4, style=''):
             f'<div style="display: flex; flex-direction: column; gap: 5px">{eyebrow(eyebrow_txt)}{h2(title, size)}</div>{right}</div>')
 
 # ---------------------------------------------------------------- sub-page helpers
-FACEBOOK_URL = 'https://www.facebook.com/IIPCT.TMT/'
-TIKTOK_URL = 'https://www.tiktok.com/@theiipctcrew'
+FACEBOOK_URL = facts.FACEBOOK_URL
+TIKTOK_URL = facts.TIKTOK_URL
 BOOKING = 'Booking.dc.html'
-CLINICS = [('Tyendinaga Clinic', '45 Meadow Drive, Tyendinaga', '(343) 478-0196', '+13434780196'),
-           ('Deseronto Clinic', '331 Dundas Street, Deseronto', '(613) 354-6992', '+16133546992'),
-           ('Kingston Clinic', '730 Front Road, Kingston', '(833) 999-1382', '+18339991382'),
-           ('Bancroft Clinic', '69 Cleak Avenue, Bancroft', '(613) 706-2001', '+16137062001'),
-           ('Shannonville Office', '14 York Road, Shannonville', '(343) 478-0196', '+13434780196')]
+# (name, street + town, phone as people should dial it, tel) for each location, in menu-option order. Kept for callers of
+# the old 4-tuple list; new code reads facts.LOCATIONS. The numbers that used to sit here were fax numbers.
+CLINICS = [(l['name'], address(l, False), f'{MAIN_PHONE}, press {l["option"]}', MAIN_TEL) for l in LOCATIONS]
+
+def call_list(dark=False, size=13.4):
+    """The main line's menu: one row per location ("Tyendinaga Clinic ... press 1"). Each row dials the main line."""
+    name_c, opt_c, line = ('#FFFFFF', '#E3BE74', 'rgba(255, 255, 255, 0.22)') if dark else (HEAD, RUST, '#E6D9BF')
+    rows = ''.join(f'<li style="border-top: 1px solid {line}"><a class="cl" href="tel:{MAIN_TEL}" aria-label="Call {MAIN_PHONE} and press {l["option"]} for the {l["name"]}" '
+                   f'style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; padding: 6px 0; text-decoration: none">'
+                   f'<span style="font-weight: 600; color: {name_c}">{l["name"]}</span>'
+                   f'<span style="flex: none; font-weight: 700; color: {opt_c}; white-space: nowrap">Press {l["option"]}</span></a></li>' for l in LOCATIONS)
+    return f'<ul style="margin: 0; padding: 0; list-style: none; font-size: {size}px; line-height: 1.3">{rows}</ul>'
 
 def social_row(dark=False, label='Follow us'):
     if dark:
@@ -558,20 +584,18 @@ def photo_ph(label, ratio='16 / 9', style=''):
             f'{ico("camera", 30, "#7E8F6C", 1.5)}<span>{label}</span></div>')
 
 def book_aside(related='', title='Book this service'):
-    rows = ''.join(f'<li style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #E6D9BF">'
-                   f'<span style="font-weight: 600; color: {HEAD}">{n}</span><a class="tl" href="tel:{tel}" style="color: {RUST}; font-weight: 600; text-decoration: none; white-space: nowrap">{ph}</a></li>'
-                   for n, ad, ph, tel in CLINICS)
     return f"""<aside class="aside" style="flex: 0 0 372px; max-width: 100%; display: flex; flex-direction: column; gap: 18px">
 <div style="padding: 22px 22px 22px; border-radius: 14px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; box-shadow: {SHADOW}">
 {eyebrow('Book a visit', '#E3BE74')}
 <h2 style="margin: 0; font-family: {SERIF}; font-weight: 500; font-size: 25px; line-height: 1.1; letter-spacing: -0.012em; color: #FFFFFF">{title}</h2>
 <p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: #F4F1E8">Registered patients can book online. New to IIPCT, or not sure what you need? Call us and reception will help.</p>
 {btn('Schedule Your Visit', BOOKING, 'light', 'calendar-check', True, 'md', 'margin-top: 6px; width: 100%')}
-<a class="fl" href="tel:+13434780196" style="display: flex; align-items: center; gap: 10px; margin-top: 4px; font-size: 15px; font-weight: 700; color: #FFFFFF; text-decoration: none">{ico('phone', 18, '#E3BE74', 1.8)}<span>(343) 478-0196</span></a>
+<a class="fl" href="tel:{MAIN_TEL}" style="display: flex; align-items: center; gap: 10px; margin-top: 4px; font-size: 15px; font-weight: 700; color: #FFFFFF; text-decoration: none">{ico('phone', 18, '#E3BE74', 1.8)}<span>{MAIN_PHONE}</span></a>
 </div>
 <div style="padding: 18px 22px 12px; border-radius: 14px; {CARD}">
 {h3('Call your clinic', 19)}
-<ul style="margin: 10px 0 0; padding: 0; list-style: none; font-size: 13.4px; line-height: 1.3">{rows}</ul>
+<p style="margin: 6px 0 10px; font-size: 13.4px; line-height: 1.4; color: {INK}">Call {MAIN_PHONE}, then press the number for your location.</p>
+{call_list()}
 </div>
 {related}
 </aside>"""
@@ -646,6 +670,8 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .hd-m{display:none;margin-left:auto;align-items:center;gap:10px}
 .mnav>summary{list-style:none}.mnav>summary::-webkit-details-marker{display:none}
 .mnav[open] .mi-o,.mnav:not([open]) .mi-x{display:none !important}
+.xt>summary,.faq>summary{list-style:none}.xt>summary::-webkit-details-marker,.faq>summary::-webkit-details-marker{display:none}
+.xt[open]>summary>svg,.faq[open]>summary>svg{transform:rotate(180deg)}
 .ml{transition:background .15s}.ml:hover{background:#F1E7D3}
 @container pg (max-width:1399px){
 .hd{padding-left:32px !important;padding-right:28px !important}
@@ -662,12 +688,25 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .hd{min-height:0 !important;padding-top:9px !important;padding-bottom:9px !important;flex-wrap:nowrap !important}
 .hd-logo{width:68px !important}
 }
+@container pg (max-width:1199px){
+.fl{display:inline-flex !important;align-items:center;min-height:40px !important}
+.ft-col{gap:2px !important}
+.tl,.cl,a[href^="tel:"],a[href^="mailto:"]{min-height:40px !important}
+.tl:not([style*="display"]):not(p .tl):not(li .tl),a[href^="tel:"]:not([style*="display"]):not(p a):not(li a),a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a){display:inline-flex;align-items:center}
+.btn{min-height:40px !important}
+.ra{width:40px !important;height:40px !important}
+.toc a{display:flex !important;align-items:center;min-height:40px}
+}
+@container pg (max-width:940px){
+.fsu{font-size:12px !important}
+}
 @container pg (max-width:1099px){
 .w{padding-left:32px !important;padding-right:32px !important}
 .hero-sec{min-height:0 !important;display:flex;flex-direction:column-reverse}
 .hero-photo{position:relative !important;width:100% !important;height:320px !important}
 .hero-fade{display:none}
 .hero-photo{object-position:60% 30% !important}
+.hero-photo.hp-np{object-position:var(--np) !important}
 .hero-txt{max-width:none !important;padding:30px 0 28px !important}
 .hero-txt .h1{font-size:44px !important}
 .hero-txt .lead{font-size:17.6px !important}
@@ -774,9 +813,26 @@ def _hook(m):
         return t.replace(' class="', ' class="w ', 1)
     return re.sub(r'^<(\w+)', r'<\1 class="w"', t, count=1)
 
+_FS = re.compile(r'font-size:\s*([0-9.]+)px')
+def _fsu(m):
+    t = m.group(0)
+    if t.startswith(('<svg', '<path', '<circle', '<rect')) or ' style="' not in t:
+        return t
+    f = _FS.search(t.split(' style="', 1)[1])
+    if not f or float(f.group(1)) >= 12:
+        return t
+    cm = re.search(r' class="([^"]*)"', t)
+    if cm and ('lk' in cm.group(1).split() or 'fsu' in cm.group(1).split()):
+        return t
+    if cm:
+        return t.replace(cm.group(0), f' class="{cm.group(1)} fsu"', 1)
+    return re.sub(r'^<(\w+)', r'<\1 class="fsu"', t, count=1)
+
 def responsive(body):
-    """Hooks the narrow-width rules need: every page-width wrapper gets class w, and forced line breaks keep a space when they are switched off."""
+    """Hooks the narrow-width rules need: every page-width wrapper gets class w, text set below 12 px gets class fsu
+    (lifted to 12 px on phones, except the logo lockup, class lk), and forced line breaks keep a space when they are switched off."""
     body = _TAG.sub(_hook, body)
+    body = _TAG.sub(_fsu, body)
     return body.replace('<br>', ' <br>')
 
 def root(body, frame=None):

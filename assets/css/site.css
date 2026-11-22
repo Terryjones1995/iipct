@@ -138,6 +138,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .mnav[open] .mi-o, .mnav:not([open]) .mi-x {
   display: none !important;
 }
+.xt>summary, .faq>summary {
+  list-style: none;
+}
+.xt>summary::-webkit-details-marker, .faq>summary::-webkit-details-marker {
+  display: none;
+}
+.xt[open]>summary>svg, .faq[open]>summary>svg {
+  transform: rotate(180deg);
+}
 .ml {
   transition: background .15s;
 }
@@ -188,6 +197,42 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
 }
 
+@media (max-width:1199px) {
+  .fl {
+    display: inline-flex !important;
+    align-items: center;
+    min-height: 40px !important;
+  }
+  .ft-col {
+    gap: 2px !important;
+  }
+  .tl, .cl, a[href^="tel:"], a[href^="mailto:"] {
+    min-height: 40px !important;
+  }
+  .tl:not([style*="display"]):not(p .tl):not(li .tl), a[href^="tel:"]:not([style*="display"]):not(p a):not(li a), a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a) {
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn {
+    min-height: 40px !important;
+  }
+  .ra {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .toc a {
+    display: flex !important;
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
+@media (max-width:940px) {
+  .fsu {
+    font-size: 12px !important;
+  }
+}
+
 @media (max-width:1099px) {
   .w {
     padding-left: 32px !important;
@@ -208,6 +253,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hero-photo {
     object-position: 60% 30% !important;
+  }
+  .hero-photo.hp-np {
+    object-position: var(--np) !important;
   }
   .hero-txt {
     max-width: none !important;
@@ -484,7 +532,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   left: 12px;
   top: -60px;
   z-index: 100;
-  padding: 10px 16px;
+  padding: 13px 16px;
   border-radius: 8px;
   background: #17402A;
   color: #fff;

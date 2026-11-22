@@ -18,14 +18,15 @@ NAMES = {'Main.dc.html': 'index.html', 'WhoWeAre.dc.html': 'who-we-are.html', 'T
          'TBTesting.dc.html': 'tb-testing.html', 'FootCare.dc.html': 'advanced-foot-care.html', 'Retinopathy.dc.html': 'diabetic-retinopathy-screening.html',
          'Outreach.dc.html': 'outreach-community-support.html', 'Booking.dc.html': 'schedule-your-visit.html', 'News.dc.html': 'news.html',
          'NewsIPHCCAwards.dc.html': 'news-iphcc-awards.html', 'NewsBreastScreening.dc.html': 'news-breast-cancer-screening.html',
-         'Privacy.dc.html': 'privacy-policy.html', 'Accessibility.dc.html': 'accessibility.html', 'SiteMap.dc.html': 'site-map.html'}
+         'Privacy.dc.html': 'privacy-policy.html', 'Accessibility.dc.html': 'accessibility.html', 'SiteMap.dc.html': 'site-map.html',
+         'NotFound.dc.html': '404.html'}
 DESC = {
  'home': 'Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT): Indigenous-centred primary care for individuals, families and communities across southeastern Ontario.',
  'who': 'Who IIPCT is: an Indigenous-led, community-grounded primary care team serving Indigenous people and families across southeastern Ontario.',
  'team': 'The people of IIPCT: physicians, nurse practitioners, nurses, traditional healing, mental health and community staff at each clinic.',
  'services': 'IIPCT services: cultural services, primary medical care, mental health services and health support services.',
  'events': 'Events and programs from IIPCT: wellness, learning and community connection rooted in culture and care.',
- 'contact': 'Contact IIPCT: phone, email and clinic locations in Tyendinaga, Deseronto, Kingston, Bancroft and Shannonville.',
+ 'contact': 'Contact IIPCT: one phone line for all five locations, plus emails, hours, addresses and staff extensions for Tyendinaga, Kingston, Bancroft, Deseronto and Shannonville.',
  'careers': 'Career opportunities at IIPCT.',
  'board': 'The IIPCT Board of Directors.',
  'bpso': 'IIPCT is a Best Practice Spotlight Organization (BPSO).',
@@ -43,6 +44,7 @@ DESC = {
  'privacy': 'IIPCT privacy policy.',
  'access': 'Accessibility at IIPCT.',
  'sitemap': 'Every page on the IIPCT website.',
+ 'notfound': 'We could not find that page on the IIPCT website.',
 }
 
 # ---------------------------------------------------------------- images: only the ones the pages use
@@ -95,8 +97,7 @@ def to_site(body):
     html = lib.root(body)
     html = re.sub(r'src="(/_blob/[0-9a-f]+)"', lambda m: f'src="{image_for(BLOB_NAME[m.group(1)])}"', html)
     html = re.sub(r'(src|href)="/_site/([^"]+)"', lambda m: f'{m.group(1)}="{site_image(m.group(2))}"', html)
-    for f, n in NAMES.items():
-        html = html.replace(f'href="{f}"', f'href="{n}"')
+    html = re.sub(r'href="([A-Za-z0-9]+\.dc\.html)(#[^"]*)?"', lambda m: f'href="{NAMES[m.group(1)]}{m.group(2) or ""}"', html)
     assert '.dc.html' not in html and '/_blob/' not in html and '/_site/' not in html
     html = re.sub(r'<a ([^>]*?)href="(https?://[^"]+)"', r'<a \1href="\2" target="_blank" rel="noopener"', html)   # other sites open in a new tab
     assert html.count('</header>') == 1 and html.count('<footer ') == 1
@@ -123,12 +124,10 @@ HEAD = '''<!doctype html>
 </body>
 </html>
 '''
-BOOKING_NOTE = ('<!-- This form is a front-end mock of IIPCT\'s Ocean booking form. It does not submit anywhere.\n'
-                '     Do not collect health numbers on this site: send patients to the Ocean portal instead (see README). -->\n')
 count = 0
 for k, (mod, func, fn, mock, label) in PAGES.items():
     title, body = getattr(importlib.import_module(mod), func)()
-    page = HEAD.format(title=title.replace('IIPCT — ', '') + ' | IIPCT', desc=DESC[k], fonts=lib.FONT_HREF, html=to_site(body), note=BOOKING_NOTE if k == 'booking' else '')
+    page = HEAD.format(title=title.replace('IIPCT — ', '') + ' | IIPCT', desc=DESC[k], fonts=lib.FONT_HREF, html=to_site(body), note='')
     open(OUT + NAMES[fn], 'w').write(page); count += 1
 
 # favicon
@@ -160,7 +159,7 @@ head = ('/* IIPCT website — shared stylesheet.\n'
         '   Layout and colour live inline on the elements (the pages were exported from the design canvas).\n'
         '   This file holds the base rules, hover states, dropdown menus and the narrow-screen rules.\n'
         '   Breakpoints: 1399 small laptops, 1199 menu button, 1099 tablets, 900, 760 phones, 480 small phones. */\n\n')
-extra = ('\n/* Skip link */\n.skip {\n  position: absolute;\n  left: 12px;\n  top: -60px;\n  z-index: 100;\n  padding: 10px 16px;\n  border-radius: 8px;\n  background: #17402A;\n'
+extra = ('\n/* Skip link */\n.skip {\n  position: absolute;\n  left: 12px;\n  top: -60px;\n  z-index: 100;\n  padding: 13px 16px;\n  border-radius: 8px;\n  background: #17402A;\n'
          '  color: #fff;\n  font: 600 14px/1 "DM Sans", system-ui, sans-serif;\n  text-decoration: none;\n}\n.skip:focus {\n  top: 12px;\n  color: #fff;\n}\n')
 open(OUT + 'assets/css/site.css', 'w').write(head + pretty(css) + extra)
 open(OUT + '.nojekyll', 'w').write('')
