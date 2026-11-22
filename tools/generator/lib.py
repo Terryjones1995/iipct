@@ -903,7 +903,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .hero-txt .lead{font-size:17px !important;line-height:1.45 !important}
 .hz-t{display:block}
 .h2{font-size:30px !important}
-#main :is(p,dd,figcaption,li:not(:has(>details))){max-width:32em !important}
+#main :is(p,dd,figcaption,li.t-b,li.t-s,ul.t-b>li,ol.t-b>li,ul.t-s>li){max-width:32em !important}
 #main>*{margin-top:48px !important}
 #main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
 #main>.hero-sec+*,#main>.sh+*{margin-top:28px !important}
@@ -949,7 +949,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .hero-txt{padding:20px 0 8px !important;gap:11px !important}
 .sh-row{padding-top:14px !important;padding-bottom:20px !important;gap:0 !important}
 .sh-photo{order:-1;flex:1 1 100% !important;max-width:none !important;margin:0 0 18px -20px;width:calc(100% + 20px)}
-.sh-photo img{aspect-ratio:16 / 9 !important}
+.sh-photo img{aspect-ratio:21 / 9 !important}
 .sh .h1{font-size:36px !important}
 }
 @container pg (max-width:759px){

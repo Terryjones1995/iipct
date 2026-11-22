@@ -710,7 +710,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .h2 {
     font-size: 30px !important;
   }
-  #main :is(p, dd, figcaption, li:not(:has(>details))) {
+  #main :is(p, dd, figcaption, li.t-b, li.t-s, ul.t-b>li, ol.t-b>li, ul.t-s>li) {
     max-width: 32em !important;
   }
   #main>* {
@@ -881,7 +881,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     width: calc(100% + 20px);
   }
   .sh-photo img {
-    aspect-ratio: 16 / 9 !important;
+    aspect-ratio: 21 / 9 !important;
   }
   .sh .h1 {
     font-size: 36px !important;
