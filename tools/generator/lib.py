@@ -406,7 +406,7 @@ def footer(top_h=90, pre='', tall=False):
     bar = ''.join(f'<span style="flex: 1; background: {c}"></span>' for c in ['#FEFDFC', '#F7D80C', '#BA2B2C', '#0A8242'])
     pipe = '<span class="ft-pipe" aria-hidden="true" style="width: 1px; height: 15px; background: #C8A15A"></span>'
     # the way to the server's sign-in (staff, members): only while LIVE_SITE is set
-    signin = (f'\n{pipe}<a class="fl" href="{LIVE_SITE}/login" style="color: #F4EFE4; text-decoration: none">Sign in</a>') if LIVE_SITE else ''
+    signin = (f'\n{pipe}<a class="fl" href="{LIVE_SITE}/login" style="min-width: 44px; justify-content: center; text-align: center; color: #F4EFE4; text-decoration: none">Sign in</a>') if LIVE_SITE else ''   # min-width: a short word still makes a 44 px wide tap target
     return f'''
 <footer style="position: relative; margin-top: 4px">
 {pre}{landscape(top_h, 720, '', tall, 'hz-d')}{horizon(480, 64, 'hz-p ft-hz', 3)}
