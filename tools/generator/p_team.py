@@ -122,13 +122,14 @@ def initials(name):
 def portrait(person, size=112, radius=12, style=''):
     """The person's photograph, or an initials tile when the old site has none."""
     num, sec, a, name, short, role, leave, photo_file, bio = person
-    box = f'flex: none; width: {size}px; height: {size}px; border-radius: {radius}px; {style}'
+    sz = f'clamp({round(size * 0.78)}px, 24vw, {size}px)'      # a little smaller on phones
+    box = f'flex: none; width: {sz}; height: {sz}; border-radius: {radius}px; {style}'
     if photo_file:
         return photo(f'people/{photo_file}.jpg', f'Photo of {short}', f'{box}; object-fit: cover; border: 1px solid {LINE}', w=600, h=600)
     hi, lo = TONES[num % len(TONES)]
     return (f'<span aria-hidden="true" style="{box}; display: flex; align-items: center; justify-content: center; '
             f'background: radial-gradient(circle at 38% 30%, {hi} 0%, {lo} 80%); border: 1px solid {LINE}; '
-            f'font-family: {SERIF}; font-weight: 600; font-size: {round(size * 0.34)}px; letter-spacing: 0.02em; color: #FCF2DF">{initials(name)}</span>')
+            f'font-family: {SERIF}; font-weight: 600; font-size: clamp({round(size * 0.27)}px, 8vw, {round(size * 0.34)}px); letter-spacing: 0.02em; color: #FCF2DF">{initials(name)}</span>')
 
 def member_card(person):
     num, sec, a, name, short, role, leave, photo_file, bio = person
