@@ -45,6 +45,9 @@ async function load(url, w, opts = {}) {
     for (const im of imgs) if (im.loading === 'lazy') im.loading = 'eager';
     await Promise.all(imgs.map((im) => im.complete ? null : new Promise((res) => { im.addEventListener('load', res, { once: true }); im.addEventListener('error', res, { once: true }); setTimeout(res, 8000); })));
   });
+  // a lazy image that was never requested can report complete=true: wait until every image has really arrived and decoded
+  await page.waitForFunction(() => [...document.images].every((im) => im.complete && im.naturalWidth > 0), null, { timeout: 15000 }).catch(() => {});
+  await page.evaluate(() => Promise.all([...document.images].map((im) => im.decode().catch(() => {}))));
   let state = null;
   if (opts.js !== false && !url.includes('/base/')) {
     await page.waitForFunction(() => document.documentElement.hasAttribute('data-live-events'), null, { timeout: 15000 }).catch(() => {});
