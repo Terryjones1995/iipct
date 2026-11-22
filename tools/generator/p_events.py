@@ -43,7 +43,7 @@ EVENTS = [
                'Music with DJ Reese, winter crafts, pizza (while supplies last), a family photo keepsake, Christmas tree prizes, and smoking trivia and tobacco awareness activities. This is a drug- and alcohol-free event.'],
          who='Open to MBQ members and on-territory residents only. All youth must be accompanied by an adult.',
          how='For more information, contact Hannah Hill, CHR, at <a href="mailto:chrcwb@mbq-tmt.org">chrcwb@mbq-tmt.org</a>.',
-         partner='A partner event: the flyer shows two partner logos beside IIPCT’s.',
+         partner='Run with community partners.',
          flyer=('news/2026-11-02-candy-cane-lane-family-dance.jpg', 640, 853, 'news/2026-11-02-candy-cane-lane-family-dance-full.jpg'),
          fb='https://www.facebook.com/IIPCT.TMT/posts/pfbid0cEYMWakrxb7BdDRuRRKNnJVcT8ck2uV9p4Fy5afRJQvjVGns2i39T4douAoXDuSEl'),
     dict(key='will-planning', anchor='will-planning-presentation', tag='Workshop', tone='tan',
@@ -63,14 +63,14 @@ EVENTS = [
          when_note='Doors open at 5:00 pm. Turkey dinner will be available.',
          text=['Gather your team of 4 for a holiday-themed puzzle challenge. Teams race to finish the puzzle the fastest, and there are prizes to be won!'],
          who='Teams of 4. At least one team member must be an IIPCT rostered patient (have a doctor or nurse practitioner with one of our clinics).',
-         status='Registration is closed (IIPCT’s post of November 16).',
+         status='Registration is closed (IIPCT’s post of November 16).', status_short='Registration is closed',
          how='For questions, contact Allison Loft at <a href="mailto:allison.loft@iipct.com">allison.loft@iipct.com</a> or 613-827-5178.',
          flyer=('news/2026-11-10-santa-s-puzzle-palooza-is-coming-get-your-team-r.jpg', 640, 828, 'news/2026-11-10-santa-s-puzzle-palooza-is-coming-get-your-team-r-full.jpg'),
          fb='https://www.facebook.com/IIPCT.TMT/posts/pfbid025LjJNBvPmWdCbkW2RNDFaTJBp4R3YDjB3SK9MvcyAS5EszucokUvYvPmTDAQiir4l'),
     dict(key='social-songs', anchor='social-songs-dance', tag='Partner event', tone='cream',
          title='Social Songs &amp; Dance', dates=['2026-12-09', '2027-01-13', '2027-02-10', '2027-03-10', '2027-04-14'], start='18:00', end='20:00',
          place='Tsi Tyónnheht Onkwawén:na Language and Cultural Centre, 39 Salmon River Road, Shannonville (planned location)',
-         place_short='Tsi Tyónnheht Onkwawén:na, Shannonville',
+         place_short='Tsi Tyónnheht Onkwawén:na, Shannonville (planned location)',
          text=['Join us to learn social songs and dances! Whether you are joining for the first time or have been dancing for years, everyone is encouraged to take part.',
                'Bring rattles, plates, cups, or feast baskets if you have them. Ribbon skirts and/or ribbon shirts are encouraged. Bring a refillable water bottle. Indoor shoes must be worn. Light snacks and refreshments will be provided.'],
          who='Open to all MBQ members and community. Youth under 16 must be accompanied by an adult.',
@@ -203,7 +203,7 @@ PROGRAMS = [
     ('hand-heart', 'gold', 'Free student massage', 'Friday mornings, in monthly blocks',
      'Students from the Loyalist College Massage Therapy Program, 9:00 am–12:00 pm at 14 York Road, Unit 4, in September, October and November 2026. Booking opens at 8:30 am on a set day and fills fast.'),
     ('leaf', 'forest', 'Visiting healers and seers', 'About every one to two months',
-     'A traditional healer or seer visits for appointments in Shannonville, Bancroft and Kingston (in 2026: May, June, July, August and November). Priority goes to IIPCT rostered patients. Booking is by phone with our team.'),
+     'A traditional healer or seer visits for appointments in Shannonville, Bancroft and Kingston (in 2026: May, June, July, August and November). Priority goes to IIPCT rostered patients, and some sessions are only for them. Booking is by phone with our team.'),
     ('people', 'sage', 'Lifelong Care workshops', 'About one a month',
      'Often the same workshop at three locations a week apart: advance care planning, caregiver support, death doula training, scrapbooking with the Alzheimer Society, and will planning. Ask Shelley Loft, Indigenous Lifelong Care Coordinator, ext. 115.'),
     ('heart-pulse', 'rust', 'Community cancer screening days', 'Spring and fall',
@@ -211,7 +211,7 @@ PROGRAMS = [
     ('sprout', 'gold', 'Strawberry Social', 'Every June',
      'Held each June since 2023. The 4th Annual Strawberry Social was on June 25, 2026, at the Deseronto Community Centre, with social songs and dances, an Indigenous makers market, and free strawberries and ice cream.'),
     ('scales', 'forest', 'Annual General Meeting', 'Once a year',
-     'The 5th Annual General Meeting of Tsi Kanonhkhwatsherí:yo was held online on September 18, 2026.'),
+     'The 5th Annual General Meeting of Tsi Kanonhkhwatsheríyo was held online on September 18, 2026.'),
 ]
 
 def program_card(icon, tone, title, pattern, text):
@@ -235,7 +235,7 @@ def page():
                + btn('News &amp; Updates', 'News.dc.html', 'outline', 'news', False, 'md'))
     s = header('events')
     s += site_hero('events/hero-fall-into-harvest.jpg', (1413, 916),
-                   'Seven IIPCT team members sitting together among corn stalks, hay bales and pumpkins on the evening of Fall Into Harvest, October 15, 2026',
+                   'Seven IIPCT team members sitting together among corn stalks, hay bales and pumpkins on the day of Fall Into Harvest, October 15, 2026',
                    61.5, 290, 'Events &amp; Programs', 'Join workshops and events that promote learning, wellness, and connection.', buttons,
                    obj='center 45%', h1_size=52, lead_size=21.3, lead_lh=1.33, pad='24px 0 34px 80px', gap=10, btn_mt=10, sq_mt=2, lead_w=520)
     cards = '\n'.join(event_card(e) for e in EVENTS)
@@ -250,7 +250,7 @@ def page():
 </section>
 <section id="programs" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
 {sec_head('Programs That Repeat', 'Regular Programs', '', 28.6)}
-<p style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">These programs have run more than once this year. The next dates are posted on Facebook when they are set.</p>
+<p style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">These programs come back regularly. The next dates are posted on Facebook when they are set.</p>
 {grid([program_card(*pr) for pr in PROGRAMS], 330, 14, 'margin-top: 16px')}
 </section>
 <section id="recent" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
@@ -313,13 +313,17 @@ def home_events():
         href = f'events-programs.html#{e["anchor"]}'   # final file name: the exporter renames only whole-page links
         d = date.fromisoformat(dt)
         when = f'{dlong(dt)} · {trange(e["start"], e["end"])}'
+        closed = e.get('status_short')
+        closed_card = (f'<p style="margin: 2px 0 0; padding: 7px 12px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; '
+                       f'font-size: 13.6px; font-weight: 600; line-height: 1.4; color: #5A1E10">{closed}.</p>') if closed else ''
+        closed_row = f'<span style="font-size: 13px; font-weight: 700; line-height: 1.35; color: #8A2E17">{closed}</span>' if closed else ''
         cards += (f'<div id="next-{key}" data-wd="{DAYS[d.weekday()]}" hidden>'
-                  f'<div style="display: flex; align-items: flex-start; gap: 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{date_tile(dt, True)}'
-                  f'<div style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
+                  f'<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{date_tile(dt, True)}'
+                  f'<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
                   f'<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">{eyebrow("Up next")}'
                   f'<span hidden><span class="ev-when" style="display: inline-block; padding: 4px 10px 3px; border-radius: 999px; background: #17402A; color: #FFFFFF; font-size: 12px; font-weight: 700; line-height: 1.2"></span></span></span>'
                   f'{h3(e["title"], 22)}'
-                  f'{meta_row("calendar", when)}{meta_row("pin", e["place_short"])}'
+                  f'{meta_row("calendar", when)}{meta_row("pin", e["place_short"])}{closed_card}'
                   f'<p style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
                   f'<p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>'
                   f'{tlink("Event details", href, "arrow", 14)}</div></div></div>')
@@ -334,7 +338,7 @@ def home_events():
                    f'<span style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
                    f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
                    f'<span style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{e["title"]}</span>'
-                   f'<span style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span></span></a></li>')
+                   f'<span style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span>{closed_row}</span></a></li>')
     if last: groups += '</ul></li>'
     today = date.today().isoformat()
     none_hidden = '' if not any(dt >= today for dt, _ in occ) else ' hidden'
@@ -346,7 +350,7 @@ def home_events():
 <div style="flex: 1.3 1 400px; min-width: 0">
 <h3 id="ev-list-head" style="margin: 0 0 4px; font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.2; color: {HEAD}">Coming up</h3>
 <ul style="margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #E6D9BF">{groups}</ul>
-<div id="ev-none"{none_hidden}>{note('calendar', 'No upcoming events are posted right now', 'New dates go on IIPCT’s Facebook page first.', 'cream', 'margin-top: 12px')}</div>
+<div id="ev-none"{none_hidden}>{note('calendar', 'No upcoming events are posted right now', 'Our regular programs are on the <a href="events-programs.html#programs">Events &amp; Programs page</a>.', 'cream', 'margin-top: 12px')}</div>
 </div>
 </div>
 {facebook_line('margin-top: 12px')}

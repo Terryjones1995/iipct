@@ -22,18 +22,22 @@ def loc_card(name, kind):
 </div>'''
 
 def green_band_photo(pic, eyebrow_txt, title, text_html, right_html, style='', photo_w='40.6%', min_h=186, title_size=27.5, text_pad='16px 26px 17px 54px'):
-    """lib.green_band() with a real photograph (pic = lib.photo(...) markup) instead of a mock-up crop."""
+    """lib.green_band() with a real photograph (pic = lib.photo(...) markup) instead of a mock-up crop.
+    Text and button share one wrapper, so when the button drops below the text (narrower screens) the photo
+    still fills the band's full height."""
     return f'''
 <section style="{WRAP}; padding: 0 61px 0 63px; {style}">
 <div style="position: relative; overflow: hidden; border-radius: 16px; min-height: {min_h}px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; display: flex; flex-wrap: wrap; align-items: stretch; box-shadow: 0 1px 2px rgba(20, 40, 25, 0.20)">
 {branch(118, '#2C5A40', 0.9, 'right: 4px; bottom: -92px; transform: rotate(24deg)')}
 <div class="gb-photo" style="flex: 0 0 {photo_w}; min-width: min(280px, 100%); position: relative; min-height: 150px">{pic}</div>
+<div style="position: relative; flex: 1 1 360px; min-width: 0; display: flex; flex-wrap: wrap; align-items: stretch">
 <div class="gb-txt" style="position: relative; flex: 1 1 360px; min-width: 0; padding: {text_pad}; display: flex; flex-direction: column; justify-content: center; gap: 8px">
 {eyebrow(eyebrow_txt, '#E3BE74') if eyebrow_txt else ''}
 {h2(title, title_size, '#FFFFFF', 'font-weight: 500')}
 {text_html}
 </div>
 {right_html}
+</div>
 </div>
 </section>'''
 
@@ -51,7 +55,7 @@ def page():
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
 {svc_card('bowl', 'sage', 'Cultural Services', 'Traditional healing, spiritual support, and cultural learning.')}
 {svc_card('stethoscope', 'rust', 'Primary Medical Care', 'Physicians, nurse practitioners, and nurses, with partner supports.')}
-{svc_card('lotus', 'sage', 'Mental Health Services', 'Short-term services for adults aged 18 and older.')}
+{svc_card('lotus', 'sage', 'Mental Health Services', 'Short-term support for our adult clients, 18 and older.')}
 {svc_card('people', 'gold', 'Health Support Services', 'Care coordination and wellness programs, plus help with forms.')}
 </div>
 </section>'''
