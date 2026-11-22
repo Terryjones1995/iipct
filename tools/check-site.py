@@ -229,7 +229,7 @@ if rb is None: errors.append('no robots.txt')
 elif PREVIEW:
     if not re.search(r'(?m)^Disallow:\s*/\s*$', rb): errors.append('test copy robots.txt does not say "Disallow: /"')
 else:
-    if f'Sitemap: {REAL}sitemap.xml' not in rb: errors.append('robots.txt does not point at the sitemap')
+    if not re.search(rf'(?m)^Sitemap:\s*{re.escape(REAL)}sitemap\.xml\s*$', rb): errors.append('robots.txt does not point at the sitemap')
     if re.search(r'(?m)^Disallow:\s*/\s*$', rb): errors.append('robots.txt blocks the whole site')
 
 # ---- redirect pages at the old site's addresses (folder/index.html)
