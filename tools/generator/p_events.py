@@ -8,7 +8,8 @@ from lib import *
 from p_news import update_href, tlink, nl_band, tg
 
 PHONE = getattr(lib, 'MAIN_PHONE', '(343) 478-0196')
-TEL = getattr(lib, 'MAIN_TEL', 'tel:+13434780196')
+_tel = getattr(lib, 'MAIN_TEL', '+13434780196')        # frame's facts.MAIN_TEL is the bare number
+TEL = _tel if _tel.startswith('tel:') else 'tel:' + _tel
 SHANNONVILLE = 'Shannonville Office, 14 York Road, Unit 4, Shannonville'
 
 # ------------------------------------------------------------------ the events (soonest first)
