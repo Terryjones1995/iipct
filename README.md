@@ -101,6 +101,8 @@ that disallows everything), points the share tags at the test address so pasted 
 and pushes. The test site is https://terryjones1995.github.io/iipct/ .
 `tools/publish-preview.sh --dry-run <empty-folder>` writes the files without committing; check them with
 `python3 -I tools/check-site.py <empty-folder> --preview`.
+That is the TEST copy: never point iipct.org at it. The live copy is `tools/publish-preview.sh --launch` (see "At
+launch" below).
 
 ## Search engines and sharing
 
@@ -127,12 +129,26 @@ and pushes. The test site is https://terryjones1995.github.io/iipct/ .
 
 **At launch (when iipct.org points at this site):**
 
-1. Signed in with IIPCT's Google account, add the property for iipct.org in Google Search Console, then submit
+1. Publish the LIVE copy, never the test copy. The ordinary publish marks every page `noindex`, makes robots.txt say
+   `Disallow: /`, points the canonical and share tags at the github.io address and roots the not-found page's links
+   at `/iipct/`: pointed at iipct.org, that tells Google not to index the real site. The live copy is the repo's files
+   unchanged (no `noindex`, the repo's robots.txt with its sitemap line, every address on `https://iipct.org/`) with
+   the not-found page's links starting at `/`:
+   - Kept on GitHub Pages: run `tools/publish-preview.sh --launch`. It also writes a `CNAME` file naming iipct.org,
+     which gives the site that custom domain (GitHub advises adding the domain before changing DNS). Then point the
+     iipct.org DNS records at GitHub Pages and, once the certificate is ready, turn on "Enforce HTTPS" under the
+     repo's Settings > Pages. From then on an ordinary test publish refuses to run, so the test copy cannot replace
+     the live site by mistake.
+   - Served by nginx: `tools/publish-preview.sh --launch --dry-run <empty-folder>`, serve that folder, and set
+     `error_page 404 /404.html;` in the server block.
+   Check either with `python3 -I tools/check-site.py <folder> --launch` (for the GitHub one, a `--dry-run` of the
+   same command), and confirm `https://iipct.org/robots.txt` shows `Allow: /` and the sitemap line.
+2. Signed in with IIPCT's Google account, add the property for iipct.org in Google Search Console, then submit
    `https://iipct.org/sitemap.xml` under Sitemaps.
-2. Confirm the old addresses redirect: https://iipct.org/contact-us/ and https://iipct.org/who-we-are/career-page/
+3. Confirm the old addresses redirect: https://iipct.org/contact-us/ and https://iipct.org/who-we-are/career-page/
    must land on the new pages. With nginx, include `tools/redirects/nginx-old-urls.conf` in the server block and check
    that `curl -sI https://iipct.org/contact-us/` answers `301`.
-3. In Search Console, inspect `https://iipct.org/` and request indexing of the home page.
+4. In Search Console, inspect `https://iipct.org/` and request indexing of the home page.
 
 If the real address is ever different (`www.iipct.org`, say), change `SITE_URL` in `seo.py`, `REAL` in
 `tools/check-site.py` and `REAL_URL` in `tools/publish-preview.sh`, then regenerate.
@@ -169,9 +185,7 @@ stand-in scenery (no people); photos of the real locations would be better (only
 
 **Logo.** `assets/img/logo-emblem.png` is a cleaned-up copy of a 216 px file. Get the original vector from IIPCT.
 
-**404 page.** `404.html` uses relative links. A missing address at the top level (`.../iipct/old-page.html`) shows it
-with its styles. A missing address one folder deep or more (`.../iipct/contact-us/`) shows it without styles, and its
-links lead to more missing pages. Every old iipct.org bookmark has that folder shape (`/contact-us/`,
-`/who-we-are/career-page/`), so fix this before the domain moves: publish `404.html` with links that start from the
-site root (`/iipct/...` on the test site, `/...` on the real domain). The publish step is the place for it, because it
-knows the address the site is served from.
+**404 page.** `404.html` uses relative links in the repo. The publish step rewrites them to start at the site root
+(`/iipct/...` on the test site, `/...` with `--launch`), so the page keeps its styles and working links at a missing
+address of any depth. The old iipct.org addresses (`/contact-us/`, `/who-we-are/career-page/` and the rest) do not
+reach it at all: each has a redirect page to its new page (see "Old addresses keep working" above).

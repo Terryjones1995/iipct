@@ -50,6 +50,7 @@ def photo_panel(photo):
 def card_html(file):
     row = seo.PAGES[file]
     panel = photo_panel(row['photo']) if row.get('photo') else default_art()
+    framed = ' framed-card' if row.get('photo') and row['photo'][2] == 'contain' else ''
     heading = html.escape(row['heading'], quote=False)
     return f'''<!doctype html>
 <html lang="en-CA">
@@ -75,13 +76,14 @@ h1 {{ margin: 0; font-family: {lib.SERIF}; font-weight: 680; font-size: 64px; li
 .pic {{ position: absolute; top: 0; right: 0; bottom: 0; width: 520px; overflow: hidden; }}
 .pic > img {{ display: block; width: 100%; height: 100%; }}
 .fade {{ position: absolute; top: 0; bottom: 0; left: 0; width: 84px; background: linear-gradient(90deg, #FBF3E8 0%, rgba(251, 243, 232, 0) 100%); }}
+.framed-card .txt {{ width: 600px; }}   /* the framed photo starts at 600 px: keep the heading clear of it */
 .framed {{ width: 600px; display: flex; align-items: center; justify-content: center; padding: 40px 44px 40px 4px; }}
 .framed > img {{ width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px;
   border: 1px solid {lib.LINE}; box-shadow: {lib.SHADOW}; }}
 </style>
 </head>
 <body>
-<div class="card">
+<div class="card{framed}">
 {lib.branch(150, '#A5B195', 0.42, 'left: -88px; top: -40px; transform: rotate(8deg)')}
 <div class="txt">
 <div class="lock"><img src="file://{EMBLEM}" alt="">

@@ -249,6 +249,10 @@ write_if_changed(OUT + 'tools/redirects/redirect-pages.txt',
 missing_og = [n for n in seo.PAGES if not os.path.isfile(OUT + seo.og_image(n))]
 if missing_og:
     print('NOTE: no share image yet for', ', '.join(missing_og), '- make them with: python3 tools/generator/og_cards.py', OUT)
+off_page = [n for n, r in seo.PAGES.items() if r.get('photo') and f'src="assets/img/{r["photo"][0]}"' not in BODIES.get(n, '')]
+if off_page:
+    print('NOTE: the share-image photo in seo.PAGES is not shown on its page for', ', '.join(off_page),
+          '- if the page\'s lead photograph changed, update the row and re-make its share image (og_cards.py)')
 
 hashes = sum(len(re.findall(r'href="#"', open(OUT + n).read())) for n in NAMES.values())
 print(count, 'pages,', len(IMG), 'images,', len(SITE_USED), 'photographs,', len(redirects), 'old-address redirects,',

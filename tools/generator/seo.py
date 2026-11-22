@@ -9,10 +9,11 @@ If a row's `heading` or `photo` changed, also re-make the share images (needs he
 Everything a search engine reads is written for the real address, SITE_URL. The test copy on GitHub Pages is kept out
 of search results by tools/publish-preview.sh, which also points its share tags at the test address.
 
-Facts (names, phone, hours, addresses) come from facts.py only. Titles and descriptions say what each page says; for
-the pages whose wording was still being corrected when this table was written (Home, Services and its seven service
-pages, Events & Programs, News and the two news posts) they follow what IIPCT's current site (iipct.org, collected in
-/home/terry/tasks/iipct/content/old-site/pages/) says about the subject.
+Facts (names, phone, hours, addresses) come from facts.py only. Titles and descriptions say what each page says (for
+Home, Services and its seven service pages, Events & Programs, News and the two news posts they were first written from
+IIPCT's current site, iipct.org, and then re-read against those pages as built: each still holds).
+A row's photo is the page's own lead photograph (the file its lib.photo() call names under site-img/); the share image
+shows it, and its fourth field says what it shows (used in the share image's alt text).
 """
 import html, json, re
 from datetime import date, datetime
@@ -37,7 +38,9 @@ PAGES = {
         # old home page: hero line + "A Place for Good Medicine" text; five locations: facts.LOCATIONS
         desc='Tsi Kanonhkhwatsheríyo (IIPCT): wholistic care blending medicine, culture and wellness, '
              'with five locations across southeastern Ontario.',
-        heading='Wholistic Care Blending Medicine, Culture, and Wellness'),
+        heading='Wholistic Care Blending Medicine, Culture, and Wellness',
+        photo=('home/hero-team-thunder-bay.jpg', 'center center', 'contain',
+               'five IIPCT team members standing together beside a pond, two of them in ribbon skirts')),
     'who-we-are.html': dict(
         title='Who We Are: our vision, mission and values | IIPCT',
         desc='Tsi Kanonhkhwatsheríyo offers inclusive healthcare with a focus on Indigenous communities. '
@@ -67,14 +70,16 @@ PAGES = {
              'Learn what that means and about our work.',
         heading='Best Practice Spotlight Organization',
         photo=('bpso/gathering-thunder-bay.jpg', '22% center', 'cover',
-               'five women, several in ribbon skirts, by a pond at the BPSO gathering in Thunder Bay')),
+               'five women, two in ribbon skirts, by a pond at the BPSO gathering in Thunder Bay')),
     'services.html': dict(
         title='Services: cultural, medical and mental health care | IIPCT',
         # old services page: "four key programs": Cultural Services, Primary Medical Care, Mental Health Services
         # (short-term, adults 18 and older), Health Support Services
         desc='Four IIPCT programs: cultural services and traditional healing, primary medical care, short-term '
              'mental health services for adults, and health support.',
-        heading='Services'),
+        heading='Services',
+        photo=('services/clinic-sign.jpg', 'center center', 'contain',
+               'an IIPCT clinic building with the Tsi Kanonhkhwatsheríyo sign and turtle logo')),
     'primary-medical-care.html': dict(
         title='Primary Medical Care: chronic and same-day care | IIPCT',
         # old primary care page: chronic disease care, same-day acute care, minor procedures, referrals, blood draws
@@ -101,23 +106,30 @@ PAGES = {
         title='Advanced Foot Care Services | IIPCT',
         desc='Advanced foot care from IIPCT nurses with specialized certification, for clients with diabetes '
              'or other conditions that affect foot health.',
-        heading='Advanced Foot Care Services'),
+        heading='Advanced Foot Care Services',
+        photo=('services/foot-care.jpg', '70% center', 'cover', 'a nurse in a gown, mask and gloves caring for a client’s foot')),
     'diabetic-retinopathy-screening.html': dict(
         title='Diabetic Retinopathy Screening | IIPCT',
         desc='Monthly diabetic eye screening clinics at IIPCT. If you have diabetes and have not had an eye '
              'screening in the past year, call to book.',
-        heading='Diabetic Retinopathy Screening'),
+        heading='Diabetic Retinopathy Screening',
+        photo=('services/retinal-screening.jpg', 'center center', 'contain',
+               'a nurse in teal scrubs using a retinal screening camera while a seated client looks into it')),
     'outreach-community-support.html': dict(
         title='Outreach and Community Support | IIPCT',
         desc='IIPCT brings care into the community: kidney, cancer, diabetes and eye screening, support for '
              'displaced communities, and a presence at powwows.',
-        heading='Outreach and Community Support'),
+        heading='Outreach and Community Support',
+        photo=('services/mobile-clinic-van.jpg', 'center center', 'contain',
+               'IIPCT’s green-and-white Mobile Health Clinic van, parked with its side door and awning open')),
     'events-programs.html': dict(
         title='Events & Programs: workshops and community events | IIPCT',
         # old events page: "Community Programs. Join workshops and events that promote learning, wellness, and connection."
         desc='Join IIPCT workshops and community events that promote learning, wellness and connection. '
              'See what is coming up and how to take part.',
-        heading='Events & Programs'),
+        heading='Events & Programs',
+        photo=('events/hero-fall-into-harvest.jpg', 'center center', 'contain',
+               'seven IIPCT team members sitting together among corn stalks, hay bales and pumpkins at Fall Into Harvest')),
     'news.html': dict(
         title='News & Updates: stories and notices | IIPCT',
         desc='Stories, announcements and notices from Tsi Kanonhkhwatsheríyo Indigenous Interprofessional '
@@ -128,6 +140,8 @@ PAGES = {
         desc='Five IIPCT staff members were honoured at the 2025 Indigenous Primary Health Care Council (IPHCC) '
              'Member Awards, out of 18 awards province-wide.',
         heading='Our Team Honoured at the IPHCC Awards',
+        photo=('news/iphcc-awards-2025.jpg', 'center center', 'contain',
+               'three women at the IPHCC Member Awards, the one in the middle holding a framed award'),
         # old site post record (pages/our-team-honoured-at-the-iphcc-awards.md): published 2025-10-09, modified 2025-10-22
         article=dict(published='2025-10-09', modified='2025-10-22')),
     'news-breast-cancer-screening.html': dict(
@@ -135,6 +149,8 @@ PAGES = {
         desc='19 mammograms were completed at IIPCT’s Together We’re Stronger breast cancer screening event, '
              'held together with three partners.',
         heading='Together We’re Stronger: Breast Cancer Screening Event',
+        photo=('news/breast-screening-event-table.jpg', 'center center', 'contain',
+               'the event table, with a pink cloth, three pots of flowers, framed artwork and gift bags'),
         # old site post record (pages/together-were-stronger-breast-cancer-screening-event.md)
         article=dict(published='2025-10-09', modified='2025-10-22')),
     'contact.html': dict(
@@ -286,12 +302,20 @@ def breadcrumbs(file, body):
     return {'@context': 'https://schema.org', '@type': 'BreadcrumbList',
             'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': n, 'item': u} for i, (n, u) in enumerate(items)]}
 
-def article(file):
+def photo_url(file):
+    """The real address of the row's lead photograph (lib.photo copies site-img/<path> to assets/img/<path>), or None."""
+    pic = PAGES[file].get('photo')
+    return SITE_URL + 'assets/img/' + pic[0] if pic else None
+
+def article(file, body=''):
+    """The news post as a NewsArticle; its images are the share image and, when the page shows it, the lead photograph."""
     row = PAGES[file]
     a = row['article']
+    pic = photo_url(file)
+    images = [SITE_URL + og_image(file)] + ([pic] if pic and f'src="{pic[len(SITE_URL):]}"' in body else [])
     return {'@context': 'https://schema.org', '@type': 'NewsArticle', 'headline': row['heading'],
             'datePublished': a['published'], 'dateModified': a['modified'],
-            'image': [SITE_URL + og_image(file)], 'mainEntityOfPage': url(file),
+            'image': images, 'mainEntityOfPage': url(file),
             'author': {'@type': 'Organization', 'name': SITE_NAME, 'url': SITE_URL},
             'publisher': {'@id': ORG_ID}}
 
@@ -308,7 +332,9 @@ def _offset(day, hhmm):
 def events(file, today=None):
     """Event blocks for the dated, upcoming events the Events page lists. They are read from the page module's EVENTS
     list (p_events.EVENTS: dicts with title, dates ['YYYY-MM-DD', ...], start/end 'HH:MM', place, place_short, text,
-    anchor). A page with no such list gets no Event markup. One block per date; past dates are left out."""
+    anchor, tag). A page with no such list gets no Event markup. One block per date; past dates are left out.
+    IIPCT is named as organizer only for its own events: an event the page tags as a partner's ('Partner event') is
+    run by another organisation (IIPCT co-brands it), so its block names no organizer."""
     if file != 'events-programs.html':
         return []
     try:
@@ -332,7 +358,8 @@ def events(file, today=None):
             if ev.get('text'):
                 first = ev['text'][0] if isinstance(ev['text'], (list, tuple)) else ev['text']
                 e['description'] = plain(first)
-            e['organizer'] = {'@id': ORG_ID}
+            if 'partner' not in str(ev.get('tag', '')).lower():
+                e['organizer'] = {'@id': ORG_ID}
             e['url'] = url(file) + ('#' + ev['anchor'] if ev.get('anchor') else '')
             out.append(e)
     return out
@@ -350,7 +377,7 @@ def structured(file, body):
     if b:
         blocks.append(b)
     if PAGES[file].get('article'):
-        blocks.append(article(file))
+        blocks.append(article(file, body))
     blocks += events(file)
     return blocks
 

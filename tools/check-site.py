@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check the static site folder for broken things. No dependencies.
 
-usage: python3 -I tools/check-site.py [site-dir] [--strict] [--online] [--preview]
+usage: python3 -I tools/check-site.py [site-dir] [--strict] [--online] [--preview | --launch]
 
 Always fails on: a link to a page or file that does not exist, a link to an anchor that is not on the target page,
 an image or stylesheet that does not exist, duplicate ids on a page, an image with no alt attribute, two pages with
@@ -9,12 +9,16 @@ the same <title>, a page with no description.
 Search engines and sharing (always on): every page has exactly one canonical address (the not-found page has none),
 a title of 15-60 characters and a description of 70-160, both unique across pages; og:url matches the canonical;
 og:image (and twitter:image) is a 1200 x 630 JPEG that exists and is under 300 KB; every JSON-LD block parses and has
-@context and @type; every <img> has width and height; sitemap.xml lists exactly the public pages; robots.txt points
+@context and @type, and every file it names on the real address exists; every <img> has width and height; sitemap.xml lists exactly the public pages; robots.txt points
 at the sitemap; no page carries a robots noindex (only the redirect pages at the old addresses may, and must); each
 redirect page sends visitors to a page that exists.
 --preview checks a test copy written by tools/publish-preview.sh instead: every page carries the noindex line, the
 canonical / og:url / og:image / twitter:image tags use the test address and it appears nowhere else, robots.txt
-disallows everything, and links that start at the site root (/iipct/...) are followed.
+disallows everything, there is no CNAME file, the not-found page's links all start at the site root (/iipct/...),
+and those links are followed.
+--launch checks a live copy written by tools/publish-preview.sh --launch: the same rules as the repo (no noindex on any
+page, real addresses only, robots.txt with its sitemap line), plus a CNAME file naming iipct.org and the not-found
+page's links all starting at "/".
 --strict also fails on: placeholder links (href="#"), buttons that cannot do anything (the site has no JavaScript,
 so a <button> outside a form that submits is dead), and bracketed placeholder text like "[Staff name]"
 (allowed on the two draft legal pages listed in DRAFTS, whose wording IIPCT must supply).
@@ -29,11 +33,14 @@ SITE = os.path.abspath(args[0] if args else '.') + '/'
 STRICT = '--strict' in sys.argv
 ONLINE = '--online' in sys.argv
 PREVIEW = '--preview' in sys.argv
+LAUNCH = '--launch' in sys.argv
+if PREVIEW and LAUNCH: sys.exit('check-site.py: --preview and --launch exclude each other')
 # Pages whose wording IIPCT must still supply: their [bracketed] items are expected until launch.
 DRAFTS = ('privacy-policy.html', 'accessibility.html')
 REAL = 'https://iipct.org/'                                  # tools/generator/seo.py SITE_URL
 TEST = 'https://terryjones1995.github.io/iipct/'             # tools/publish-preview.sh PREVIEW_URL
 TEST_ROOT = '/iipct/'
+ROOT = TEST_ROOT if PREVIEW else '/' if LAUNCH else None    # where links that start at the site root begin
 BASE = TEST if PREVIEW else REAL
 NOT_PUBLIC = ('404.html',)                                   # tools/generator/seo.py NOT_PUBLIC
 OG_SIZE, OG_MAX = (1200, 630), 300_000
@@ -90,8 +97,8 @@ class Page(HTMLParser):
 
 
 def local(path):
-    """A link or file path as a path inside SITE (in a test copy, /iipct/... starts at the site root)."""
-    if PREVIEW and path.startswith(TEST_ROOT): path = path[len(TEST_ROOT):]
+    """A link or file path as a path inside SITE (in a published copy, /iipct/... or /... starts at the site root)."""
+    if ROOT and path.startswith(ROOT): path = path[len(ROOT):]
     return path.split('?')[0].split('#')[0]
 
 
@@ -110,6 +117,15 @@ def jpeg_size(path):
             return int.from_bytes(data[i + 7:i + 9], 'big'), int.from_bytes(data[i + 5:i + 7], 'big')
         i += 2 + n
     return None
+
+
+def strings(x):
+    """Every string inside parsed JSON."""
+    if isinstance(x, str): yield x
+    elif isinstance(x, dict):
+        for v in x.values(): yield from strings(v)
+    elif isinstance(x, list):
+        for v in x: yield from strings(v)
 
 
 def page_url(base, f):
@@ -193,6 +209,9 @@ for f, p in parsed.items():
         for item in (data if isinstance(data, list) else [data]):
             if not (isinstance(item, dict) and item.get('@context') and item.get('@type')):
                 errors.append(f'{f}: JSON-LD block {i} has no @context or @type')
+        for u in strings(data):
+            if u.startswith(REAL + 'assets/') and not os.path.isfile(SITE + local(u[len(REAL):])):
+                errors.append(f'{f}: JSON-LD block {i} names a missing file {u}')
     if not p.ld: errors.append(f'{f}: no JSON-LD structured data')
     if p.nodim: errors.append(f'{f}: {p.nodim} image(s) without width and height')
     noindex = [r for r in p.robots if 'noindex' in r.lower()]
@@ -247,14 +266,25 @@ for r in sorted(found):
     if not any('noindex' in x for x in p.robots): errors.append(f'{r}: redirect page without noindex')
     if p.canon != [page_url(BASE, target)]: errors.append(f'{r}: canonical {p.canon} (want {page_url(BASE, target)})')
     if m.group(1) not in p.hrefs: errors.append(f'{r}: no plain link to {m.group(1)}')
+# ---- a published copy (tools/publish-preview.sh): the CNAME file and the not-found page's links
+if PREVIEW or LAUNCH:
+    cname = SITE + 'CNAME'
+    host = REAL[len('https://'):].rstrip('/')
+    if PREVIEW and os.path.exists(cname): errors.append('test copy has a CNAME file (GitHub would serve it as the live domain)')
+    if LAUNCH and (not os.path.isfile(cname) or open(cname, encoding='utf-8').read().strip() != host):
+        errors.append(f'live copy has no CNAME file naming {host}')
+    if '404.html' in raw:
+        rel = [h for h in parsed['404.html'].hrefs + parsed['404.html'].srcs
+               if not (re.match(r'^[a-z][a-z0-9+.-]*:|^#|^//', h) or h.startswith(ROOT))]
+        if rel: errors.append(f'404.html: {len(rel)} link(s) that do not start at {ROOT}, e.g. {rel[0]}')
 manifest = SITE + 'tools/redirects/redirect-pages.txt'
-if not PREVIEW and os.path.isfile(manifest):
+if not (PREVIEW or LAUNCH) and os.path.isfile(manifest):
     listed = [l.strip() for l in open(manifest, encoding='utf-8') if l.strip() and not l.startswith('#')]
     for r in sorted(set(listed) - set(found)): errors.append(f'redirect page listed in tools/redirects/redirect-pages.txt is missing: {r}')
     for r in sorted(set(found) - set(listed)): errors.append(f'{r}: not listed in tools/redirects/redirect-pages.txt (it would not be published)')
 
 print(f'{len(pages)} pages; {len(found)} redirect pages; {sum(len(p.hrefs) for p in parsed.values())} links; {len(external)} distinct outside links'
-      + ('  [test copy]' if PREVIEW else ''))
+      + ('  [test copy]' if PREVIEW else '  [live copy]' if LAUNCH else ''))
 for e in errors: print('ERROR  ', e)
 for e in strict_errors: print('STRICT ' if STRICT else 'note   ', e)
 
