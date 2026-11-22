@@ -710,8 +710,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .h2 {
     font-size: 30px !important;
   }
-  #main :is(p, li, dd, figcaption) {
-    max-width: 60ch !important;
+  #main :is(p, dd, figcaption, li:not(:has(>details))) {
+    max-width: 32em !important;
   }
   #main>* {
     margin-top: 48px !important;
@@ -809,6 +809,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .tila .tile-b {
     padding-right: 50px !important;
+  }
+  .bt {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
   }
   .g-steps {
     grid-template-columns: repeat(3,minmax(0,1fr)) !important;
@@ -1235,6 +1240,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     text-align: center;
     padding: 6px 10px !important;
     min-height: 44px !important;
+    font-size: 14px !important;
+    border-radius: 14px !important;
   }
   .toc ul {
     display: grid !important;

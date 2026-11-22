@@ -903,7 +903,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .hero-txt .lead{font-size:17px !important;line-height:1.45 !important}
 .hz-t{display:block}
 .h2{font-size:30px !important}
-#main :is(p,li,dd,figcaption){max-width:60ch !important}
+#main :is(p,dd,figcaption,li:not(:has(>details))){max-width:32em !important}
 #main>*{margin-top:48px !important}
 #main>:first-child,#main>.hero-sec,#main>.sh{margin-top:0 !important}
 #main>.hero-sec+*,#main>.sh+*{margin-top:28px !important}
@@ -931,6 +931,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .sh-photo img{aspect-ratio:4 / 3 !important}
 .sh .h1{font-size:40px !important}
 .tila .tile-b{padding-right:50px !important}
+.bt{flex-direction:column !important;align-items:flex-start !important;gap:10px !important}
 .g-steps{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
 .g-steps>*{flex-direction:column;gap:12px !important}
 .aside>:last-child:nth-child(odd){grid-column:1 / -1}
@@ -1040,7 +1041,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .cu-col .ci{width:52px !important;height:52px !important}
 .cu-col .ci svg{width:26px;height:26px}
 .jl{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px !important}
-.jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important}
+.jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important;font-size:14px !important;border-radius:14px !important}
 .toc ul{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px !important}
 .btn{font-size:15px !important;white-space:normal !important;line-height:1.25 !important;text-align:center;padding-top:9px !important;padding-bottom:9px !important}
 .g-tm{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
