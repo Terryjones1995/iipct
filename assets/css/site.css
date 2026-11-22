@@ -138,6 +138,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .mnav[open] .mi-o, .mnav:not([open]) .mi-x {
   display: none !important;
 }
+.xt>summary, .faq>summary {
+  list-style: none;
+}
+.xt>summary::-webkit-details-marker, .faq>summary::-webkit-details-marker {
+  display: none;
+}
+.xt[open]>summary>svg, .faq[open]>summary>svg {
+  transform: rotate(180deg);
+}
 .ml {
   transition: background .15s;
 }
@@ -168,6 +177,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .hero-txt .lead {
     font-size: 16.6px !important;
   }
+  .g3l {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  }
 }
 
 @media (max-width:1199px) {
@@ -185,6 +197,45 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hd-logo {
     width: 68px !important;
+  }
+}
+
+@media (max-width:1199px) {
+  .fl {
+    display: inline-flex !important;
+    align-items: center;
+    min-height: 40px !important;
+  }
+  .ft-col {
+    gap: 2px !important;
+  }
+  .tl, .cl, a[href^="tel:"], a[href^="mailto:"] {
+    min-height: 40px !important;
+  }
+  nav[aria-label="Breadcrumb"] a {
+    min-width: 40px;
+  }
+  .tl:not([style*="display"]):not(p .tl):not(li .tl), a[href^="tel:"]:not([style*="display"]):not(p a):not(li a), a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a) {
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn {
+    min-height: 40px !important;
+  }
+  .ra {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .toc a {
+    display: flex !important;
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
+@media (max-width:940px) {
+  .fsu {
+    font-size: 12px !important;
   }
 }
 
@@ -208,6 +259,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hero-photo {
     object-position: 60% 30% !important;
+  }
+  .hero-photo.hp-np {
+    object-position: var(--np) !important;
   }
   .hero-txt {
     max-width: none !important;
@@ -310,6 +364,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hide-t {
     display: none !important;
+  }
+  .g2t {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
 
@@ -478,13 +535,46 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
 }
 
+@media (1099px < width <= 1399px) {
+  .lcg {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+  }
+  .lcg>* {
+    grid-column: span 2;
+  }
+  .lcg>:nth-child(3n+1):nth-last-child(2) {
+    grid-column: 2 / span 2;
+  }
+  .lcg>:nth-child(3n+1):last-child {
+    grid-column: 3 / span 2;
+  }
+}
+
+@media (760px < width <= 1099px) {
+  .lcg {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+  }
+  .lcg>* {
+    grid-column: span 2;
+  }
+  .lcg>:nth-child(odd):last-child {
+    grid-column: 2 / span 2;
+  }
+}
+
+@media (width <= 760px) {
+  .lcg {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+
 /* Skip link */
 .skip {
   position: absolute;
   left: 12px;
   top: -60px;
   z-index: 100;
-  padding: 10px 16px;
+  padding: 13px 16px;
   border-radius: 8px;
   background: #17402A;
   color: #fff;
