@@ -118,10 +118,12 @@ def when_text(e):
 
 # ------------------------------------------------------------------ shared pieces (Home uses these too)
 def site_hero(path, wh, alt, photo_w, min_h, h1, lead, buttons, obj='center center', h1_size=46, lead_size=18.6, lead_w=600, text_w=680,
-              pad='36px 0 30px 83px', gap=14, lead_lh=1.32, btn_mt=8, lead_weight=450, sq_mt=0):
-    """lib.hero() with a real photograph from site-img/ instead of a mock-up crop (same markup and classes)."""
-    pic = photo(path, alt, f'position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}',
-                'hero-photo', wh[0], wh[1], lazy=False)
+              pad='36px 0 30px 83px', gap=14, lead_lh=1.32, btn_mt=8, lead_weight=450, sq_mt=0, narrow_pos=None):
+    """lib.hero() with a real photograph from site-img/ instead of a mock-up crop (same markup and classes).
+    narrow_pos: the photo's crop once it sits in its own box (phones and tablets), like lib.hero()'s narrow_pos."""
+    np_st, np_cls = (f'; --np: {narrow_pos}', ' hp-np') if narrow_pos else ('', '')
+    pic = hero_pic(photo(path, alt, f'position: absolute; top: 0; right: 0; width: {photo_w}%; height: 100%; object-fit: cover; object-position: {obj}{np_st}',
+                         'hero-photo' + np_cls, wh[0], wh[1], lazy=False))
     return f'''
 <section class="hero-sec" style="position: relative; min-height: {min_h}px">
 {pic}
@@ -131,61 +133,62 @@ def site_hero(path, wh, alt, photo_w, min_h, h1, lead, buttons, obj='center cent
 <div style="position: relative; z-index: 1; {WRAP}">
 <div class="hero-txt" style="max-width: {text_w}px; padding: {pad}; display: flex; flex-direction: column; align-items: flex-start; gap: {gap}px">
 <h1 class="h1" style="margin: 0; font-family: {SERIF}; font-weight: 680; font-size: {h1_size}px; line-height: 1.02; letter-spacing: -0.014em; color: {H1C}">{h1}</h1>
-<span style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>
+<span class="sq" style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>
 <p class="lead" style="margin: 0; max-width: {lead_w}px; font-size: {lead_size}px; font-weight: {lead_weight}; line-height: {lead_lh}; color: {INK}">{lead}</p>
 <div class="btn-row" style="display: flex; flex-wrap: wrap; gap: 14px 23px; margin-top: {btn_mt}px">{buttons}</div>
 </div>
 </div>
+{hero_horizon()}
 </section>'''
 
 def facebook_line(style=''):
     return (f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; {style}">'
-            f'<p style="margin: 0; font-size: 14px; line-height: 1.45; color: {INK}">New dates are posted on IIPCT’s Facebook page first.</p>'
+            f'<p class="t-b" style="margin: 0; font-size: 14px; line-height: 1.45; color: {INK}">New dates are posted on IIPCT’s Facebook page first.</p>'
             f'{tlink("IIPCT on Facebook", FACEBOOK_URL)}</div>')
 
 # ------------------------------------------------------------------ Events page
 def date_tile(iso, big=False):
     d = date.fromisoformat(iso)
     w, ds = (84, 34) if big else (68, 27)
-    return (f'<span aria-hidden="true" style="flex: none; width: {w}px; padding: 9px 0 10px; border-radius: 12px; background: #FDF8EE; border: 1px solid #D6BC86; '
+    return (f'<span class="ev-d" aria-hidden="true" style="flex: none; width: {w}px; padding: 9px 0 10px; border-radius: 12px; background: #FDF8EE; border: 1px solid #D6BC86; '
             f'display: flex; flex-direction: column; align-items: center; gap: 4px; line-height: 1">'
             f'<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {RUST}">{MONTHS[d.month - 1][:3]}</span>'
             f'<span style="font-family: {SERIF}; font-size: {ds}px; font-weight: 700; color: {HEAD}">{d.day}</span>'
             f'<span style="font-size: 12px; font-weight: 600; color: {MUTED}">{DAYS[d.weekday()][:3]}</span></span>')
 
 def meta_row(icon, html):
-    return (f'<span style="display: flex; align-items: flex-start; gap: 10px; font-size: 14.2px; font-weight: 600; line-height: 1.4; color: {HEAD}">'
+    return (f'<span class="t-s" style="display: flex; align-items: flex-start; gap: 10px; font-size: 14.2px; font-weight: 600; line-height: 1.4; color: {HEAD}">'
             f'{ico(icon, 18, RUSTI, 1.8, "margin-top: 1px")}<span style="min-width: 0">{html}</span></span>')
 
 def fact(label, html):
     return (f'<div style="display: flex; flex-direction: column; gap: 3px"><dt style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {RUST}">{label}</dt>'
-            f'<dd style="margin: 0; font-size: 14.2px; line-height: 1.5; color: {INK}">{html}</dd></div>')
+            f'<dd class="t-b" style="margin: 0; font-size: 14.2px; line-height: 1.5; color: {INK}">{html}</dd></div>')
 
 def flyer_link(e):
     th, w, h, full = e['flyer']
     title = re.sub(r'<[^>]+>', '', e['title']).replace('&amp;', '&')
-    return (f'<a class="card" href="/_site/{full}" style="flex: 0 0 150px; max-width: 100%; align-self: flex-start; display: flex; flex-direction: column; gap: 8px; padding: 8px 8px 6px; '
+    return (f'<a class="card ev-f" href="/_site/{full}" style="flex: 0 0 150px; max-width: 100%; align-self: flex-start; display: flex; flex-direction: column; gap: 8px; padding: 8px 8px 6px; '
             f'border-radius: 12px; background: #FFFDF8; border: 1px solid {LINE}; color: {RUST}; text-decoration: none">'
             + photo(th, f'Flyer for {title}', 'width: 100%; height: auto; border-radius: 7px', '', w, h)
             + f'<span style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; font-size: 13px; font-weight: 600">'
               f'<span style="text-decoration: underline; text-underline-offset: 3px">Full flyer</span>{ico("arrow", 14, RUST, 1.9)}</span></a>')
 
 def event_card(e):
-    paras = ''.join(f'<p style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px">{t}</p>' for t in e['text'])
+    paras = ''.join(f'<p class="t-b" style="margin: 0; font-size: 14.6px; line-height: 1.55; color: {INK}; max-width: 780px">{t}</p>' for t in e['text'])
     when = meta_row('calendar', when_text(e)) + (meta_row('clock', e['when_note']) if e.get('when_note') else '') + meta_row('pin', e['place'])
     facts = fact('Who can come', e['who']) + fact('How to take part', e['how'])
-    status = (f'<p style="margin: 0; padding: 10px 14px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 14px; font-weight: 600; line-height: 1.4; color: #5A1E10">'
+    status = (f'<p class="t-b" style="margin: 0; padding: 10px 14px; border-radius: 10px; background: #F1D5C8; border: 1px solid #D9A892; font-size: 14px; font-weight: 600; line-height: 1.4; color: #5A1E10">'
               f'{e["status"]}</p>') if e.get('status') else ''
-    partner = f'<p style="margin: 0; font-size: 13.6px; font-style: italic; line-height: 1.45; color: {MUTED}">{e["partner"]}</p>' if e.get('partner') else ''
+    partner = f'<p class="t-s" style="margin: 0; font-size: 13.6px; font-style: italic; line-height: 1.45; color: {MUTED}">{e["partner"]}</p>' if e.get('partner') else ''
     actions = ''
     if e.get('register'):
         actions += btn(e['register'][0], e['register'][1], 'primary', 'calendar-check', False, 'md')
     actions += tlink('See the Facebook post', e['fb'])
-    return f'''<article id="{e['anchor']}" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}">
+    return f'''<article class="ev" id="{e['anchor']}" style="scroll-margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 24px; padding: 22px 24px; border-radius: 16px; {CARD}">
 {date_tile(e['dates'][0])}
-<div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
-<div style="display: flex; flex-wrap: wrap; gap: 8px">{tg(e['tag'], e['tone'])}</div>
-{h3(e['title'], 23)}
+<div class="ev-b" style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
+<div class="ev-t" style="display: flex; flex-wrap: wrap; gap: 8px">{tg(e['tag'], e['tone'])}</div>
+{h3(e['title'], 23, '', 't-h3 t-h3l ev-h')}
 <div style="display: flex; flex-direction: column; gap: 6px">{when}</div>
 {paras}
 <dl style="margin: 2px 0 0; display: grid; gap: 10px">{facts}</dl>
@@ -218,8 +221,8 @@ PROGRAMS = [
 def program_card(icon, tone, title, pattern, text):
     return (f'<div style="display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px 17px 16px; border-radius: 14px; {CARD}">'
             f'{circ(icon, tone, 48, 25, 1.5)}<div style="min-width: 0; display: flex; flex-direction: column; gap: 5px">'
-            f'{h3(title, 18)}<span style="font-size: 13px; font-weight: 700; color: {RUST}">{pattern}</span>'
-            f'<p style="margin: 0; font-size: 13.8px; line-height: 1.5; color: {INK}">{text}</p></div></div>')
+            f'{h3(title, 18)}<span class="t-s" style="font-size: 13px; font-weight: 700; color: {RUST}">{pattern}</span>'
+            f'<p class="t-b" style="margin: 0; font-size: 13.8px; line-height: 1.5; color: {INK}">{text}</p></div></div>')
 
 # Recently: the last few past events, each linking to its post on the News page.
 RECENT = [
@@ -243,7 +246,7 @@ def page():
     s += f'''
 <section id="upcoming" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 56px 0 56px">
 {sec_head('Upcoming Events', 'Join Us at an Upcoming Event', '', 30)}
-<p style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">Soonest first. Each event says who it is for and how to take part, in IIPCT’s own words.</p>
+<p class="t-b" style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">Soonest first. Each event says who it is for and how to take part, in IIPCT’s own words.</p>
 <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 18px">
 {cards}
 </div>
@@ -251,15 +254,15 @@ def page():
 </section>
 <section id="programs" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
 {sec_head('Programs That Repeat', 'Regular Programs', '', 28.6)}
-<p style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">These programs come back regularly. The next dates are posted on Facebook when they are set.</p>
-{grid([program_card(*pr) for pr in PROGRAMS], 330, 14, 'margin-top: 16px')}
+<p class="t-b" style="margin: 10px 0 0; max-width: 760px; font-size: 15px; line-height: 1.5; color: {INK}">These programs come back regularly. The next dates are posted on Facebook when they are set.</p>
+{grid([program_card(*pr) for pr in PROGRAMS], 330, 14, 'margin-top: 16px', 'g-cards gt2')}
 </section>
 <section id="recent" style="scroll-margin-top: 16px; {WRAP}; padding: 34px 56px 0 56px">
 {sec_head('Recently', 'Recent Events', tlink('All news and updates', 'News.dc.html', 'arrow', 14.4), 28.6)}
 <ul style="margin: 14px 0 0; padding: 4px 22px; list-style: none; border-radius: 14px; {CARD}">
 {''.join(f'<li style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 18px; padding: 8px 0; {"" if i == 0 else "border-top: 1px solid #E6D9BF"}">'
-         f'<span style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}">{t}</span>'
-         f'<span style="font-size: 13.6px; line-height: 1.4; color: {MUTED}">{d}</span></span>{tlink("Read the post", update_href(n), "arrow", 13.6)}</li>' for i, (t, d, n) in enumerate(RECENT))}
+         f'<span style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span class="t-b" style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}">{t}</span>'
+         f'<span class="t-s" style="font-size: 13.6px; line-height: 1.4; color: {MUTED}">{d}</span></span>{tlink("Read the post", update_href(n), "arrow", 13.6)}</li>' for i, (t, d, n) in enumerate(RECENT))}
 </ul>
 </section>
 <div style="margin-top: 40px">{nl_band('Get our news, events and programs by email. Sign up on our newsletter page.')}</div>'''
@@ -319,14 +322,14 @@ def home_events():
                        f'font-size: 13.6px; font-weight: 600; line-height: 1.4; color: #5A1E10">{closed}.</p>') if closed else ''
         closed_row = f'<span style="font-size: 13px; font-weight: 700; line-height: 1.35; color: #8A2E17">{closed}</span>' if closed else ''
         cards += (f'<div id="next-{key}" data-wd="{DAYS[d.weekday()]}" hidden>'
-                  f'<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{date_tile(dt, True)}'
-                  f'<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
-                  f'<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">{eyebrow("Up next")}'
+                  f'<div class="ev" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 18px; padding: 20px 22px; border-radius: 16px; {CARD}">{date_tile(dt, True)}'
+                  f'<div class="ev-b" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px">'
+                  f'<span class="ev-t" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">{eyebrow("Up next")}'
                   f'<span hidden><span class="ev-when" style="display: inline-block; padding: 4px 10px 3px; border-radius: 999px; background: #17402A; color: #FFFFFF; font-size: 12px; font-weight: 700; line-height: 1.2"></span></span></span>'
-                  f'{h3(e["title"], 22)}'
+                  f'{h3(e["title"], 22, "", "t-h3 t-h3l ev-h")}'
                   f'{meta_row("calendar", when)}{meta_row("pin", e["place_short"])}{closed_card}'
-                  f'<p style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
-                  f'<p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>'
+                  f'<p class="t-b" style="margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: {INK}">{e["text"][0]}</p>'
+                  f'<p class="t-s" style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {MUTED}"><strong style="color: {HEAD}">Who can come:</strong> {e["who"]}</p>'
                   f'{tlink("Event details", href, "arrow", 14)}</div></div></div>')
         if dt != last:
             if last: groups += '</ul></li>'
@@ -336,10 +339,10 @@ def home_events():
             last = dt
         groups += (f'<li data-end="{end}" data-day="{dt}" data-key="{key}">'
                    f'<a class="tl" href="{href}" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
-                   f'<span style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
+                   f'<span class="t-s" style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{trange(e["start"], e["end"])}</span>'
                    f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
-                   f'<span style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{e["title"]}</span>'
-                   f'<span style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span>{closed_row}</span></a></li>')
+                   f'<span class="t-b" style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{e["title"]}</span>'
+                   f'<span class="t-s" style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{e["place_short"]}</span>{closed_row}</span></a></li>')
     if last: groups += '</ul></li>'
     today = date.today().isoformat()
     none_hidden = '' if not any(dt >= today for dt, _ in occ) else ' hidden'

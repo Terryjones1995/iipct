@@ -36,15 +36,15 @@ def page_hero(trail, title, lead, pic='', **kw):
         s = s.replace(medal_box, '<div class="hide-t" aria-hidden="true" style="flex: 0 0 200px')
     if not pic:
         return s
-    tail = '\n\n</div>\n</section>'
-    assert s.endswith(tail), 'lib.sub_hero() markup changed: update p_sub.page_hero()'
-    return s[:-len(tail)] + '\n' + pic + '\n</div>\n</section>'
+    tail = '\n\n</div>\n<div class="hero-hz"'
+    assert s.count(tail) == 1, 'lib.sub_hero() markup changed: update p_sub.page_hero()'
+    return s.replace(tail, '\n' + pic + '\n</div>\n<div class="hero-hz"', 1)
 
 def related(current):
-    tiles = [(f'<a class="card" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; border-radius: 12px; {CARD}; '
+    tiles = [(f'<a class="card t-s" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; border-radius: 12px; {CARD}; '
               f'font-size: 14px; font-weight: 600; line-height: 1.25; color: {HEAD}; text-decoration: none"><span>{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
              for t, h in [PC] + [(t, h) for t, h in SUBS if h != current]]
-    return section('More in primary care', grid(tiles, 230, 12), size=23)
+    return section('More in primary care', grid(tiles, 230, 12, '', 'g-tiles gt3'), size=23)
 
 def shell(file, crumb, title, lead, main, aside_title='Book this service', pic='', **hero_kw):
     buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + btn('Contact a Clinic', 'Contact.dc.html', 'outline', 'phone', False)

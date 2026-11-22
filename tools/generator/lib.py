@@ -114,7 +114,7 @@ CIRC = {'sage': ('#8E9C7A', '#75866A'), 'rust': ('#BD7862', '#A55A43'), 'gold': 
 def circ(name, tone='sage', size=66, isize=None, sw=1.5, style=''):
     hi, lo = CIRC[tone]
     isize = isize or round(size * 0.52)
-    return (f'<span style="flex: none; width: {size}px; height: {size}px; border-radius: 50%; display: flex; align-items: center; justify-content: center; '
+    return (f'<span class="ci" style="flex: none; width: {size}px; height: {size}px; border-radius: 50%; display: flex; align-items: center; justify-content: center; '
             f'background: radial-gradient(circle at 38% 30%, {hi} 0%, {lo} 78%); box-shadow: 0 0 0 2px #FFFDF8, 0 0 0 3px rgba(120, 92, 44, 0.32); {style}">'
             f'{ico(name, isize, "#FCF2DF", sw)}</span>')
 
@@ -134,21 +134,22 @@ def eyebrow(text, color=RUST, style=''):
     return f'<span style="display: block; font-size: 12.8px; font-weight: 700; letter-spacing: 0.16em; line-height: 1.1; text-transform: uppercase; color: {color}; {style}">{text}</span>'
 
 def h2(text, size=32, color=HEAD, style='', tag='h2', weight=600):
-    cls = ' class="h2"' if size >= 26.4 else ''
+    cls = ' class="h2"' if size >= 22 else ''
     return f'<{tag}{cls} style="margin: 0; font-family: {SERIF}; font-weight: {weight}; font-size: {size}px; line-height: 1.06; letter-spacing: -0.018em; color: {color}; {style}">{text}</{tag}>'
 
-def p(text, size=14, color=INK, lh=1.36, style=''):
-    return f'<p style="margin: 0; font-size: {size}px; line-height: {lh}; color: {color}; {style}">{text}</p>'
+def p(text, size=14, color=INK, lh=1.36, style='', cls='t-b'):
+    c = f' class="{cls}"' if cls else ''
+    return f'<p{c} style="margin: 0; font-size: {size}px; line-height: {lh}; color: {color}; {style}">{text}</p>'
 
 def vdiv(h='100%', color=GOLDL, style=''):
     return f'<span class="vd" aria-hidden="true" style="flex: none; align-self: stretch; width: 1px; min-height: {h}; background: {color}; {style}"></span>'
 
-SQUIGGLE = ('<svg aria-hidden="true" width="160" height="17" viewBox="0 0 160 17" style="display: block">'
+SQUIGGLE = ('<svg class="sqg" aria-hidden="true" width="160" height="17" viewBox="0 0 160 17" style="display: block">'
             '<path d="M1 15 C 24 5 58 1 95 4 C 118 6 140 5.6 159 1 C 145 10.6 120 13.6 94 11 C 62 7.8 30 9.8 1 15 Z" fill="#C79A3D"></path></svg>')
 
 # ---------------------------------------------------------------- buttons
 BOOK_LABELS = ('Schedule Your Visit', 'Book an Appointment', 'Book Online')
-def btn(label, href='#', kind='primary', icon=None, arrow=True, size='md', style=''):
+def btn(label, href='#', kind='primary', icon=None, arrow=True, size='md', style='', cls=''):
     if label in BOOK_LABELS:
         href = 'Booking.dc.html'
     h, fs, px = {'xs': (30, 12, 13), 'sm': (37, 13.2, 14), 'md': (42, 13.7, 22), 'lg': (44, 14.2, 26)}[size]
@@ -162,13 +163,13 @@ def btn(label, href='#', kind='primary', icon=None, arrow=True, size='md', style
         'soft': 'background: linear-gradient(180deg, #F3EDD9 0%, #E7E0C8 100%); color: #13261B; border: 1px solid #CFC9AA; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.10)',
         'sage': 'background: #FAF6EA; color: #133019; border: 1.5px solid #7E9471; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.07)',
     }[kind]
-    cls = {'primary': 'btn bp', 'outline': 'btn bo', 'gold': 'btn bg', 'light': 'btn bo', 'soft': 'btn bs', 'sage': 'btn bo'}[kind]
+    cls = {'primary': 'btn bp', 'outline': 'btn bo', 'gold': 'btn bg', 'light': 'btn bo', 'soft': 'btn bs', 'sage': 'btn bo'}[kind] + (' ' + cls if cls else '')
     ic = ico(icon, round(fs + 3.5), 'currentColor', 1.8) if icon else ''
     ar = ico('arrow', round(fs + 1.5), 'currentColor', 2) if arrow else ''
     return f'<a class="{cls}" href="{href}" style="{base}{look}; {style}">{ic}<span>{label}</span>{ar}</a>'
 
-def textlink(label, href='#', size=14.4, style='', icon='arrow'):
-    return (f'<a class="tl" href="{href}" style="display: inline-flex; align-items: center; gap: 12px; font-size: {size}px; font-weight: 600; color: {RUST}; text-decoration: none; white-space: nowrap; {style}">'
+def textlink(label, href='#', size=14.4, style='', icon='arrow', cls=''):
+    return (f'<a class="tl{" " + cls if cls else ""}" href="{href}" style="display: inline-flex; align-items: center; gap: 12px; font-size: {size}px; font-weight: 600; color: {RUST}; text-decoration: none; white-space: nowrap; {style}">'
             f'<span style="text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px">{label}</span>{ico(icon, size + 2, RUST, 1.9)}</a>')
 
 def round_arrow(size=24, name='arrow', label='Open', href='#', style=''):
@@ -211,7 +212,7 @@ def pines(spec, w, h, fill='#B7C2A4', opacity=0.8, style=''):
 PINES_L = [(26, 66, 36, 0.55), (62, 118, 62, 0.9), (104, 58, 34, 0.5), (140, 88, 50, 0.85), (178, 40, 26, 0.45), (12, 34, 22, 0.4)]
 PINES_R = [(22, 44, 28, 0.5), (56, 82, 46, 0.85), (92, 52, 32, 0.55), (122, 104, 56, 0.9), (160, 62, 36, 0.6), (188, 36, 24, 0.4)]
 
-def landscape(h=98, sun_x=720, style='', tall=False):
+def landscape(h=98, sun_x=720, style='', tall=False, cls=''):
     """Rolling hills, sun and tree lines along the bottom edge. tall=True adds the big left stand of pines and a second sun."""
     rnd = random.Random(7)
     trees = ''
@@ -231,7 +232,8 @@ def landscape(h=98, sun_x=720, style='', tall=False):
     if tall:
         extra = (f'<circle cx="232" cy="{h - 84}" r="40" fill="#E6B768"></circle>'
                  f'<path d="M0 {h - 58} C 120 {h - 96} 300 {h - 104} 470 {h - 62} S 640 {h - 30} 760 {h - 34} V{h} H0Z" fill="#9FAF8C"></path>')
-    return f'''<svg aria-hidden="true" viewBox="0 0 1440 {h}" preserveAspectRatio="xMidYMax slice" style="display: block; width: 100%; height: {h}px; {style}">
+    c = f' class="{cls}"' if cls else ''
+    return f'''<svg{c} aria-hidden="true" viewBox="0 0 1440 {h}" preserveAspectRatio="xMidYMax slice" style="display: block; width: 100%; height: {h}px; {style}">
 {extra}<path d="M0 {h - 44} C 150 {h - 62} 300 {h - 60} 470 {h - 44} S 700 {h - 30} 860 {h - 36} S 1180 {h - 64} 1440 {h - 48} V{h} H0Z" fill="#B4C0A1"></path>
 <path d="M0 {h - 36} C 190 {h - 52} 380 {h - 44} 560 {h - 32} S 900 {h - 24} 1090 {h - 40} S 1330 {h - 50} 1440 {h - 42} V{h} H0Z" fill="#7C9070"></path>
 <circle cx="{sun_x}" cy="{h - 26}" r="36" fill="#DDAB5B"></circle>
@@ -242,6 +244,45 @@ def landscape(h=98, sun_x=720, style='', tall=False):
 <path d="M0 {h - 7} C 300 {h - 12} 520 {h - 9} 720 {h - 9} S 1180 {h - 12} 1440 {h - 8} V{h} H0Z" fill="#0C271D"></path>
 <g stroke="#E0B463" stroke-linecap="round" stroke-width="1.3" opacity="0.55"><path d="M{sun_x - 34} {h - 15}h68"></path><path d="M{sun_x - 24} {h - 11}h48"></path><path d="M{sun_x - 14} {h - 7}h28"></path></g>
 </svg>'''
+
+def horizon(w=480, h=64, cls='', seed=11):
+    """landscape() drawn for a narrow box (phones: w=480, tablets: w=960): the same hills stretched to the box, the sun
+    off centre and a stand of pines at each end, so the brand's horizon reads at phone width (the 1440-wide drawing
+    shows only hills and the sun there). Scales with the width of its box (height follows); hidden at 1100 px and up."""
+    rnd = random.Random(seed)
+    k = w / 1440
+    span = w * 0.3
+    trees = ''
+    for side in (0, 1):
+        x = 3.0
+        while x < span:
+            frac = 1 - x / span
+            ph = (11 + (h * 0.62) * frac ** 1.3) * rnd.uniform(0.74, 1.1)
+            pw = ph * rnd.uniform(0.44, 0.56)
+            base = h - 11 + 4 * (1 - frac) + rnd.uniform(-1, 1)
+            xx = x if side == 0 else w - x
+            trees += f'<path d="{pine_d(xx, base, ph, pw)}"></path>'
+            x += pw * rnd.uniform(0.6, 0.9)
+    sx, r = round(w * 0.64), round(h * 0.4)
+    c = f' class="{cls}"' if cls else ''
+    return (f'<svg{c} aria-hidden="true" viewBox="0 0 {w} {h}" preserveAspectRatio="xMidYMax meet" style="width: 100%; height: auto">'
+            f'<g transform="scale({k:.4f} 1)">'
+            f'<path d="M0 {h - 34} C 150 {h - 48} 300 {h - 47} 470 {h - 34} S 700 {h - 24} 860 {h - 29} S 1180 {h - 50} 1440 {h - 38} V{h} H0Z" fill="#B4C0A1"></path>'
+            f'<path d="M0 {h - 28} C 190 {h - 41} 380 {h - 35} 560 {h - 25} S 900 {h - 19} 1090 {h - 31} S 1330 {h - 39} 1440 {h - 33} V{h} H0Z" fill="#7C9070"></path></g>'
+            f'<g class="hz-sun"><circle cx="{sx}" cy="{h - 20}" r="{r}" fill="#DDAB5B"></circle>'
+            f'<circle cx="{sx - 3}" cy="{h - 24}" r="{round(r * 0.75)}" fill="#EBC581" fill-opacity="0.55"></circle></g>'
+            f'<g transform="scale({k:.4f} 1)">'
+            f'<path d="M0 {h - 18} C 220 {h - 27} 430 {h - 20} 620 {h - 18} S 900 {h - 17} 1060 {h - 23} S 1320 {h - 27} 1440 {h - 21} V{h} H0Z" fill="#35553B"></path></g>'
+            f'<g fill="#173A28">{trees}</g>'
+            f'<g transform="scale({k:.4f} 1)">'
+            f'<path d="M0 {h - 10} C 300 {h - 15} 520 {h - 12} 720 {h - 12} S 1180 {h - 15} 1440 {h - 11} V{h} H0Z" fill="#17392A"></path>'
+            f'<path d="M0 {h - 5} C 300 {h - 8} 520 {h - 6} 720 {h - 6} S 1180 {h - 8} 1440 {h - 5} V{h} H0Z" fill="#0C271D"></path></g>'
+            f'<g stroke="#E0B463" stroke-linecap="round" stroke-width="1.2" opacity="0.55"><path d="M{sx - 22} {h - 9}h44"></path><path d="M{sx - 14} {h - 6}h28"></path></g>'
+            f'</svg>')
+
+def hero_horizon():
+    """Closes a hero on phones and tablets with the drawn horizon (one drawing per size; hidden at 1100 px and up)."""
+    return f'<div class="hero-hz" aria-hidden="true">{horizon(480, 64, "hz-p")}{horizon(960, 80, "hz-t", 5)}</div>'
 
 def arc_photo(name, alt, style='', rad='62% 56%', br=''):
     """Photo with the big curved top-right corner and the gold arc line behind it."""
@@ -289,26 +330,31 @@ def _menu(key):
             f'background: #FFFDF8; border: 1px solid {LINE}; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.06), 0 14px 28px rgba(40, 30, 10, 0.16); letter-spacing: 0">{rows}</span></span>')
 
 def _mobile(active):
-    """Book button + menu for tablet and phone widths. The menu is a native <details>, so it opens without script."""
+    """Book button + menu for tablet and phone widths. The menu is a native <details>, so it opens without script.
+    The menu opens as a full-width sheet: one group per section (section row, then its pages in a grid of large rows).
+    export_site.py marks the link to the page being shown (class cur, aria-current="page").
+    The header's Book button (hd-book) is hidden wherever the bottom action bar (action_bar) carries Book."""
     rows = ''
     for label, href, dd, key in NAV:
         col = '#9A3B26' if key == active else '#10291F'
-        rows += (f'<a class="ml" href="{href}" style="display: flex; align-items: center; min-height: 46px; padding: 0 12px; border-radius: 9px; font-size: 16px; font-weight: 700; '
-                 f'color: {col}; text-decoration: none">{label}</a>')
+        subs = ''
         for l2, h2, lvl in (MENUS[key][1:] if dd else []):
             x = ico('external', 13, '#8C2B18', 1.9) if h2.startswith('http') else ''
-            rows += (f'<a class="ml" href="{h2}" style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px 0 {28 + 16 * lvl}px; border-radius: 9px; font-size: 14.6px; '
-                     f'font-weight: 500; color: #3A4640; text-decoration: none"><span>{l2}</span>{x}</a>')
+            subs += (f'<a class="ml ml2" href="{h2}" style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 10px 6px 12px; border-radius: 9px; font-size: 15px; '
+                     f'font-weight: 500; line-height: 1.25; color: #3A4640; text-decoration: none"><span>{l2}</span>{x}</a>')
+        rows += (f'<div class="ml-g"><a class="ml ml1{" ml-on" if key == active else ""}" href="{href}" style="display: flex; align-items: center; min-height: 52px; padding: 0 12px; border-radius: 9px; '
+                 f'font-size: 17px; font-weight: 700; color: {col}; text-decoration: none">{label}</a>'
+                 + (f'<div class="ml-sub">{subs}</div>' if subs else '') + '</div>')
     book = ('display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 15px; border-radius: 10px; font-size: 13.6px; font-weight: 600; line-height: 1; '
             'text-decoration: none; white-space: nowrap; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; border: 1px solid #2E5E38')
     return (f'<div class="hd-m">'
-            f'<a class="btn bp" href="Booking.dc.html" style="{book}">{ico("calendar-check", 17, "currentColor", 1.8)}<span>Book<span class="xs-hide"> a Visit</span></span></a>'
+            f'<a class="btn bp hd-book" href="Booking.dc.html" style="{book}">{ico("calendar-check", 17, "currentColor", 1.8)}<span>Book<span class="xs-hide"> a Visit</span></span></a>'
             f'<details class="mnav"><summary aria-label="Menu" style="width: 46px; height: 44px; border-radius: 10px; border: 1.5px solid #1E3D28; background: #FFFDF8; color: #13261B; '
             f'display: flex; align-items: center; justify-content: center; cursor: pointer">'
             f'<span class="mi-o" style="display: flex">{ico("menu", 22, "currentColor", 2)}</span><span class="mi-x" style="display: flex">{ico("close", 22, "currentColor", 2)}</span></summary>'
-            f'<div style="position: absolute; left: 0; right: 0; top: 100%; z-index: 40; padding: 10px 20px 22px; background: #FFFDF8; border-top: 1px solid {LINE}; border-bottom: 1px solid {LINE}; '
-            f'box-shadow: 0 18px 30px rgba(40, 30, 10, 0.18)"><nav aria-label="Menu" style="display: flex; flex-direction: column; gap: 1px">{rows}</nav>'
-            f'<div style="margin-top: 14px; padding-top: 16px; border-top: 1px solid {LINE}; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px">'
+            f'<div class="msheet" style="position: absolute; left: 0; right: 0; top: 100%; z-index: 40; padding: 10px 20px 22px; background: #FFFDF8; border-top: 1px solid {LINE}; border-bottom: 1px solid {LINE}; '
+            f'box-shadow: 0 18px 30px rgba(40, 30, 10, 0.18)"><nav class="mlist" aria-label="Menu" style="display: flex; flex-direction: column; gap: 1px">{rows}</nav>'
+            f'<div class="mfoot" style="margin-top: 14px; padding-top: 16px; border-top: 1px solid {LINE}; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px">'
             f'<a class="btn bp" href="Booking.dc.html" style="{book}; flex: 1 1 220px; min-height: 48px; font-size: 15px">{ico("calendar-check", 18, "currentColor", 1.8)}<span>Schedule Your Visit</span></a>'
             f'<a href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 16px; font-weight: 700; color: #10291F; text-decoration: none">'
             f'{ico("phone", 19, "#9C4530", 1.8)}<span>{MAIN_PHONE}</span></a></div></div></details></div>')
@@ -341,9 +387,9 @@ def header(active):
 </div>
 </header>'''
 
-def _fcol(title, links, w, pl):
+def _fcol(title, links, w, pl, cls=''):
     rows = ''.join(f'<a class="fl" href="{h}" style="color: #F4EFE4; text-decoration: none; font-size: 12.4px; line-height: 1.2">{t}</a>' for t, h in links)
-    return (f'<div class="ft-col" style="flex: none; width: {w}px; min-height: 110px; padding: 2px 10px 2px {pl}px; border-left: 1px solid rgba(200, 161, 90, 0.75); display: flex; flex-direction: column; gap: 10px">'
+    return (f'<div class="ft-col{" " + cls if cls else ""}" style="flex: none; width: {w}px; min-height: 110px; padding: 2px 10px 2px {pl}px; border-left: 1px solid rgba(200, 161, 90, 0.75); display: flex; flex-direction: column; gap: 10px">'
             f'<span style="font-size: 13.2px; font-weight: 700; color: #FFFFFF; margin-bottom: 3px">{title}</span>{rows}</div>')
 
 def footer(top_h=90, pre='', tall=False):
@@ -352,8 +398,8 @@ def footer(top_h=90, pre='', tall=False):
     pipe = '<span class="ft-pipe" aria-hidden="true" style="width: 1px; height: 15px; background: #C8A15A"></span>'
     return f'''
 <footer style="position: relative; margin-top: 4px">
-{pre}{landscape(top_h, 720, '', tall)}
-<div style="background: #0C271D; color: #F4EFE4; margin-top: -1px">
+{pre}{landscape(top_h, 720, '', tall, 'hz-d')}{horizon(480, 64, 'hz-p ft-hz', 3)}
+<div class="ft-dark" style="background: #0C271D; color: #F4EFE4; margin-top: -1px">
 <div style="{WRAP}; padding: 14px 40px 0 55px">
 <div class="ft-row" style="display: flex; flex-wrap: wrap; gap: 26px 0; align-items: flex-start; padding-bottom: 22px">
 <div class="ft-logo" style="flex: none; width: 308px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding-top: 2px">
@@ -373,9 +419,9 @@ def footer(top_h=90, pre='', tall=False):
 {crow('pin', f'{len(LOCATIONS)} locations in southeastern Ontario', 'Contact.dc.html#locations')}
 {crow('clock', 'Hours differ by location', 'Contact.dc.html#locations')}
 </div>
-{_fcol('Quick Links', [('Home', 'Main.dc.html'), ('Who We Are', 'WhoWeAre.dc.html'), ('Services', 'Services.dc.html'), ('Events &amp; Programs', 'Events.dc.html'), ('News &amp; Updates', 'News.dc.html'), ('Newsletter', NEWSLETTER_URL)], 196, 42)}
-{_fcol('Our Locations', [(l['name'], 'Contact.dc.html#' + l['key']) for l in LOCATIONS], 198, 41)}
-{_fcol('More', [('Careers', 'Careers.dc.html'), ('Board', 'Board.dc.html'), ('BPSO', 'BPSO.dc.html'), ('Contact', 'Contact.dc.html')], 127, 41)}
+{_fcol('Quick Links', [('Home', 'Main.dc.html'), ('Who We Are', 'WhoWeAre.dc.html'), ('Services', 'Services.dc.html'), ('Events &amp; Programs', 'Events.dc.html'), ('News &amp; Updates', 'News.dc.html'), ('Newsletter', NEWSLETTER_URL)], 196, 42, 'ft-ql')}
+{_fcol('Our Locations', [(l['name'], 'Contact.dc.html#' + l['key']) for l in LOCATIONS], 198, 41, 'ft-loc')}
+{_fcol('More', [('Careers', 'Careers.dc.html'), ('Board', 'Board.dc.html'), ('BPSO', 'BPSO.dc.html'), ('Contact', 'Contact.dc.html')], 127, 41, 'ft-more')}
 <div class="ft-col ft-art" style="flex: none; min-height: 110px; padding-left: 34px; border-left: 1px solid rgba(200, 161, 90, 0.75); display: flex; align-items: center; gap: 20px">
 {img('feather-gold', '', 'width: 70px; height: auto; margin-top: -4px')}
 <span style="display: flex; flex-direction: column; gap: 3px; font-family: {SCRIPT}; font-size: 21px; line-height: 1.38; color: #DDB86C">
@@ -383,7 +429,7 @@ def footer(top_h=90, pre='', tall=False):
 </span>
 </div>
 </div>
-<div style="border-top: 1px solid rgba(255, 255, 255, 0.42); padding: 15px 0 19px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; font-size: 12.4px; color: #F4EFE4">
+<div class="ft-legal" style="border-top: 1px solid rgba(255, 255, 255, 0.42); padding: 15px 0 19px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; font-size: 12.4px; color: #F4EFE4">
 <span>© 2026 {ORG_NAME} ({ORG_SHORT}). All rights reserved.</span>
 {pipe}<a class="fl" href="Privacy.dc.html" style="color: #F4EFE4; text-decoration: none">Privacy Policy</a>
 {pipe}<a class="fl" href="Accessibility.dc.html" style="color: #F4EFE4; text-decoration: none">Accessibility</a>
@@ -393,7 +439,18 @@ def footer(top_h=90, pre='', tall=False):
 </div>
 </div>
 </div>
-</footer>'''
+</footer>
+{action_bar()}'''
+
+def action_bar():
+    """The two things people come for, always under the thumb on phones and tablets: Call, Book, Locations.
+    Plain links in a bar fixed to the bottom of the screen (styles: .mbar in RESP_CSS). Hidden from 1100 px, on
+    screens under 500 px tall (phones held sideways) and in print; the footer gets matching bottom padding."""
+    cell = lambda ic, label, href, extra='': (f'<a class="mb-a" href="{href}"{extra}>{ico(ic, 21, "#E3BE74", 1.8)}<span>{label}</span></a>')
+    return ('<nav class="mbar" aria-label="Quick actions">'
+            + cell('phone', 'Call', 'tel:' + MAIN_TEL, f' aria-label="Call {MAIN_PHONE}"')
+            + cell('calendar-check', 'Book', 'Booking.dc.html', ' aria-label="Book a visit"')
+            + cell('pin', 'Locations', 'Contact.dc.html#locations', ' aria-label="Our locations"') + '</nav>')
 
 # ---------------------------------------------------------------- shared sections
 def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h1_size=46, lead_size=18.6, lead_w=600, text_w=680, pad='36px 0 30px 83px', gap=14, sub_size=27.5, lead_lh=1.32, btn_mt=8, obj='right center', lead_weight=450, extra='', sq_mt=0,
@@ -401,7 +458,7 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
     """photo = a mock-up crop name; or site_photo = a real photograph under site-img/ (with photo_alt and photo_wh=(w, h))."""
     eb = eyebrow(eyebrow_txt, RUST, 'font-size: 12.5px; letter-spacing: 0.14em; margin-bottom: 2px') if eyebrow_txt else ''
     sb = (f'<p style="margin: 0; font-family: {SERIF}; font-weight: 620; font-size: {sub_size}px; line-height: 1.2; letter-spacing: -0.014em; color: {H1C}">{sub}</p>') if sub else ''
-    sq = f'<span style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>'
+    sq = f'<span class="sq" style="display: block; margin-top: {sq_mt}px">{SQUIGGLE}</span>'
     sq_first = sq if not sub else ''
     sq_last = sq if sub else ''
     fade_l = 100 - photo_w
@@ -419,7 +476,19 @@ def hero(photo, photo_w, min_h, h1, lead, buttons, eyebrow_txt=None, sub=None, h
 <div class="btn-row" style="display: flex; flex-wrap: wrap; gap: 14px 23px; margin-top: {btn_mt}px">{buttons}</div>
 </div>
 </div>
+{hero_horizon()}
 </section>'''
+
+def hero_pic(img_html):
+    """The hero photograph's box. Takes no part in the desktop layout (display: contents, the image is placed by its
+    own inline style); on phones and tablets it becomes the box with the arched corner and the gold arc line."""
+    return f'<div class="hero-pic">{img_html}</div>'
+
+def hero_call():
+    """The hero's quiet second action on phones: the main line as a text link (shown under 600 px only)."""
+    return (f'<a class="tl show-p hero-call" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; '
+            f'font-size: 15px; font-weight: 700; color: {RUST}; text-decoration: none">{ico("phone", 18, RUST, 1.8)}'
+            f'<span style="text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px">Call {MAIN_PHONE}</span></a>')
 
 def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None):
     """narrow_pos: object-position once the photo stacks above the text (tablets and phones), when the default 60% 30% crops it badly."""
@@ -429,8 +498,8 @@ def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None):
         st += f'; --np: {narrow_pos}'; cls += ' hp-np'
     if site_photo:
         w, h = wh or (None, None)
-        return photo(site_photo, alt, st, cls, w, h, lazy=False)
-    return f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">'
+        return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False))
+    return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">')
 
 def rust_band(icon, title, sub, right, style='', sub_size=13.1):
     return f'''
@@ -516,7 +585,7 @@ def call_list(dark=False, size=13.4):
                    f'style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; padding: 6px 0; text-decoration: none">'
                    f'<span style="font-weight: 600; color: {name_c}">{l["name"]}</span>'
                    f'<span style="flex: none; font-weight: 700; color: {opt_c}; white-space: nowrap">Press {l["option"]}</span></a></li>' for l in LOCATIONS)
-    return f'<ul style="margin: 0; padding: 0; list-style: none; font-size: {size}px; line-height: 1.3">{rows}</ul>'
+    return f'<ul class="t-b" style="margin: 0; padding: 0; list-style: none; font-size: {size}px; line-height: 1.3">{rows}</ul>'
 
 def social_row(dark=False, label='Follow us'):
     if dark:
@@ -538,7 +607,7 @@ def crumbs(trail):
         else:
             parts.append(f'<span aria-current="page" style="color: {MUTED}">{label}</span>')
     sep = '<span aria-hidden="true" style="color: #A8998A">/</span>'
-    return f'<nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.6px; font-weight: 500">{sep.join(parts)}</nav>'
+    return f'<nav aria-label="Breadcrumb" class="crumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.6px; font-weight: 500">{sep.join(parts)}</nav>'
 
 def sub_hero(trail, title, lead, photo=None, alt='', eyebrow_txt=None, buttons='', title_size=46, extra='', pos='center center', medal=None, lead_w=640):
     pic = ''
@@ -550,29 +619,30 @@ def sub_hero(trail, title, lead, photo=None, alt='', eyebrow_txt=None, buttons='
     eb = eyebrow(eyebrow_txt, RUST, 'margin-top: 6px') if eyebrow_txt else ''
     bt = f'<div class="btn-row" style="display: flex; flex-wrap: wrap; gap: 12px 16px; margin-top: 8px">{buttons}</div>' if buttons else ''
     return f"""
-<section style="position: relative; overflow: hidden; border-bottom: 1px solid #E6D9BF">
+<section class="sh" style="position: relative; overflow: hidden; border-bottom: 1px solid #E6D9BF">
 {branch(150, '#A5B195', 0.5, 'left: -86px; top: -34px; transform: rotate(8deg)')}
-<div style="position: relative; {WRAP}; padding: 26px 48px 32px 83px; display: flex; flex-wrap: wrap; align-items: center; gap: 26px 64px">
-<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
+<div class="sh-row" style="position: relative; {WRAP}; padding: 26px 48px 32px 83px; display: flex; flex-wrap: wrap; align-items: center; gap: 26px 64px">
+<div class="sh-txt" style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px">
 {crumbs(trail)}
 {eb}<h1 class="h1" style="margin: 4px 0 0; font-family: {SERIF}; font-weight: 680; font-size: {title_size}px; line-height: 1.04; letter-spacing: -0.014em; color: {H1C}">{title}</h1>
 {SQUIGGLE}
-<p style="margin: 0; max-width: {lead_w}px; font-size: 17px; line-height: 1.42; color: {INK}">{lead}</p>
+<p class="lead" style="margin: 0; max-width: {lead_w}px; font-size: 17px; line-height: 1.42; color: {INK}">{lead}</p>
 {extra}{bt}
 </div>
 {pic}
 </div>
+{hero_horizon()}
 </section>"""
 
-def h3(text, size=21, style=''):
-    return f'<h3 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: {size}px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}; {style}">{text}</h3>'
+def h3(text, size=21, style='', cls='t-h3'):
+    return f'<h3 class="{cls}" style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: {size}px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}; {style}">{text}</h3>'
 
 def panel(inner, style='', pad='22px 24px'):
     return f'<div style="padding: {pad}; border-radius: 14px; {CARD}; {style}">{inner}</div>'
 
 def bullets(items, icon='check', color='#1F4A2B', size=14.4, gap=9):
     rows = ''.join(f'<li style="display: flex; align-items: flex-start; gap: 12px">{ico(icon, 19, color, 2.1, "margin-top: 1px")}<span>{t}</span></li>' for t in items)
-    return f'<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: {gap}px; font-size: {size}px; line-height: 1.42; color: {INK}">{rows}</ul>'
+    return f'<ul class="t-b" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: {gap}px; font-size: {size}px; line-height: 1.42; color: {INK}">{rows}</ul>'
 
 def section(title, body, eyebrow_txt=None, size=27):
     eb = eyebrow(eyebrow_txt) if eyebrow_txt else ''
@@ -588,13 +658,13 @@ def book_aside(related='', title='Book this service'):
 <div style="padding: 22px 22px 22px; border-radius: 14px; background: #153526; border: 1px solid #0C2218; color: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; box-shadow: {SHADOW}">
 {eyebrow('Book a visit', '#E3BE74')}
 <h2 style="margin: 0; font-family: {SERIF}; font-weight: 500; font-size: 25px; line-height: 1.1; letter-spacing: -0.012em; color: #FFFFFF">{title}</h2>
-<p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: #F4F1E8">Registered patients can book online. New to IIPCT, or not sure what you need? Call us and reception will help.</p>
+<p class="t-b" style="margin: 0; font-size: 13.6px; line-height: 1.45; color: #F4F1E8">Registered patients can book online. New to IIPCT, or not sure what you need? Call us and reception will help.</p>
 {btn('Schedule Your Visit', BOOKING, 'light', 'calendar-check', True, 'md', 'margin-top: 6px; width: 100%')}
 <a class="fl" href="tel:{MAIN_TEL}" style="display: flex; align-items: center; gap: 10px; margin-top: 4px; font-size: 15px; font-weight: 700; color: #FFFFFF; text-decoration: none">{ico('phone', 18, '#E3BE74', 1.8)}<span>{MAIN_PHONE}</span></a>
 </div>
 <div style="padding: 18px 22px 12px; border-radius: 14px; {CARD}">
 {h3('Call your clinic', 19)}
-<p style="margin: 6px 0 10px; font-size: 13.4px; line-height: 1.4; color: {INK}">Call {MAIN_PHONE}, then press the number for your location.</p>
+<p class="t-b" style="margin: 6px 0 10px; font-size: 13.4px; line-height: 1.4; color: {INK}">Call {MAIN_PHONE}, then press the number for your location.</p>
 {call_list()}
 </div>
 {related}
@@ -603,7 +673,7 @@ def book_aside(related='', title='Book this service'):
 def link_list(title, links):
     rows = ''.join(f'<li><a class="tl" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #E6D9BF; '
                    f'font-size: 13.6px; font-weight: 600; color: {HEAD}; text-decoration: none"><span>{t}</span>{ico("arrow", 15, RUST, 1.9)}</a></li>' for t, h in links)
-    return f'<div style="padding: 18px 22px 10px; border-radius: 14px; {CARD}">{h3(title, 19)}<ul style="margin: 10px 0 0; padding: 0; list-style: none">{rows}</ul></div>'
+    return f'<div style="padding: 18px 22px 10px; border-radius: 14px; {CARD}">{h3(title, 19)}<ul class="t-b" style="margin: 10px 0 0; padding: 0; list-style: none">{rows}</ul></div>'
 
 def two_col(main, aside, style=''):
     return (f'<div style="{WRAP}; padding: 34px 48px 8px 83px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 34px 56px; {style}">'
@@ -619,7 +689,7 @@ def note(icon, title, text, tone='sage', style=''):
     ttl = f'<h3 style="margin: 0; font-size: 15px; font-weight: 700; line-height: 1.25; color: {HEAD}">{title}</h3>' if title else ''
     return (f'<div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px 20px 17px; border-radius: 14px; background: {bg}; border: 1px solid {bd}; {style}">'
             f'{ico(icon, 25, "#1F4A2B", 1.6, "margin-top: 1px")}<div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">{ttl}'
-            f'<p style="margin: 0; font-size: 14px; line-height: 1.46; color: {INK}">{text}</p></div></div>')
+            f'<p class="t-b" style="margin: 0; font-size: 14px; line-height: 1.46; color: {INK}">{text}</p></div></div>')
 
 def ext(label, href, size=14, color=RUST, style=''):
     """Inline link to another website, marked with the external-link icon."""
@@ -631,20 +701,23 @@ def icon_item(icon, tone, title, text, more=''):
     """Icon medallion + title + text, as a bordered card."""
     return (f'<div style="display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px 18px 18px; border-radius: 14px; {CARD}">'
             f'{circ(icon, tone, 52, 27, 1.5)}<div style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding-top: 2px">'
-            f'{h3(title, 18.4)}<p style="margin: 0; font-size: 13.8px; line-height: 1.46; color: {INK}">{text}</p>{more}</div></div>')
+            f'{h3(title, 18.4)}<p class="t-b" style="margin: 0; font-size: 13.8px; line-height: 1.46; color: {INK}">{text}</p>{more}</div></div>')
 
 def link_card(icon, tone, title, text, href):
     """Whole card is the link to a child page."""
-    return (f'<a class="card" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 15px; min-height: 112px; padding: 18px 46px 18px 18px; border-radius: 14px; '
+    return (f'<a class="card tile" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 15px; min-height: 112px; padding: 18px 46px 18px 18px; border-radius: 14px; '
             f'{CARD}; color: {INK}; text-decoration: none">{circ(icon, tone, 56, 29, 1.5)}'
-            f'<span style="min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px">'
-            f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</span>'
-            f'<span style="font-size: 13.4px; line-height: 1.44; color: {INK}">{text}</span></span>'
-            f'<span aria-hidden="true" style="position: absolute; right: 14px; bottom: 13px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; '
+            f'<span class="tile-b" style="min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px">'
+            f'<span class="t-h3" style="font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</span>'
+            f'<span class="t-s" style="font-size: 13.4px; line-height: 1.44; color: {INK}">{text}</span></span>'
+            f'<span class="tile-ar" aria-hidden="true" style="position: absolute; right: 14px; bottom: 13px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; '
             f'background: #FFFDF8; border: 1px solid #C9B691">{ico("arrow", 13, "#13261B", 2)}</span></a>')
 
-def grid(items, minw=300, gap=16, style=''):
-    return f'<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min({minw}px, 100%), 1fr)); gap: {gap}px; {style}">{"".join(items)}</div>'
+def grid(items, minw=300, gap=16, style='', cls=''):
+    """cls: the card kind for phones and tablets: 'g-tiles gt3' (small tiles: two-up on phones, three-up on tablets),
+    'g-cards gt2' (content cards: one-up on phones, two-up on tablets). See the grid rules in RESP_CSS."""
+    c = f' class="{cls}"' if cls else ''
+    return f'<div{c} style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min({minw}px, 100%), 1fr)); gap: {gap}px; {style}">{"".join(items)}</div>'
 
 def chips(items, style=''):
     out = ''.join(f'<li style="padding: 6px 13px 5px; border-radius: 999px; background: #FFFDF8; border: 1px solid #C9B691; font-size: 13px; font-weight: 600; line-height: 1.2; color: {HEAD}; white-space: nowrap">{t}</li>' for t in items)
@@ -656,17 +729,21 @@ def tag(text, tone='tan'):
             f'letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.1; color: #2A2A1C; white-space: nowrap">{text}</span>')
 
 def prose(*paras, size=14.8, style=''):
-    return ''.join(f'<p style="margin: 0; max-width: 700px; font-size: {size}px; line-height: 1.55; color: {INK}; {style}">{t}</p>' for t in paras)
+    return ''.join(f'<p class="t-b" style="margin: 0; max-width: 700px; font-size: {size}px; line-height: 1.55; color: {INK}; {style}">{t}</p>' for t in paras)
 
 def draft_bar(text):
     """Thin strip under the header marking a page whose wording still needs the client's sign-off."""
     return (f'<div style="background: #F6EACD; border-bottom: 1px solid #DCC28C"><div style="{WRAP}; padding: 9px 48px 9px 83px; display: flex; align-items: center; gap: 11px; '
-            f'font-size: 13px; line-height: 1.35; color: #3B2E12">{ico("info", 17, "#7A5A14", 1.9)}<span>{text}</span></div></div>')
+            f'font-size: 13px; line-height: 1.35; color: #3B2E12">{ico("info", 17, "#7A5A14", 1.9)}<span class="t-s">{text}</span></div></div>')
 
 # ---------------------------------------------------------------- document shell
 # Narrow-width rules. They key off the page's own width (a container query), so a page behaves the same in a
 # phone-width frame on the canvas as it does in a real phone-width window.
 RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
+.hero-pic{display:contents}
+.hero-hz,.hz-p,.hz-t,.mbar{display:none}
+.show-p{display:none !important}
+@keyframes hz-rise{from{transform:translateY(9px)}to{transform:none}}
 .hd-m{display:none;margin-left:auto;align-items:center;gap:10px}
 .mnav>summary{list-style:none}.mnav>summary::-webkit-details-marker{display:none}
 .mnav[open] .mi-o,.mnav:not([open]) .mi-x{display:none !important}
@@ -688,6 +765,12 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .hd-m{display:flex}
 .hd{min-height:0 !important;padding-top:9px !important;padding-bottom:9px !important;flex-wrap:nowrap !important}
 .hd-logo{width:68px !important}
+.msheet{padding:6px 16px 18px !important;max-height:calc(100vh - 150px);max-height:calc(100dvh - 140px);overflow-y:auto;overscroll-behavior:contain}
+.ml-g+.ml-g{border-top:1px solid #EFE3CC}
+.ml-g{padding:2px 0}
+.ml-sub{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(160px,100%),1fr));gap:0 6px;padding:0 0 8px}
+.mnav .cur{background:#F6EEDD;color:#8C2B18 !important;box-shadow:inset 3px 0 0 #A0432C}
+.mfoot{margin-top:8px !important}
 }
 @container pg (max-width:1199px){
 .fl{display:inline-flex !important;align-items:center;min-height:40px !important}
@@ -704,14 +787,29 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 }
 @container pg (max-width:1099px){
 .w{padding-left:32px !important;padding-right:32px !important}
-.hero-sec{min-height:0 !important;display:flex;flex-direction:column-reverse}
-.hero-photo{position:relative !important;width:100% !important;height:320px !important}
+.hero-sec{min-height:0 !important}
 .hero-fade{display:none}
-.hero-photo{object-position:60% 30% !important}
+.hero-pic{display:block;position:relative}
+.hero-pic::before,.sh-photo::before{content:"";position:absolute;inset:0;border-top-right-radius:58% 46%;background-image:linear-gradient(180deg,rgba(251,244,234,0) 42%,#FBF4EA 74%),linear-gradient(90deg,#FBF4EA 30%,#CBA35A 62%)}
+.hero-photo{position:absolute !important;left:0 !important;top:5px !important;width:calc(100% - 6px) !important;height:calc(100% - 5px) !important;border-top-right-radius:58% 46%;object-position:60% 30% !important}
 .hero-photo.hp-np{object-position:var(--np) !important}
-.hero-txt{max-width:none !important;padding:30px 0 28px !important}
-.hero-txt .h1{font-size:44px !important}
-.hero-txt .lead{font-size:17.6px !important}
+.hero-txt{max-width:none !important}
+.hero-hz{display:block;line-height:0}
+
+.hz-sun{animation:hz-rise 1.6s cubic-bezier(.2,.7,.2,1) .25s both}
+.sh-photo{position:relative}
+.sh-photo img{position:relative;z-index:1;margin-top:5px;width:calc(100% - 6px) !important;border:none !important;border-radius:0 !important;border-top-right-radius:58% 46% !important}
+.t-b{font-size:16px !important;line-height:1.55 !important}
+.t-s{font-size:14.5px !important;line-height:1.45 !important}
+.crumb{font-size:14px !important}
+.nb{white-space:nowrap}
+a[href^="mailto:"]{overflow-wrap:anywhere}
+.mbar{display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#153526;border-top:1px solid #C8A15A;padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);box-shadow:0 -4px 16px rgba(12,39,29,.22)}
+.mb-a{flex:1 1 0;min-width:0;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px !important;color:#FFFFFF;text-decoration:none;font-size:13px;font-weight:700;line-height:1.1;letter-spacing:.01em}
+.mb-a+.mb-a{border-left:1px solid rgba(200,161,90,.32)}
+.mb-a:hover{background:#1C4632;color:#FFFFFF}
+.ft-dark{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
+.hd-book{display:none !important}
 .sp-photo,.sp-feat{flex:1 1 100% !important}
 .sp-txt{padding:22px 0 20px !important}
 .sp-feat{padding:4px 0 16px !important}
@@ -753,8 +851,6 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 .h1{font-size:36px !important;line-height:1.06 !important}
 .h2{font-size:26px !important}
 .lead{font-size:16.5px !important;line-height:1.4 !important}
-.hero-photo{height:240px !important}
-.hero-txt{padding:26px 0 24px !important}
 .sh-photo{flex:1 1 100% !important}
 .band{padding:20px 20px 22px !important}
 .band-r{flex:1 1 100%}
@@ -799,6 +895,97 @@ nav[aria-label="Breadcrumb"] a{min-width:40px}
 @container pg (width <= 760px){
 .lcg{grid-template-columns:minmax(0,1fr) !important}
 }
+@container pg (min-width:600px) and (max-width:1099px){
+.hero-sec{display:grid !important;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.hero-sec>.w{grid-column:1;grid-row:1;align-self:center;padding-right:28px !important}
+.hero-pic{grid-column:2;grid-row:1;margin:22px 32px 4px 0;min-height:300px}
+.hero-hz{grid-column:1 / -1;grid-row:2;margin-top:8px}
+.hero-txt{padding:24px 0 20px !important}
+.hero-txt .h1{font-size:clamp(34px,4.4vw,44px) !important;line-height:1.05 !important}
+.hero-txt .lead{font-size:17px !important;line-height:1.45 !important}
+.hz-t{display:block}
+.sh-row{flex-wrap:nowrap !important;align-items:center !important;gap:32px !important}
+.sh-txt{flex:1 1 0 !important}
+.sh-photo{flex:0 0 42% !important}
+.sh-photo img{aspect-ratio:4 / 3 !important}
+.sh .h1{font-size:40px !important}
+.h2{font-size:30px !important}
+.t-b{max-width:68ch}
+.gt2{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+.gt2>:last-child:nth-child(odd){grid-column:1 / -1}
+.gt3{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+.gt3>*{grid-column:span 2}
+.gt3>:nth-child(3n+1):nth-last-child(2){grid-column:2 / span 2}
+.gt3>:nth-child(3n+1):last-child{grid-column:3 / span 2}
+}
+@container pg (max-width:599px){
+.w{padding-left:16px !important;padding-right:16px !important}
+.hd{padding-top:7px !important;padding-bottom:7px !important}
+.hd-logo{width:50px !important}
+.hide-p{display:none !important}
+.show-p{display:inline-flex !important}
+.hero-sec{display:flex !important;flex-direction:column;padding-top:10px}
+.hero-pic{margin-right:16px;aspect-ratio:16 / 10}
+.hero-txt{padding:16px 0 4px !important;gap:9px !important}
+.hero-txt .h1,.sh .h1{font-size:31px !important;line-height:1.08 !important}
+.hero-txt .lead,.sh .lead{font-size:16.5px !important;line-height:1.45 !important}
+.sqg{width:112px;height:12px}
+.hz-p{display:block}
+.hz-d{display:none !important}
+.hero-sec .btn-row,.sh .btn-row{flex-direction:column !important;align-items:stretch !important;gap:2px !important;width:100%;margin-top:6px !important}
+.hero-sec .btn-row>.btn:first-child,.sh .btn-row>.btn:first-child{min-height:48px !important;font-size:15.5px !important;border-radius:11px !important}
+.hero-sec .btn-row>.btn~.btn,.sh .btn-row>.btn~.btn{background:none !important;border-color:transparent !important;box-shadow:none !important;color:#8C2B18 !important;min-height:44px !important;font-size:15px !important;transform:none !important}
+.hero-sec .btn-row>.btn~.btn>span,.sh .btn-row>.btn~.btn>span{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px}
+.sh-row{padding-top:12px !important;padding-bottom:18px !important;gap:0 !important}
+.sh-photo{order:-1;flex:1 1 100% !important;max-width:none !important;margin:0 0 16px -16px;width:calc(100% + 16px)}
+.sh-photo img{aspect-ratio:16 / 9 !important}
+.sh-txt{gap:10px !important}
+.t-h3{font-size:20px !important;line-height:1.2 !important}
+.t-h3l{font-size:22px !important}
+.tl{font-size:15px !important}
+.crumb .tl{font-size:14px !important}
+.g-tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
+.g-tiles>:last-child:nth-child(odd){grid-column:1 / -1}
+.g-cards{grid-template-columns:minmax(0,1fr) !important;gap:14px !important}
+.tile{flex-direction:column !important;align-items:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px 14px 50px !important}
+.tile>.ci{width:46px !important;height:46px !important}
+.tile>.ci svg{width:25px;height:25px}
+.tile-b{padding:0 !important;gap:6px !important}
+.tile .t-h3{font-size:17.5px !important;white-space:normal !important}
+.tile>.ra,.tile>.tile-ar{right:12px !important;bottom:12px !important}
+.ev{display:grid !important;grid-template-columns:auto minmax(0,1fr);gap:12px 14px !important;padding:16px !important}
+.ev-b{display:contents !important}
+.ev-d{grid-column:1;grid-row:1 / span 2;align-self:start}
+.ev-b>*{grid-column:1 / -1}
+.ev-b>.ev-t{grid-column:2;grid-row:1;align-self:end}
+.ev-b>.ev-h{grid-column:2;grid-row:2;align-self:start}
+.ev-f{grid-column:1 / -1;flex:none !important;flex-direction:row !important;align-items:center !important;max-width:none !important;width:100%;gap:14px !important}
+.ev-f>img{width:84px !important;flex:none}
+.ft-row{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:22px 16px !important;padding-bottom:16px !important}
+.ft-contact{order:-1;grid-column:1 / -1}
+.ft-ql{order:1}.ft-loc{order:2}
+.ft-more{order:3;grid-column:1 / -1;display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}
+.ft-more>span:first-child{grid-column:1 / -1}
+.ft-logo{order:4;grid-column:1 / -1;flex-direction:row !important;flex-wrap:wrap;align-items:center !important;justify-content:space-between;gap:14px 20px !important}
+.ft-art{display:none !important}
+.ft-legal{gap:2px 18px !important;padding-top:10px !important;font-size:14px !important}
+.ft-col .fl{font-size:15px !important}
+}
+@container pg (max-width:374px){
+.hero-txt .h1,.sh .h1{font-size:29px !important}
+.mb-a{font-size:12.5px}
+}
+@media (max-height:499px){
+.mbar{display:none !important}
+.ft-dark{padding-bottom:0 !important}
+.hd-book{display:inline-flex !important}
+}
+@media print{
+.mbar{display:none !important}
+}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation:none !important;transition:none !important}
+}
 """
 
 FONT_HREF = ('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700'
@@ -819,7 +1006,7 @@ BASE_CSS = ('body{margin:0;background:#FBF4EA}\n*,*::before,*::after{box-sizing:
             '.fl{transition:color .15s}.fl:hover{color:#E3BE74 !important}.faq:hover{border-color:#C8A15A !important;background:#FFF8EA !important}\n'
             '.toc a:hover{background:#F1E7D3}\n'
             'input:focus,textarea:focus,select:focus{outline:2px solid #C8A15A;outline-offset:1px}'
-            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #C8A15A;outline-offset:2px}\n' + RESP_CSS)
+            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #10291F;outline-offset:2px;box-shadow:0 0 0 5px #F2D49A}\n' + RESP_CSS)
 
 _TAG = re.compile(r'<[a-zA-Z][^<>]*>')
 def _hook(m):
@@ -845,11 +1032,60 @@ def _fsu(m):
         return t.replace(cm.group(0), f' class="{cm.group(1)} fsu"', 1)
     return re.sub(r'^<(\w+)', r'<\1 class="fsu"', t, count=1)
 
+ROLE_CLASSES = {'t-b', 't-s', 't-h3', 't-h3l', 'lead', 'h1', 'h2', 'fsu', 'lk', 'tl', 'btn', 'nv', 'ml', 'fl', 'mb-a', 'seg', 'bo', 'cl', 'crumb'}
+_ROLE_TAGS = {'p', 'li', 'dd', 'dt', 'figcaption', 'ul', 'ol', 'span', 'a', 'div'}
+def _role(m):
+    """Type roles for phones and tablets (RESP_CSS sets their sizes there; desktop keeps the inline sizes). Helpers set
+    t-b (body, 16 px) and t-s (secondary, 14.5 px) themselves; any other text element with an inline size from 12.5 to
+    15.9 px gets one here: under 13.5 px secondary, else body. Labels (uppercase or tracked), headings (serif), text that
+    must stay on one line (nowrap) and elements with their own size rule are left alone."""
+    t = m.group(0)
+    tag = t[1:].split(' ', 1)[0].rstrip('>')
+    if tag not in _ROLE_TAGS or ' style="' not in t:
+        return t
+    st = t.split(' style="', 1)[1]
+    f = _FS.findall(st)
+    if not f or not 12.5 <= float(f[-1]) < 16:
+        return t
+    if 'uppercase' in st or 'nowrap' in st or 'Newsreader' in st or re.search(r'letter-spacing:\s*0\.(0[5-9]|1)', st):
+        return t
+    cm = re.search(r' class="([^"]*)"', t)
+    if cm and ROLE_CLASSES & set(cm.group(1).split()):
+        return t
+    role = 't-s' if float(f[-1]) < 13.5 else 't-b'
+    if cm:
+        return t.replace(cm.group(0), f' class="{cm.group(1)} {role}"', 1)
+    return re.sub(r'^<(\w+)', rf'<\1 class="{role}"', t, count=1)
+
+_TXT = re.compile(r'(<[a-zA-Z/!][^<>]*>)')
+_PHONE = re.compile(r'\(\d{3}\) \d{3}-\d{4}(?: ext\. \d+)?|\d{3}-\d{3}-\d{4}(?: ext\. \d+)?')
+_TELEXT = re.compile(r'(<a [^>]*href="tel:[^"]*"[^>]*>[^<]*</a>)( ext\. \d+)')
+_MAIL = re.compile(r'([\w.+-]+@)([\w-]+\.[\w.-]+)')
+def _nobreak(body):
+    """Phone numbers and "ext. 213" never split across lines, and email addresses may break after the @ (class nb is
+    nowrap under 1100 px only, so wide layouts are unchanged). Only text between tags is touched, never attributes."""
+    body = _TELEXT.sub(r'<span class="nb">\1\2</span>', body)
+    parts = _TXT.split(body)
+    inside_script = False
+    for i, part in enumerate(parts):
+        if i % 2:
+            low = part[:8].lower()
+            inside_script = low.startswith('<script') or (inside_script and not low.startswith('</script'))
+            continue
+        if inside_script or not part.strip():
+            continue
+        part = _PHONE.sub(lambda m: f'<span class="nb">{m.group(0)}</span>', part)
+        parts[i] = _MAIL.sub(r'\1<wbr>\2', part)
+    return ''.join(parts)
+
 def responsive(body):
     """Hooks the narrow-width rules need: every page-width wrapper gets class w, text set below 12 px gets class fsu
-    (lifted to 12 px on phones, except the logo lockup, class lk), and forced line breaks keep a space when they are switched off."""
+    (lifted to 12 px on phones, except the logo lockup, class lk), body copy gets a type role (_role), phone numbers and
+    emails get their break rules (_nobreak), and forced line breaks keep a space when they are switched off."""
     body = _TAG.sub(_hook, body)
     body = _TAG.sub(_fsu, body)
+    body = _TAG.sub(_role, body)
+    body = _nobreak(body)
     return body.replace('<br>', ' <br>')
 
 def root(body, frame=None):

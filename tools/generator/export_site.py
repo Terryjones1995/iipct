@@ -130,6 +130,19 @@ def speed(html):
     html = re.sub(r'<img [^>]*>', fix, html)
     return html, hero_src
 
+def mark_current(html, name):
+    """The header's menu links to the page being shown get aria-current="page"; in the phone and tablet menu sheet
+    (links with class ml) they also get class cur, which lib.RESP_CSS draws as a rust bar, so visitors see where they are."""
+    end = html.index('</header>')
+    def mark(m):
+        tag = m.group(0)
+        if 'aria-current=' in tag:
+            return tag
+        tag = tag.replace(' href=', ' aria-current="page" href=', 1)
+        return tag.replace('class="ml ', 'class="ml cur ', 1)
+    head = re.sub(r'<a class="(?:nv|ml )[^"]*" href="' + re.escape(name) + r'"[^>]*>', mark, html[:end])
+    return head + html[end:]
+
 HEAD = '''<!doctype html>
 <html lang="en-CA">
 <head>
@@ -156,6 +169,7 @@ for k, (mod, func, fn, mock, label) in PAGES.items():
     title, body = getattr(importlib.import_module(mod), func)()
     name = NAMES[fn]
     html, hero = speed(to_site(body))
+    html = mark_current(html, name)
     BODIES[name] = html
     preload = f'<link rel="preload" as="image" href="{hero}" fetchpriority="high">\n' if hero else ''
     ld = '\n'.join(seo.ld(b) for b in seo.structured(name, html))
