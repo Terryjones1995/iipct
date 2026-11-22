@@ -2,7 +2,7 @@
 (Cohort 4 on RNAO's map), working toward integrating selected RNAO Best Practice Guidelines, the one guideline named,
 the steering committee, and the two BPSO events with their photographs."""
 from lib import *
-from p_team import TEAM, TEAM_PAGE
+from p_team import TEAM, TEAM_PAGE, swap, real_hero
 
 RNAO_BPSO = 'https://rnao.ca/bpg/bpso'
 GUIDELINE = 'Promoting Smoking Reduction and Cessation with Indigenous Peoples of Reproductive Age and Their Communities'
@@ -18,13 +18,14 @@ OURS = ('At Tsi Kanonhkhwatsheríyo (IIPCT), we recognize that providing quality
         'Organization® (BPSO®), we are working toward integrating selected RNAO Best Practice Guidelines into our policies, processes and everyday practices.')
 # steering committee as the old page lists it: (team-page card number, label)
 COMMITTEE = [(2, 'Kiowa', 'BPSO Lead'), (8, 'Madison', 'BPSO Co-Lead'), (14, 'Sarah', 'BPSO Co-Lead'), (27, 'Shaelee', None), (39, 'Jessi', None)]
+# (title, photo, width, height, focus point = where the people are, alt, paragraphs)
 STORIES = [
- ('IIPCT Begins Its BPSO Journey: Official Orientation and Launch', 'bpso/orientation-toronto.jpg', 1400, 1050,
+ ('IIPCT Begins Its BPSO Journey: Official Orientation and Launch', 'bpso/orientation-toronto.jpg', 1400, 1050, 'center 32%',
   'Five women in ribbon skirts in front of an RNAO and BPSO banner at the BPSO orientation in Toronto',
   ['Staff from Tsi Kanonhkhwatsheríyo (IIPCT) attended the RNAO Best Practice Spotlight Organization® (BPSO®) Program Orientation and Launch in Toronto, marking an important first gathering in our BPSO journey.',
    'The event brought together representatives from newly designated BPSOs to build connections, learn about the expectations of the designation, explore key milestones and prepare for the implementation and evaluation of Best Practice Guidelines (BPGs). Staff also participated in the Best Practice Champions Workshop, which focused on developing change agents to support the adoption and integration of evidence-informed practices within organizations.',
    'This was an important first step in building our collective knowledge, strengthening relationships and preparing our team to advance culturally safe, Indigenous-led and evidence-informed care. We look forward to continuing this work together as we begin our BPSO journey and build on the strengths, knowledge and priorities of the Indigenous communities and families we serve.']),
- ('Building Bridges Together: Representing IIPCT at the Indigenous-Focused BPSO Gathering', 'bpso/gathering-thunder-bay-group.jpg', 1400, 887,
+ ('Building Bridges Together: Representing IIPCT at the Indigenous-Focused BPSO Gathering', 'bpso/gathering-thunder-bay-group.jpg', 1400, 887, 'center 88%',
   'A large group of people, many in ribbon skirts and ribbon shirts, in front of a tall white tipi at the Indigenous-focused BPSO gathering in Thunder Bay',
   ['Staff from Tsi Kanonhkhwatsheríyo (IIPCT) were proud to participate in the Indigenous-Focused Best Practice Spotlight Organization® (BPSO®) Gathering, Building Bridges Together to Shape a Balanced Path Forward in Thunder Bay, Ontario, in June 2026.',
    'The gathering brought together Indigenous-focused BPSOs, communities and partners to honour Indigenous ways of knowing, strengthen relationships, share experiences and explore how Best Practice Guidelines can be implemented in ways that reflect and respect Indigenous priorities, voices and experiences.',
@@ -35,14 +36,16 @@ def committee_card(num, label, role):
     m = next(x for x in TEAM if x[0] == num)
     rl = f'<span style="font-size: 13.6px; line-height: 1.3; color: {INK}">{role}</span>' if role else ''
     return (f'<a class="card" href="{TEAM_PAGE}#{m[2]}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
-            + photo(f'people/{m[7]}.jpg', f'Photo of {label}', f'flex: none; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid #FFFDF8; box-shadow: 0 0 0 1px {LINE}', w=600, h=600)
+            + photo(f'people/{m[7]}.jpg', '', f'flex: none; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid #FFFDF8; box-shadow: 0 0 0 1px {LINE}', w=600, h=600)
             + f'<span style="min-width: 0; display: flex; flex-direction: column; gap: 3px"><span style="font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.1; color: {HEAD}">{label}</span>{rl}</span></a>')
 
-def story(title, img_rel, w, h, alt, paras, flip):
-    order = 'order: 2; ' if flip else ''
-    return (f'<article style="display: flex; flex-wrap: wrap; align-items: stretch; overflow: hidden; border-radius: 16px; {CARD}">'
-            f'<div class="fbs" style="{order}flex: 0 0 44%; min-width: min(320px, 100%); position: relative; min-height: 260px">'
-            + photo(img_rel, alt, 'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover', w=w, h=h)
+def story(title, img_rel, w, h, focus, alt, paras, flip):
+    # sp-photo puts the photo on its own row above the text at tablet width and below, so a wide group photo is not cut to a
+    # narrow column; a flipped story uses row-reverse (not order) so its photo still comes first once the two stack
+    rev = 'flex-direction: row-reverse; ' if flip else ''
+    return (f'<article style="display: flex; {rev}flex-wrap: wrap; align-items: stretch; overflow: hidden; border-radius: 16px; {CARD}">'
+            f'<div class="sp-photo" style="flex: 0 0 44%; min-width: min(320px, 100%); position: relative; min-height: 280px">'
+            + photo(img_rel, alt, f'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {focus}', w=w, h=h)
             + f'</div><div class="pads" style="flex: 1 1 380px; min-width: 0; padding: 24px 28px 26px; display: flex; flex-direction: column; gap: 12px">'
             f'{h3(title, 22)}' + ''.join(p(t, 14.6, INK, 1.55) for t in paras) + '</div></article>')
 
@@ -53,8 +56,7 @@ def page():
     h = hero('hero-bpso', 55.4, 358, 'Best Practice Spotlight<br>Organization (BPSO)',
              'Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT) is proud to be one of 17 Indigenous-focused BPSO sites across Ontario.', buttons,
              h1_size=47.6, lead_size=18, lead_lh=1.42, lead_w=540, pad='40px 0 40px 84px', gap=12, btn_mt=10, sq_mt=2, obj='center 40%')
-    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
-    s += h.replace(f'src="{BLOB["hero-bpso"]}" alt=""', 'src="/_site/bpso/gathering-thunder-bay.jpg" alt="Five women, several in ribbon skirts, outdoors by a pond at the BPSO gathering in Thunder Bay"', 1)
+    s += real_hero(h, 'hero-bpso', 'bpso/gathering-thunder-bay.jpg', 'Five women, several in ribbon skirts, outdoors by a pond at the BPSO gathering in Thunder Bay')
     s += f'''
 <section id="overview" style="scroll-margin-top: 16px; position: relative; {WRAP}; padding: 30px 52px 0 70px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px 44px">
 {branch(104, '#B5BFA6', 0.5, 'right: -58px; bottom: -22px; transform: rotate(-14deg)')}
@@ -71,7 +73,9 @@ def page():
 </figure>
 </section>'''
     text = p(BPG, 14.2, '#F4F1E8', 1.5, 'max-width: 640px')
-    s += green_band('bpso-lake', 'Best Practice Guidelines', 'What Are RNAO Best Practice Guidelines?', text, '', 'margin-top: 30px; padding: 0 58px 0 62px', '34%', 176, 28.2, '20px 34px 22px 40px')
+    band = green_band('bpso-lake', 'Best Practice Guidelines', 'What Are RNAO Best Practice Guidelines?', text, '', 'margin-top: 30px; padding: 0 58px 0 62px', '34%', 176, 28.2, '20px 34px 22px 40px')
+    # the mock-up lake crop gives way to a real photograph from the old Who We Are page (decorative here, so alt stays empty)
+    s += swap(band, f'src="{BLOB["bpso-lake"]}" alt=""', 'src="/_site/about/moccasins.jpg" alt="" width="1000" height="666" loading="lazy" decoding="async"')
     s += f'''
 <section id="guideline" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 52px 0 70px; display: flex; flex-direction: column; gap: 12px">
 {eyebrow('Our Focus')}
@@ -103,8 +107,8 @@ def page():
     right = (btn('What is a BPSO?', RNAO_BPSO, 'light', 'external', False, 'md', 'padding: 0 22px; gap: 10px; font-size: 13.6px; min-height: 40px')
              + btn('Connect with Our Team', 'Contact.dc.html', 'primary', None, True, 'md', 'padding: 0 24px; gap: 14px; font-size: 13.6px; min-height: 40px; border-color: #C8A15A'))
     band = rust_band('mail', 'Learn More or Connect with Us', 'Want to know more about IIPCT’s BPSO work? We’re happy to share and connect.', right, 'padding: 18px 120px 18px 126px', 14.2)
-    band = band.replace(ico('mail', 36, '#FFFFFF', 1.3, 'position: relative'), '')
-    band = band.replace('font-weight: 500; font-size: 24.8px;', 'font-weight: 500; font-size: 29.6px;')
+    band = swap(band, ico('mail', 36, '#FFFFFF', 1.3, 'position: relative'), '')
+    band = swap(band, 'font-weight: 500; font-size: 24.8px;', 'font-weight: 500; font-size: 29.6px;')
     s += band + '</div>'
     s += footer()
     return 'IIPCT — BPSO', s

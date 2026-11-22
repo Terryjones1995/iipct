@@ -2,6 +2,7 @@
 postings, and the two postings IIPCT shared on its Facebook page on November 17, 2026 (content/facebook/posts.json), each
 with its real BambooHR link. Nothing else: no benefits list, hiring steps or staff quote (none of it has a source)."""
 from lib import *
+from p_team import swap, real_hero
 
 # (title, place or None, note or None, link, source)
 JOBS = [('Nurse Practitioner', 'Kingston', None, 'https://iipct.bamboohr.com/careers/27', 'old site career page'),
@@ -30,8 +31,7 @@ def page():
     s = header('careers')
     h = hero('hero-careers', 61.2, 334, 'Career<br>Opportunities', INTRO, buttons, sub='Join our Team!',
              h1_size=52, lead_size=17, lead_lh=1.45, lead_w=520, sub_size=26, pad='30px 0 38px 88px', gap=11, btn_mt=10, sq_mt=2, obj='center center')
-    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
-    s += h.replace(f'src="{BLOB["hero-careers"]}" alt=""', 'src="/_site/about/sage-leaves.jpg" alt=""', 1)
+    s += real_hero(h, 'hero-careers', 'about/sage-leaves.jpg')
     cards = ''.join(job_card(t, pl, nt, hr, tone) for (t, pl, nt, hr, src), tone in zip(JOBS, ['sage', 'rust', 'gold', 'forest']))
     s += f'''
 <section id="jobs" style="scroll-margin-top: 16px; {WRAP}; padding: 30px 56px 0 68px">
@@ -42,6 +42,7 @@ def page():
 <div style="margin-top: 30px">'''
     right = (btn('See Current Openings', '#jobs', 'light', None, True, 'md', 'padding: 0 24px; gap: 13px; font-size: 13px; min-height: 40px')
              + btn('Follow Us on Facebook', FACEBOOK_URL, 'light', 'external', False, 'md', 'padding: 0 24px; gap: 10px; font-size: 13px; min-height: 40px'))
-    s += rust_band('briefcase', 'Ready to Make a Difference?', 'Check back regularly for new opportunities. We also share job postings on our Facebook page.', right, 'padding-right: 112px; padding-left: 122px', 14).replace('font-weight: 500; font-size: 24.8px;', 'font-weight: 500; font-size: 25.8px;') + '</div>'
+    band = rust_band('briefcase', 'Ready to Make a Difference?', 'Check back regularly for new opportunities. We also share job postings on our Facebook page.', right, 'padding-right: 112px; padding-left: 122px', 14)
+    s += swap(band, 'font-weight: 500; font-size: 24.8px;', 'font-weight: 500; font-size: 25.8px;') + '</div>'
     s += footer()
     return 'IIPCT — Career Opportunities', s

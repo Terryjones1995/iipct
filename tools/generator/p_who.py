@@ -2,17 +2,36 @@
 (content/old-site/pages/who-we-are.md); the people come from p_team.TEAM. Real photographs only: the staff group photo
 that headed the old page, the old service-area map and the staff's own portraits."""
 from lib import *
-from p_team import TEAM, LOCATIONS, TEAM_PAGE
+from p_team import TEAM, LOCATIONS, TEAM_PAGE, swap, real_hero
 
-def value_card(icon, tone, title, intro, items, ordered=False):
+def value_list(items, ordered=False):
     tag_ = 'ol' if ordered else 'ul'
     pad = 'padding-left: 22px' if ordered else 'padding-left: 18px'
     rows = ''.join(f'<li style="padding-left: 2px">{t}</li>' for t in items)
-    return (f'<div style="display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; border-radius: 14px; {CARD}">'
-            f'<div style="display: flex; align-items: center; gap: 16px">{circ(icon, tone, 58, 29, 1.4)}'
-            f'<h2 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 23px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}">{title}</h2></div>'
-            f'<p style="margin: 0; font-size: 14.6px; line-height: 1.5; color: {INK}">{intro}</p>'
-            f'<{tag_} style="margin: 0; {pad}; display: flex; flex-direction: column; gap: 7px; font-size: 14.6px; line-height: 1.5; color: {INK}">{rows}</{tag_}></div>')
+    return f'<{tag_} style="margin: 0; {pad}; display: flex; flex-direction: column; gap: 7px; font-size: 14.6px; line-height: 1.5; color: {INK}">{rows}</{tag_}>'
+
+def value_head(icon, tone, title):
+    return (f'<div style="display: flex; align-items: center; gap: 16px">{circ(icon, tone, 58, 29, 1.4)}'
+            f'<h2 style="margin: 0; font-family: {SERIF}; font-weight: 700; font-size: 23px; line-height: 1.1; letter-spacing: -0.014em; color: {HEAD}">{title}</h2></div>')
+
+def value_intro(text):
+    return f'<p style="margin: 0; font-size: 14.6px; line-height: 1.5; color: {INK}">{text}</p>'
+
+def value_card(icon, tone, title, intro, items, ordered=False, flex='flex: 1 1 420px'):
+    return (f'<div style="{flex}; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; border-radius: 14px; {CARD}">'
+            + value_head(icon, tone, title) + value_intro(intro) + value_list(items, ordered) + '</div>')
+
+def values_band(icon, tone, title, intro, items):
+    """The same card laid out across the full width (heading left, text right), for the short Core Values under Vision and Mission."""
+    return (f'<div style="flex: 1 1 100%; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 44px; padding: 20px 22px 22px; border-radius: 14px; {CARD}">'
+            f'<div style="flex: 0 1 300px; min-width: 0">{value_head(icon, tone, title)}</div>'
+            f'<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px">{value_intro(intro)}{value_list(items)}</div></div>')
+
+# Six people in the strip, so its rows are always full: six across when each card gets about 140 px, three across when
+# that no longer fits, two across on phones (each value is "a share of the row, less the gaps"; the 999 multiplier
+# switches between them at the container widths 920 px and 470 px; the 1 px keeps rounding from pushing a card down).
+STRIP_BASIS = ('clamp(calc((100% - 80px) / 6 - 1px), calc((920px - 100%) * 999), '
+               'clamp(calc((100% - 32px) / 3 - 1px), calc((470px - 100%) * 999), calc((100% - 16px) / 2 - 1px)))')
 
 WHERE = ('<ul style="margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; list-style: disc">'
          '<li><strong>Geographically</strong> – care that sees no boundaries and is status blind;</li>'
@@ -36,16 +55,18 @@ REGIONS = [('Rural Frontenac, Lennox and Addington', ['Tyendinaga Mohawk Territo
            ('Quinte', ['Belleville', 'Trenton', 'Picton']),
            ('Kingston', ['City of Kingston']),
            ('Leeds, Lanark, and Grenville', ['Perth', 'Gananoque', 'Smiths Falls'])]
-STRIP = [1, 43, 29, 39, 15]      # Tera Osborne, Dr. Ryan McConnell, Kristine Canty, Jessi Baker, Andrew Alkenbrack
+STRIP = [1, 2, 15, 29, 39, 43]   # leadership, then one person per location in the order of the tiles below: Tera Osborne,
+                                 # Kiowa Sager, Andrew Alkenbrack, Kristine Canty, Jessi Baker, Dr. Ryan McConnell
 LOC_NAME = {k: label for k, aid, label in LOCATIONS}
 LOC_ID = {k: aid for k, aid, label in LOCATIONS}
 
 def strip_card(m):
     num, sec, a, name, short, role, leave, photo_file, bio = m
     where = '' if sec == 'leadership' else f'<span style="font-size: 13px; line-height: 1.3; color: {MUTED}">{LOC_NAME[sec]}</span>'
-    return (f'<a class="card" href="{TEAM_PAGE}#{a}" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
-            + photo(f'people/{photo_file}.jpg', f'Photo of {short}', f'width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid {LINE}', w=600, h=600)
-            + f'<span style="display: flex; flex-direction: column; gap: 4px; padding: 13px 14px 15px">'
+    # the photo's alt is empty: the link text right under it already names the person
+    return (f'<a class="card" href="{TEAM_PAGE}#{a}" style="flex: 1 1 {STRIP_BASIS}; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
+            + photo(f'people/{photo_file}.jpg', '', f'width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid {LINE}', w=600, h=600)
+            + f'<span style="display: flex; flex-direction: column; gap: 4px; padding: 13px 14px 15px; overflow-wrap: break-word; hyphens: auto">'
             f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 18px; line-height: 1.12; letter-spacing: -0.014em; color: {HEAD}">{name}</span>'
             f'<span style="font-size: 14px; line-height: 1.3; color: {INK}">{role}</span>{where}</span></a>')
 
@@ -68,22 +89,26 @@ def page():
              'Tsi Kanonhkhwatsheríyo offers inclusive healthcare with a focus on Indigenous communities. Our team provides accessible support across multiple disciplines, ensuring respectful and coordinated care for all who visit our clinic.',
              buttons, sub='Meet the experts combining traditional knowledge and modern healthcare.', h1_size=53, lead_size=15.8, lead_lh=1.45, sub_size=26,
              lead_w=560, pad='24px 0 30px 83px', gap=10, btn_mt=6, obj='center 35%')
-    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
-    s += h.replace(f'src="{BLOB["hero-who"]}" alt=""', 'src="/_site/about/team-group.jpg" alt="IIPCT staff together in a group photo, standing and seated on a sofa"', 1)
+    s += real_hero(h, 'hero-who', 'about/team-group.jpg', 'IIPCT staff together in a group photo, standing and seated on a sofa')
+    # Who We Serve: lib's arc photo, with the mock-up smudge-bowl crop swapped for the old Who We Are page's own tipi photograph
+    tipi = arc_photo('who-smudge', '', 'flex: 1; min-height: 259px')
+    tipi = swap(tipi, f'src="{BLOB["who-smudge"]}" alt=""',
+                'src="/_site/about/tipi-sunset.jpg" alt="A white canvas tipi with its door open and a fire burning inside, in a grassy field at sunset" '
+                'width="926" height="1100" loading="lazy" decoding="async"')
+    tipi = swap(tipi, 'object-fit: cover;', 'object-fit: cover; object-position: center 70%;')   # keeps the open door and the fire in the crop
+    # Vision and Mission side by side (about the same length, so neither card is left half empty), Core Values across the full width below
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 18px">
 <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 16px">
-<div style="flex: 1.15 1 520px; min-width: 0; display: flex">{value_card('sprout', 'sage', 'Our Vision', 'We envision vibrant communities where:', VISION, True).replace('display: flex; flex-direction: column; gap: 12px; padding', 'flex: 1; display: flex; flex-direction: column; gap: 12px; padding', 1)}</div>
-<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+{value_card('sprout', 'sage', 'Our Vision', 'We envision vibrant communities where:', VISION, True, 'flex: 1.15 1 520px')}
 {value_card('heart', 'rust', 'Our Mission', 'To accomplish this vision, the regional team:', MISSION)}
-{value_card('people', 'gold', 'Our Core Values', 'To accomplish our vision and mission, the regional team upholds these values:', VALUES)}
-</div>
+{values_band('people', 'gold', 'Our Core Values', 'To accomplish our vision and mission, the regional team upholds these values:', VALUES)}
 </div>
 </section>
 <section style="position: relative; {WRAP}; margin-top: 22px">
 {branch(104, '#B5BFA6', 0.5, 'right: -58px; bottom: -22px; transform: rotate(-14deg)')}
 <div style="position: relative; display: flex; flex-wrap: wrap; align-items: stretch">
-<div class="sp-photo" style="flex: 0 0 29.9%; min-width: min(300px, 100%); display: flex">{arc_photo('who-smudge', 'Smudge bowl with smoke rising, resting on a rock beside sweetgrass', 'flex: 1; min-height: 259px')}</div>
+<div class="sp-photo" style="flex: 0 0 29.9%; min-width: min(300px, 100%); display: flex">{tipi}</div>
 <div class="sp-txt" style="flex: 1 1 380px; min-width: 0; padding: 14px 48px 20px 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 11px; justify-content: center">
 {eyebrow('Who We Serve')}
 {h2('Indigenous People and Families<br>Across Southeastern Ontario', 32)}
@@ -124,7 +149,7 @@ def page():
 {textlink('Meet the full team', 'Team.dc.html', 14.4, 'min-height: 40px')}
 </div>
 {p('Our team is made up of highly trained and culturally safe professionals eager to provide care to the communities we serve.', 15.4, INK, 1.45, 'max-width: 720px; margin-top: 6px')}
-<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(136px, 100%), 1fr)); gap: 16px">{strip}</div>
+<div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 16px">{strip}</div>
 </section>
 <section style="{WRAP}; padding: 30px 55px 0 66px">
 {eyebrow('Our Clinics &amp; Teams')}

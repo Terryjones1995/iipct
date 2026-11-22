@@ -60,6 +60,8 @@ Every file here was re-saved through Pillow (resized or cropped, no camera metad
 | about/service-area-map.png | Map of the five sub-regions IIPCT serves | images/2025-10_Map-of-service-area.png (https://iipct.org/wp-content/uploads/2025/10/Map-of-service-area.png) | who-we-are.html |
 | about/sage-leaves.jpg | Close-up of sage leaves (the old career page share image) | images/2025-10_hero-21_feature_image2.png (https://iipct.org/wp-content/uploads/2025/10/hero-21_feature_image2.png) | careers.html hero |
 | about/field-sunset.jpg | Sunset over a green field with a barn and a lone tree (old home page image) | images/2025-10_hero-21_feature_image2-3-1.jpg (https://iipct.org/wp-content/uploads/2025/10/hero-21_feature_image2-3-1.jpg) | board-of-directors.html hero |
+| about/tipi-sunset.jpg | A white canvas tipi with its door open and a fire inside, in a grassy field at sunset (old Who We Are page; old alt "Tipi with fire inside at sunset.") | images/2025-10_rsw_1280h_1520.webp (https://iipct.org/wp-content/uploads/2025/10/rsw_1280h_1520.webp) | who-we-are.html "Who We Serve" (replaces the mock-up crop who-smudge) |
+| about/moccasins.jpg | A pair of tan leather moccasins with a blue beaded turtle on each, on a wooden table (old Who We Are page; old alt "Yellow moccasins with blue turtle embroidery.") | images/2025-10_rsw_1280h_853.webp (https://iipct.org/wp-content/uploads/2025/10/rsw_1280h_853.webp) | bpso.html "Best Practice Guidelines" band, decorative (replaces the mock-up crop bpso-lake) |
 
 ## bpso/
 

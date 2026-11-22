@@ -15,6 +15,18 @@ LOCATIONS = [('leadership', 'leadership', 'Leadership'),
              ('deseronto', 'deseronto-clinic', 'Deseronto Clinic')]
 TEAM_PAGE = 'our-team.html'      # links with an #anchor use the published file name (export only rewrites bare .dc.html links)
 
+def swap(html, old, new):
+    """Replace the first `old` in markup built by a lib helper, and stop the build when it is not there: if lib's markup
+    changes, a silent str.replace would bring a mock-up photo back without any error."""
+    assert old in html, f'markup to replace not found (did lib.py change?): {old[:90]}'
+    return html.replace(old, new, 1)
+
+HERO_WRAP = 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"'
+def real_hero(h, mock, src, alt=''):
+    """lib.hero() markup with the mock-up photo swapped for a real one, and the text column kept full width when the hero stacks."""
+    h = swap(h, HERO_WRAP, HERO_WRAP[:-1] + '; width: 100%"')
+    return swap(h, f'src="{BLOB[mock]}" alt=""', f'src="/_site/{src}" alt="{alt}"')
+
 # (old card number, section, anchor, name as printed, short name, title as printed, on leave, photo file in site-img/people/, biography paragraphs)
 TEAM = [
   (1, 'leadership', 'tera-osborne', 'Tera Osborne', 'Tera Osborne', 'Executive Director', False, 'tera-osborne',
@@ -164,7 +176,7 @@ def page():
         where = '' if key == 'leadership' else textlink('Address, phone and hours', 'Contact.dc.html', 13.6, 'min-height: 40px')
         secs += (f'<section id="{aid}" aria-labelledby="{aid}-h" style="scroll-margin-top: 16px; display: flex; flex-direction: column; gap: 14px">'
                  f'<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-bottom: 10px; border-bottom: 1px solid {GOLDL}">'
-                 + h2(label, 27, HEAD, 'flex: 1 1 auto', 'h2').replace('<h2 ', f'<h2 id="{aid}-h" ', 1)
+                 + swap(h2(label, 27, HEAD, 'flex: 1 1 auto', 'h2'), '<h2 ', f'<h2 id="{aid}-h" ')
                  + f'<span style="font-size: 13.6px; font-weight: 600; color: {MUTED}">{len(people)} {"person" if len(people) == 1 else "people"}</span>{where}</div>'
                  f'<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px">'
                  + ''.join(member_card(m) for m in people) + '</div></section>')
