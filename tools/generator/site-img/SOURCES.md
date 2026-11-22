@@ -68,7 +68,7 @@ Every file here was re-saved through Pillow (resized or cropped, no camera metad
 | File | Shows | Source | Used on |
 |---|---|---|---|
 | bpso/orientation-toronto.jpg | Five women in ribbon skirts at the RNAO BPSO orientation and launch, Toronto | images/2026-10_BPSO-Toronto.jpeg (old BPSO page) | bpso.html story 1 |
-| bpso/gathering-thunder-bay.jpg | Five women, several in ribbon skirts, by a pond at the BPSO gathering, Thunder Bay | images/2026-10_BPSO-Thunder-Bay.jpeg (old BPSO page) | bpso.html hero |
+| bpso/gathering-thunder-bay.jpg | Five women, two of them in ribbon skirts, by a pond at the BPSO gathering, Thunder Bay | images/2026-10_BPSO-Thunder-Bay.jpeg (old BPSO page) | bpso.html hero |
 | bpso/gathering-thunder-bay-group.jpg | Large group in front of a tipi at the Indigenous-focused BPSO gathering, Thunder Bay | images/2026-10_BPSO-thunder-bay-group-pic.jpg (old BPSO page) | bpso.html story 2 |
 | bpso/map-indigenous-bpso.jpg | RNAO map of Indigenous-focused BPSO organizations in Ontario by cohort (IIPCT: Cohort 4) | images/2026-10_map-IBPSO.jpg (old BPSO page) | bpso.html |
 | bpso/logo-indigenous-focused-bpso.png | RNAO "BPSO Indigenous Focused" logo | images/2026-10_images-1.png (old BPSO page) | bpso.html |

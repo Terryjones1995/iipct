@@ -166,22 +166,19 @@ day opens at 8:30). The Deseronto waitlist flyer says "press 3" but the contact 
 site uses 4). Deseronto's postal code is not printed anywhere by IIPCT, so it is left off. The staff extension lists
 are copied from the current contact page and will go out of date as staff change.
 
-**Events.** `events-programs.html` still shows the sample events from the design mock-ups (dated April to June 2025).
-None of them are real IIPCT events.
+**Events and news.** Events & Programs, the upcoming events on Home and the News page are built from IIPCT's public
+Facebook posts (April to November 2026) and the old site; every item traces to one of those posts or pages. An event
+drops off the Home page by itself once it is over, but the lists are part of the pages: until the site runs on the
+server, where staff enter events in the admin, new events are added in `tools/generator/p_events.py` and the pages
+regenerated. Posts from before April 2026 could not be read without signing in to Facebook; a page export from IIPCT
+would fill in the rest of the year.
 
-**News.** On `news.html` the "View flyer" links go nowhere yet, and the "From Facebook" block is a placeholder.
-The Breast Cancer Screening story still has a placeholder where the list of staff and partners to thank goes.
-
-**TB Testing.** The current page is two images with no text. `tb-testing.html` has a placeholder until that text is
-typed out.
-
-**Other pages.** Placeholder links (`href="#"`) and `[bracketed]` placeholders (staff, board and testimonial names and
-quotes) remain on Home, Who We Are, Board, Careers, BPSO, Services, Immunization, Events & Programs and News. Other work
-packages are correcting them. Run the checker above to see what is left.
-
-**People.** Several pages still use stand-in photos from the design mock-ups. Some show people who are not IIPCT staff
-or clients. Replace them with real photographs before launch. The banners on the Contact page's location cards are
-stand-in scenery (no people); photos of the real locations would be better (only Deseronto has one so far).
+**Pictures.** The photographs of people and places are IIPCT's own, from the old site and their Facebook page (each one
+is listed with its source in `tools/generator/site-img/SOURCES.md`). Ask IIPCT to confirm they are happy with the staff
+photographs being used. Ten pictures are still stand-ins from the design mock-ups, all scenery or still life with no
+people in them: the five banners on the Contact page's location cards (`con-*.jpg`), the three pictures on the
+Services page (`svc-*.jpg`), `home-smudge.jpg` on Home and `evt-featured.jpg` on News. Photographs of the real
+locations would be better.
 
 **Logo.** `assets/img/logo-emblem.png` is a cleaned-up copy of a 216 px file. Get the original vector from IIPCT.
 

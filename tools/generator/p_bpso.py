@@ -56,7 +56,7 @@ def page():
     h = hero('hero-bpso', 55.4, 358, 'Best Practice Spotlight<br>Organization (BPSO)',
              'Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT) is proud to be one of 17 Indigenous-focused BPSO sites across Ontario.', buttons,
              h1_size=47.6, lead_size=18, lead_lh=1.42, lead_w=540, pad='40px 0 40px 84px', gap=12, btn_mt=10, sq_mt=2, obj='center 40%')
-    s += real_hero(h, 'hero-bpso', 'bpso/gathering-thunder-bay.jpg', 'Five women, several in ribbon skirts, outdoors by a pond at the BPSO gathering in Thunder Bay')
+    s += real_hero(h, 'hero-bpso', 'bpso/gathering-thunder-bay.jpg', 'Five women, two of them in ribbon skirts, outdoors by a pond at the BPSO gathering in Thunder Bay')
     s += f'''
 <section id="overview" style="scroll-margin-top: 16px; position: relative; {WRAP}; padding: 30px 52px 0 70px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px 44px">
 {branch(104, '#B5BFA6', 0.5, 'right: -58px; bottom: -22px; transform: rotate(-14deg)')}
