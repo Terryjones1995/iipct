@@ -33,6 +33,7 @@ def page():
     h = hero('hero-board', 58.7, 322, 'Board of Directors',
              'Meet the members of the Board of Directors of Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT).', buttons,
              h1_size=50.6, lead_size=19, lead_lh=1.4, lead_w=520, pad='40px 0 38px 86px', gap=11, btn_mt=10, sq_mt=2, obj='center 60%')
+    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
     s += h.replace(f'src="{BLOB["hero-board"]}" alt=""', 'src="/_site/about/field-sunset.jpg" alt=""', 1)
     grid = lambda cards: f'<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px">{cards}</div>'
     s += f'''

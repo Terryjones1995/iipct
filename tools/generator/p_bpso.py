@@ -53,6 +53,7 @@ def page():
     h = hero('hero-bpso', 55.4, 358, 'Best Practice Spotlight<br>Organization (BPSO)',
              'Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT) is proud to be one of 17 Indigenous-focused BPSO sites across Ontario.', buttons,
              h1_size=47.6, lead_size=18, lead_lh=1.42, lead_w=540, pad='40px 0 40px 84px', gap=12, btn_mt=10, sq_mt=2, obj='center 40%')
+    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
     s += h.replace(f'src="{BLOB["hero-bpso"]}" alt=""', 'src="/_site/bpso/gathering-thunder-bay.jpg" alt="Five women, several in ribbon skirts, outdoors by a pond at the BPSO gathering in Thunder Bay"', 1)
     s += f'''
 <section id="overview" style="scroll-margin-top: 16px; position: relative; {WRAP}; padding: 30px 52px 0 70px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px 44px">
@@ -61,7 +62,6 @@ def page():
 {eyebrow('Overview')}
 {h2('What is a BPSO?', 32.4)}
 {p(ABOUT, 15.2, INK, 1.55, 'max-width: 640px')}
-{p('Tsi Kanonhkhwatsheríyo Indigenous Interprofessional Primary Care Team (IIPCT) is proud to be one of 17 Indigenous-focused BPSO sites across Ontario.', 15.2, INK, 1.55, 'max-width: 640px; font-weight: 600')}
 {photo('bpso/logo-indigenous-focused-bpso.png', 'RNAO Best Practice Spotlight Organization, Indigenous Focused, logo', 'width: 300px; max-width: 100%; height: auto; margin-top: 6px', w=600, h=220)}
 {ext('Read more about BPSOs on the RNAO website', RNAO_BPSO, 14.4, RUST, 'display: inline-flex; align-items: center; min-height: 40px')}
 </div>

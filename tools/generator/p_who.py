@@ -68,6 +68,7 @@ def page():
              'Tsi Kanonhkhwatsheríyo offers inclusive healthcare with a focus on Indigenous communities. Our team provides accessible support across multiple disciplines, ensuring respectful and coordinated care for all who visit our clinic.',
              buttons, sub='Meet the experts combining traditional knowledge and modern healthcare.', h1_size=53, lead_size=15.8, lead_lh=1.45, sub_size=26,
              lead_w=560, pad='24px 0 30px 83px', gap=10, btn_mt=6, obj='center 35%')
+    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
     s += h.replace(f'src="{BLOB["hero-who"]}" alt=""', 'src="/_site/about/team-group.jpg" alt="IIPCT staff together in a group photo, standing and seated on a sofa"', 1)
     s += f'''
 <section style="position: relative; z-index: 2; {WRAP}; padding: 0 48px; margin-top: 18px">

@@ -30,6 +30,7 @@ def page():
     s = header('careers')
     h = hero('hero-careers', 61.2, 334, 'Career<br>Opportunities', INTRO, buttons, sub='Join our Team!',
              h1_size=52, lead_size=17, lead_lh=1.45, lead_w=520, sub_size=26, pad='30px 0 38px 88px', gap=11, btn_mt=10, sq_mt=2, obj='center center')
+    h = h.replace('position: relative; z-index: 1; max-width: 1440px; margin: 0 auto"', 'position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; width: 100%"', 1)   # stacked hero: keep the text column full width
     s += h.replace(f'src="{BLOB["hero-careers"]}" alt=""', 'src="/_site/about/sage-leaves.jpg" alt=""', 1)
     cards = ''.join(job_card(t, pl, nt, hr, tone) for (t, pl, nt, hr, src), tone in zip(JOBS, ['sage', 'rust', 'gold', 'forest']))
     s += f'''
