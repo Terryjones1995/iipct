@@ -1,0 +1,3 @@
+# Test copy of the IIPCT website: keep crawlers out. The real site is https://iipct.org/
+User-agent: *
+Disallow: /
