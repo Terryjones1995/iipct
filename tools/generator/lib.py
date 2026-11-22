@@ -452,7 +452,7 @@ def newsletter(sub='Get our news, events and programs by email. Sign up on our n
     right = (f'<a class="btn bp nl-btn" href="{NEWSLETTER_URL}" aria-label="Sign up for the newsletter (opens in a new tab)" '
              f'style="display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; padding: 0 22px; border-radius: 9px; '
              f'border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-size: 13.6px; font-weight: 600; '
-             f'line-height: 1; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
+             f'line-height: 1.2; text-align: center; text-decoration: none; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
              f'{ico("mail", 17, "#FFFFFF", 1.8)}<span>Sign up for the newsletter</span>{ico("external", 15, "#FFFFFF", 2)}</a>')
     return rust_band('mail', 'Stay Connected with IIPCT', sub, right)
 
@@ -681,6 +681,7 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .hero-txt{padding-left:56px !important}
 .hero-txt .h1{font-size:42px !important}
 .hero-txt .lead{font-size:16.6px !important}
+.g3l{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
 }
 @container pg (max-width:1199px){
 .hd-nav,.hd-cta,.hd-div{display:none !important}
@@ -692,6 +693,7 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .fl{display:inline-flex !important;align-items:center;min-height:40px !important}
 .ft-col{gap:2px !important}
 .tl,.cl,a[href^="tel:"],a[href^="mailto:"]{min-height:40px !important}
+.tl{min-width:40px}
 .tl:not([style*="display"]):not(p .tl):not(li .tl),a[href^="tel:"]:not([style*="display"]):not(p a):not(li a),a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a){display:inline-flex;align-items:center}
 .btn{min-height:40px !important}
 .ra{width:40px !important;height:40px !important}
@@ -734,6 +736,7 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .m0{margin-left:0 !important;margin-right:0 !important}
 .cx{justify-content:flex-start !important}
 .hide-t{display:none !important}
+.g2t{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 }
 @container pg (max-width:900px){
 .mapc,.locm{display:flex !important;flex-direction:column;min-height:0 !important}
@@ -818,8 +821,8 @@ def _fsu(m):
     t = m.group(0)
     if t.startswith(('<svg', '<path', '<circle', '<rect')) or ' style="' not in t:
         return t
-    f = _FS.search(t.split(' style="', 1)[1])
-    if not f or float(f.group(1)) >= 12:
+    f = _FS.findall(t.split(' style="', 1)[1])
+    if not f or float(f[-1]) >= 12:
         return t
     cm = re.search(r' class="([^"]*)"', t)
     if cm and ('lk' in cm.group(1).split() or 'fsu' in cm.group(1).split()):

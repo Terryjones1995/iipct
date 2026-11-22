@@ -33,12 +33,12 @@ def booking():
 {eyebrow('New patients')}
 {h2(w['heading'], 27)}
 <p style="margin: 0; max-width: 640px; font-size: 15.4px; font-weight: 600; line-height: 1.45; color: {HEAD}">{w['question']}</p>
-<p style="margin: 0; max-width: 640px; font-size: 15px; line-height: 1.5; color: {INK}">{w['how']} at <a href="tel:{MAIN_TEL}" style="font-weight: 700; color: {HEAD}">{MAIN_PHONE}</a>, press {wl['option']}, {w['when']}.</p>
+<p style="margin: 0; max-width: 640px; font-size: 15px; line-height: 1.5; color: {INK}">{w['how']} at <a href="tel:{MAIN_TEL}" style="font-weight: 700; color: {HEAD}; white-space: nowrap">{MAIN_PHONE}</a>, press {wl['option']}, {w['when']}.</p>
 <p style="margin: 0; max-width: 640px; font-size: 15px; line-height: 1.5; color: {INK}"><strong style="color: {HEAD}">You must:</strong> {w['must']}</p>
 </div>
 <div style="flex: 0 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 12px; background: #F7F0E3; border: 1px solid {LINE}; font-size: 13.6px; line-height: 1.4; color: {INK}">
 <span style="font-weight: 700; color: {HEAD}">{wl['name']}</span><span>{address(wl)}</span>
-<a href="Contact.dc.html#{wl['key']}" style="font-weight: 600">Hours and staff at this clinic</a>
+<a href="Contact.dc.html#{wl['key']}" style="display: inline-flex; align-items: center; align-self: flex-start; min-height: 40px; font-weight: 600">Hours and staff at this clinic</a>
 </div>
 </section>'''
     s = header('')

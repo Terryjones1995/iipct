@@ -177,6 +177,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .hero-txt .lead {
     font-size: 16.6px !important;
   }
+  .g3l {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  }
 }
 
 @media (max-width:1199px) {
@@ -208,6 +211,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .tl, .cl, a[href^="tel:"], a[href^="mailto:"] {
     min-height: 40px !important;
+  }
+  .tl {
+    min-width: 40px;
   }
   .tl:not([style*="display"]):not(p .tl):not(li .tl), a[href^="tel:"]:not([style*="display"]):not(p a):not(li a), a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a) {
     display: inline-flex;
@@ -358,6 +364,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hide-t {
     display: none !important;
+  }
+  .g2t {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
 

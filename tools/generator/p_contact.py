@@ -7,12 +7,12 @@ SMALL = f'font-size: 13.2px; line-height: 1.35; color: {INK}'
 def out_btn(label, href, aria):
     """Button-style link to another website (opens in a new tab), in the 'sage' look of btn()."""
     return (f'<a class="btn bo" href="{href}" aria-label="{aria}" style="display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 36px; padding: 0 15px; '
-            f'border-radius: 9px; font-size: 13px; font-weight: 600; line-height: 1; text-decoration: none; white-space: nowrap; background: #FAF6EA; color: #133019; '
+            f'border-radius: 9px; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none; background: #FAF6EA; color: #133019; '
             f'border: 1.5px solid #7E9471; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.07)">{ico("map", 16, "currentColor", 1.8)}<span>{label}</span>{ico("external", 14, "currentColor", 1.9)}</a>')
 
 def hours_table(loc):
-    rows = ''.join(f'<span style="font-weight: 600; color: {HEAD}">{d}</span><span>{t}</span>' for d, t in hours_rows(loc))
-    return f'<span style="display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin-top: 3px; font-size: 12.8px; line-height: 1.35">{rows}</span>'
+    rows = ''.join(f'<span style="font-weight: 600; color: {HEAD}">{d}</span><span style="white-space: nowrap">{t}</span>' for d, t in hours_rows(loc))
+    return f'<div style="display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; padding: 0 0 0 33px; font-size: 12.8px; line-height: 1.35; color: {INK}">{rows}</div>'
 
 def extensions(loc):
     groups = ''
@@ -46,8 +46,9 @@ def location_card(loc, crop):
 {row('phone', f'<a href="tel:{MAIN_TEL}" style="color: {INK}; font-weight: 700; text-decoration: none">{MAIN_PHONE}</a>, press {loc["option"]}')}
 {fax}
 {row('mail', f'<a href="mailto:{loc["email"]}" style="color: {INK}; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere">{loc["email"]}</a>')}
-{row('clock', f'<span style="display: block; font-weight: 700; color: {HEAD}">Hours</span>{hours_table(loc)}')}
+{row('clock', f'<span style="display: block; font-weight: 700; color: {HEAD}">Hours</span>')}
 </ul>
+{hours_table(loc)}
 {units}
 {extensions(loc)}
 <div style="margin-top: auto; padding-top: 4px">{out_btn('Open in Google Maps', loc['map_url'], f'Open the {loc["name"]} in Google Maps (opens in a new tab)')}</div>
@@ -98,6 +99,7 @@ def page():
 </div>
 <a class="fl" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; min-height: 44px; font-family: {SERIF}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: {HEAD}; text-decoration: none">{ico('phone', 26, '#A04A32', 1.7)}<span>{MAIN_PHONE}</span></a>
 {call_list(size=14)}
+<p style="margin: 4px 0 0; font-size: 13.8px; line-height: 1.45; color: {INK}">Hours differ by location. <a href="#locations" style="font-weight: 600">See each location’s hours</a>.</p>
 </div>
 {vdiv('200px', GOLDL, 'margin: 26px 0 22px')}
 <div class="pads" style="position: relative; flex: 1 1 440px; min-width: 0; padding: 20px 30px 22px 36px; display: flex; flex-direction: column; gap: 12px">
@@ -122,7 +124,7 @@ def page():
 {vdiv('54px')}
 {p('Each location has its own hours and email. Open “Staff and extensions” to see who works there.', 15.4, INK, 1.4, 'flex: 1 1 360px')}
 </div>
-<div style="position: relative; margin-top: 17px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(222px, 100%), 1fr)); gap: 12px; align-items: stretch">
+<div class="g3l g2t g1" style="position: relative; margin-top: 17px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; align-items: stretch">
 {''.join(location_card(l, c) for l, c in zip(LOCATIONS, ['con-tyendinaga', 'con-kingston', 'con-bancroft', 'con-deseronto', 'con-shannonville']))}
 </div>
 </section>
