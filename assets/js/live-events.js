@@ -187,9 +187,10 @@
     a.setAttribute('href', href);
     if (outside) { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); }
   }
-  /** What the server says that the built text does not: "cancel", its status when it differs, or "" (leave as built). */
+  /** What the server says that the built text does not: CANCELLED, its status when it differs, or "" (leave as built). */
+  var CANCELLED = {};
   function news(evs, builtStatus) {
-    if (evs.every(function (ev) { return ev.cancelled; })) return 'cancel';
+    if (evs.every(function (ev) { return ev.cancelled; })) return CANCELLED;
     for (var i = 0; i !== evs.length; i++) {
       if (!evs[i].cancelled && evs[i].status && fold(evs[i].status) !== fold(builtStatus)) return evs[i].status;
     }
@@ -197,13 +198,14 @@
   }
 
   function apply(events) {
-    var now = torontoNow();
-    eventsPage(events, now);
-    homePage(events, now);
+    eventsPage(events);
+    homePage(events, torontoNow());
   }
 
   // ------------------------------------------------------------------ Events & Programs: the cards
-  function eventsPage(events, now) {
+  // The server lists upcoming dates only, so this list takes its dates as they come (no clock of the visitor's
+  // involved: a wrong device clock never empties it). Home keeps its rule that hides a date once it is over.
+  function eventsPage(events) {
     var list = document.getElementById('ev-list');
     if (!list || !document.getElementById('ev-tpl-card')) return;
     var built = [].slice.call(list.querySelectorAll('article[data-ev-title]')).map(function (el, i) {
@@ -214,22 +216,21 @@
     events.forEach(function (ev) {
       var found = false;
       built.forEach(function (b) { if (b.fold === ev.fold && shares(b.days, ev.dates)) { b.evs.push(ev); found = true; } });
-      var ahead = ev.dates.filter(function (d) { return !over(d, now); });
-      if (!found && ahead.length) items.push({ key: ahead[0].key, order: 1000 + ev.index, el: newCard(ev, ahead) });
+      if (!found) items.push({ key: ev.dates[0].key, order: 1000 + ev.index, el: newCard(ev, ev.dates) });
     });
     built.forEach(function (b) {
       if (!b.evs.length) { hide(b.el); return; }   // staff took it down
       var dates = [];
       b.evs.forEach(function (ev) { dates = dates.concat(ev.dates); });
       dates.sort(byKey);
-      var ahead = dates.filter(function (d) { return !over(d, now); }), first = (ahead[0] || dates[0]);
+      var first = dates[0];
       items.push({ key: first.key, order: b.order, el: b.el });
       var s = news(b.evs, b.status), st = part(b.el, 'status');
-      if (s && st) say(st, s === 'cancel' ? 'This event is cancelled.' : sentence(s));
-      if (s === 'cancel') [].forEach.call(b.el.querySelectorAll('a.btn'), hide);   // no booking for a cancelled event
+      if (s && st) say(st, s === CANCELLED ? 'This event is cancelled.' : sentence(s));
+      if (s === CANCELLED) [].forEach.call(b.el.querySelectorAll('a.btn'), hide);   // no booking for a cancelled event
       if (first.day !== b.days[0]) tile(b.el.querySelector('.ev-d'), first.info);
       var box = part(b.el, 'when'), seen = {};
-      ahead.forEach(function (d) {   // dates the server added
+      dates.forEach(function (d) {   // dates the server added
         if (b.days.indexOf(d.day) !== -1 || seen[d.key] || !box) return;
         seen[d.key] = true;
         var row = fromTemplate('ev-tpl-card');
@@ -318,7 +319,7 @@
         var ns = news([next.ev], nb.status), nst = part(nextEl, 'status');
         if (ns && nst) say(nst, sentence(ns));
       } else {
-        nextEl = newNext(next, target(next.ev), !next.ev.built.length);
+        nextEl = newNext(next);   // its link: the event's page on the server
       }
     }
 
@@ -339,7 +340,7 @@
         used.push(row);
         row.style.display = '';   // the built script hides rows it showed as "Up next" or found over
         var s = news([o.ev], b.status), st = part(row, 'status');
-        if (s && st) say(st, s === 'cancel' ? 'Cancelled' : s);
+        if (s && st) say(st, s === CANCELLED ? 'Cancelled' : s);
       } else {
         row = newRow(o, target(o.ev), !o.ev.built.length);
       }
@@ -365,7 +366,7 @@
     none.hidden = !!(nextEl || groups.length);
   }
 
-  function newNext(o, href, outside) {
+  function newNext(o) {
     var el = fromTemplate('ev-tpl-next');
     if (!el) return null;
     tile(el.querySelector('.ev-d'), o.d.info);
@@ -374,7 +375,7 @@
     if (o.d.place) rowText(part(el, 'where-row'), o.d.place); else drop(part(el, 'where-row'));
     if (o.ev.status) say(part(el, 'status'), sentence(o.ev.status)); else drop(part(el, 'status'));
     if (o.ev.summary) part(el, 'summary').textContent = o.ev.summary; else drop(part(el, 'summary'));
-    link(part(el, 'link'), href, outside);
+    link(part(el, 'link'), o.ev.href, true);
     return el;
   }
 
