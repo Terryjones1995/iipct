@@ -48,25 +48,55 @@ DESC = {
 os.makedirs(OUT + 'assets/img', exist_ok=True); os.makedirs(OUT + 'assets/css', exist_ok=True)
 A = lib.A
 IMG = {}          # blob url -> site path
+def save_image(im, path, **kw):
+    """Write an image only when its pixels differ from the file already there, so a regenerate that changes nothing
+    leaves no changed files behind (PNG and JPEG encoders differ between Pillow versions)."""
+    import io
+    buf = io.BytesIO(); im.save(buf, format='PNG' if path.endswith('.png') else 'JPEG', **kw)
+    new = buf.getvalue()
+    if os.path.exists(path):
+        old = open(path, 'rb').read()
+        if old == new: return
+        try:
+            a, b = Image.open(io.BytesIO(old)), Image.open(io.BytesIO(new))
+            if a.size == b.size and a.convert('RGBA').tobytes() == b.convert('RGBA').tobytes(): return
+        except Exception:
+            pass
+    open(path, 'wb').write(new)
 def image_for(name):
     url = lib.BLOB[name]
     if url in IMG: return IMG[url]
     im = Image.open(A + lib.META[name]['file'])
     if name in ('logo-emblem', 'feather-gold'):
         if name == 'logo-emblem' and im.width > 400: im = im.resize((400, round(400 * im.height / im.width)), Image.LANCZOS)
-        fn = name + '.png'; im.save(OUT + 'assets/img/' + fn, optimize=True)
+        fn = name + '.png'; save_image(im, OUT + 'assets/img/' + fn, optimize=True)
     else:
-        fn = name + '.jpg'; im.convert('RGB').save(OUT + 'assets/img/' + fn, quality=88, optimize=True, progressive=True)
+        fn = name + '.jpg'; save_image(im.convert('RGB'), OUT + 'assets/img/' + fn, quality=88, optimize=True, progressive=True)
     IMG[url] = 'assets/img/' + fn
     return IMG[url]
 BLOB_NAME = {v: k for k, v in lib.BLOB.items() if k != 'logo-emblem-mock'}
 
+# Real photographs (from IIPCT's own site and Facebook page) are ordinary files under tools/generator/site-img/.
+# Pages point at them with lib.photo('people/name.jpg', ...); they are copied to assets/img/ as they are.
+SITE_IMG = os.path.join(HERE, 'site-img') + '/'
+SITE_USED = set()
+def site_image(rel):
+    src = SITE_IMG + rel
+    assert os.path.isfile(src), f'lib.photo() names a file that is not in tools/generator/site-img/: {rel}'
+    dst = OUT + 'assets/img/' + rel
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    if not os.path.exists(dst) or open(dst, 'rb').read() != open(src, 'rb').read():
+        shutil.copyfile(src, dst)
+    SITE_USED.add(rel)
+    return 'assets/img/' + rel
+
 def to_site(body):
     html = lib.root(body)
     html = re.sub(r'src="(/_blob/[0-9a-f]+)"', lambda m: f'src="{image_for(BLOB_NAME[m.group(1)])}"', html)
+    html = re.sub(r'(src|href)="/_site/([^"]+)"', lambda m: f'{m.group(1)}="{site_image(m.group(2))}"', html)
     for f, n in NAMES.items():
         html = html.replace(f'href="{f}"', f'href="{n}"')
-    assert '.dc.html' not in html and '/_blob/' not in html
+    assert '.dc.html' not in html and '/_blob/' not in html and '/_site/' not in html
     html = re.sub(r'<a ([^>]*?)href="(https?://[^"]+)"', r'<a \1href="\2" target="_blank" rel="noopener"', html)   # other sites open in a new tab
     assert html.count('</header>') == 1 and html.count('<footer ') == 1
     html = html.replace('</header>', '</header>\n<main id="main">', 1).replace('\n<footer ', '\n</main>\n<footer ', 1)
@@ -101,7 +131,7 @@ for k, (mod, func, fn, mock, label) in PAGES.items():
     open(OUT + NAMES[fn], 'w').write(page); count += 1
 
 # favicon
-logo = Image.open(A + lib.META['logo-emblem']['file']); logo.resize((96, round(96 * logo.height / logo.width)), Image.LANCZOS).save(OUT + 'assets/img/favicon.png', optimize=True)
+logo = Image.open(A + lib.META['logo-emblem']['file']); save_image(logo.resize((96, round(96 * logo.height / logo.width)), Image.LANCZOS), OUT + 'assets/img/favicon.png', optimize=True)
 
 # ---------------------------------------------------------------- stylesheet: same rules, as ordinary media queries, laid out to be read
 css = lib.BASE_CSS.replace('@container pg (', '@media (').replace('.pg{container-type:inline-size;container-name:pg;min-width:320px}', '.pg{min-width:320px}')
@@ -134,4 +164,4 @@ extra = ('\n/* Skip link */\n.skip {\n  position: absolute;\n  left: 12px;\n  to
 open(OUT + 'assets/css/site.css', 'w').write(head + pretty(css) + extra)
 open(OUT + '.nojekyll', 'w').write('')
 hashes = sum(len(re.findall(r'href="#"', open(OUT + n).read())) for n in NAMES.values())
-print(count, 'pages,', len(IMG), 'images,', 'placeholder links (href="#"):', hashes)
+print(count, 'pages,', len(IMG), 'images,', len(SITE_USED), 'photographs,', 'placeholder links (href="#"):', hashes)

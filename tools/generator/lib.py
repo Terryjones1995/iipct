@@ -118,6 +118,14 @@ def circ(name, tone='sage', size=66, isize=None, sw=1.5, style=''):
 def img(name, alt, style):
     return f'<img src="{BLOB[name]}" alt="{alt}" style="display: block; {style}">'
 
+def photo(path, alt, style='', cls='', w=None, h=None, lazy=True):
+    """A real photograph kept as an ordinary file: tools/generator/site-img/<path>, published as assets/img/<path>.
+    (img() above is for the crops taken from the design mock-ups.) Give the file's real width and height so the page
+    does not jump while it loads."""
+    c = f' class="{cls}"' if cls else ''
+    wh = (f' width="{w}" height="{h}"' if w and h else '') + (' loading="lazy" decoding="async"' if lazy else '')
+    return f'<img{c} src="/_site/{path}" alt="{alt}"{wh} style="display: block; {style}">'
+
 # ---------------------------------------------------------------- type helpers
 def eyebrow(text, color=RUST, style=''):
     return f'<span style="display: block; font-size: 12.8px; font-weight: 700; letter-spacing: 0.16em; line-height: 1.1; text-transform: uppercase; color: {color}; {style}">{text}</span>'
