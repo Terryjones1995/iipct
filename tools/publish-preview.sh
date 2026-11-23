@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+# Publish the site to the gh-pages branch. GitHub Pages serves that branch as the test site:
+#   https://terryjones1995.github.io/iipct/
+#
+# usage: tools/publish-preview.sh [--launch] [--dry-run <dir>] [<commit>]      (commit defaults to HEAD)
+#
+# Two kinds of copy:
+#   the TEST copy (the default) is kept out of search engines (steps 2 and 3 below). Never point iipct.org at it:
+#     Google would be told not to index the real site.
+#   --launch makes the LIVE copy for the day iipct.org moves to the new site: the repo's pages unchanged (no noindex,
+#     the repo's robots.txt with its sitemap line, share tags on https://iipct.org/), the not-found page's links
+#     starting at "/", and a CNAME file naming iipct.org so GitHub Pages serves that domain. With nginx instead,
+#     write it with --launch --dry-run <dir> and serve that folder.
+#   Once gh-pages carries a CNAME file (the live site), an ordinary test publish refuses to replace it.
+#   --launch also refuses while LIVE_SITE in tools/generator/lib.py is set (the events reader and the footer sign-in
+#   link are for the GitHub copy only: see live_events_check below).
+#
+# What it does
+#   1. Takes the site files from <commit> (an allow-list): the pages (*.html at the top level), assets/,
+#      sitemap.xml, robots.txt, the redirect pages at the old iipct.org addresses listed in
+#      tools/redirects/redirect-pages.txt, and .nojekyll. tools/, README.md and everything else stay out.
+#   2. (test copy only) Keeps the test copy out of search results: adds <meta name="robots" content="noindex, nofollow"> to every
+#      page (the redirect pages already carry noindex) and replaces robots.txt with "Disallow: /".
+#      The pages in the repo stay clean for the real launch.
+#   3. (test copy only) Points the share tags of the test copy at the test address, so a pasted test link shows its preview card:
+#      in the canonical link and the og:url, og:image and twitter:image tags (each on its own line in the head)
+#      https://iipct.org/ becomes the test address. Nothing else in a page changes; the structured data and the
+#      sitemap keep the real address.
+#   4. Commits that as the next commit on gh-pages and pushes it. Nothing in your working folder changes.
+#
+# --dry-run <dir> writes the files to <dir> (it must be empty or not exist yet) and stops before committing.
+# Check a dry run with: python3 -I tools/check-site.py <dir> --preview      (a --launch dry run: --launch)
+set -euo pipefail
+
+DRY=""
+LAUNCH=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) DRY="${2:?--dry-run needs a folder}"; shift 2 ;;
+    --launch) LAUNCH=1; shift ;;
+    -*) echo "error: unknown option $1" >&2; exit 1 ;;
+    *) break ;;
+  esac
+done
+REF="${1:-HEAD}"
+REMOTE="origin"
+BRANCH="gh-pages"
+PREVIEW_BASE="/iipct/"      # the path the test site is served under on GitHub Pages
+LIVE_BASE="/"               # the live site is served at the root of its domain
+ROBOTS='<meta name="robots" content="noindex, nofollow">'
+REAL_URL="https://iipct.org/"                              # tools/generator/seo.py SITE_URL
+PREVIEW_URL="https://terryjones1995.github.io/iipct/"      # the test site's address
+MANIFEST="tools/redirects/redirect-pages.txt"
+LIVE_HOST="${REAL_URL#https://}"; LIVE_HOST="${LIVE_HOST%/}"   # iipct.org, for the CNAME file
+
+# >>> live_events_check (tools/live-events/test-launch-check.sh runs exactly this block)
+# A live copy never ships the events reader. While LIVE_SITE in tools/generator/lib.py is set, Home and Events & Programs
+# read the events staff publish on the server at that address (assets/js/live-events.js) and every page's footer links
+# to the server's sign-in. That is for the GitHub copy until the domain moves; when iipct.org moves to the server, this
+# static copy is retired. Launched at iipct.org with LIVE_SITE still set, the copy would read from a test server, or
+# (set to the real address) from itself, which has no feed and no sign-in page. So --launch refuses while any LIVE_SITE
+# line is set or cannot be read, or while any page or file still carries the reader or a sign-in link.
+live_events_check() {   # <folder holding the commit's files>
+  local dir="$1" line stale
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if ! printf '%s\n' "$line" | grep -qE "^LIVE_SITE *= *(''|\"\") *(#.*)?$"; then
+      echo "error: --launch refused: tools/generator/lib.py sets the events reader's server address ($line)." >&2
+      echo "       That reader is for the GitHub copy until the domain moves; once iipct.org moves to the server this static copy is" >&2
+      echo "       retired, so a live copy must never ship it. Set LIVE_SITE = \"\" and regenerate first." >&2
+      return 1
+    fi
+  done <<< "$(grep -E '^[[:space:]]*LIVE_SITE[[:space:]]*=' "$dir/tools/generator/lib.py" 2>/dev/null || true)"
+  stale="$(cd "$dir" 2>/dev/null && grep -lE 'live-events|href="[^"]*/login"' -- *.html 2>/dev/null | head -3 | tr '\n' ' ' || true)"
+  [ -e "$dir/assets/js/live-events.js" ] && stale="$stale assets/js/live-events.js"
+  if [ -n "${stale// /}" ]; then
+    echo "error: --launch refused: these files still carry the events reader or the server's sign-in link: $stale" >&2
+    echo "       Set LIVE_SITE = \"\" in tools/generator/lib.py, regenerate and commit first." >&2
+    return 1
+  fi
+  return 0
+}
+# <<< live_events_check
+
+cd "$(git rev-parse --show-toplevel)"
+SHA="$(git rev-parse --verify "$REF^{commit}")"
+SHORT="$(git rev-parse --short "$SHA")"
+
+TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
+mkdir "$TMP/all" "$TMP/site"
+
+# 1. the site files of that commit (an allow-list: anything new in the repo stays private until it is added here)
+git archive "$SHA" | tar -x -C "$TMP/all"
+if [ -n "$LAUNCH" ]; then live_events_check "$TMP/all" || exit 1; fi
+cp "$TMP"/all/*.html "$TMP/site/"
+cp -R "$TMP/all/assets" "$TMP/site/assets"
+for f in sitemap.xml robots.txt; do
+  [ -f "$TMP/all/$f" ] || { echo "error: no $f in $SHORT (run tools/generator/export_site.py)" >&2; exit 1; }
+  cp "$TMP/all/$f" "$TMP/site/$f"
+done
+: > "$TMP/site/.nojekyll"
+redirects=0
+if [ -f "$TMP/all/$MANIFEST" ]; then
+  while IFS= read -r rel; do
+    case "$rel" in ''|'#'*) continue ;; esac
+    if ! printf '%s\n' "$rel" | grep -qE '^([a-z0-9-]+/)+index\.html$'; then
+      echo "error: unexpected path in $MANIFEST: $rel" >&2; exit 1
+    fi
+    [ -f "$TMP/all/$rel" ] || { echo "error: $MANIFEST lists $rel, which $SHORT does not have" >&2; exit 1; }
+    if ! grep -q '<meta name="robots" content="noindex' "$TMP/all/$rel"; then
+      echo "error: redirect page $rel has no noindex tag" >&2; exit 1
+    fi
+    mkdir -p "$TMP/site/$(dirname "$rel")"
+    cp "$TMP/all/$rel" "$TMP/site/$rel"
+    redirects=$((redirects + 1))
+  done < "$TMP/all/$MANIFEST"
+fi
+
+# 2. keep the test copy out of search results (the live copy keeps the repo's pages and robots.txt as they are)
+pages=0
+for f in "$TMP"/site/*.html; do
+  if grep -qi '<meta name="robots"' "$f"; then
+    echo "error: $(basename "$f") already has a robots meta tag; publish expects clean pages" >&2
+    exit 1
+  fi
+  pages=$((pages + 1))
+  [ -n "$LAUNCH" ] && continue
+  awk -v tag="$ROBOTS" '{ print } /<meta name="viewport"/ && !done { print tag; done = 1 }' "$f" > "$f.tmp"
+  mv "$f.tmp" "$f"
+  if [ "$(grep -c -F "$ROBOTS" "$f")" != "1" ]; then
+    echo "error: could not add the robots tag to $(basename "$f") (no viewport meta line?)" >&2
+    exit 1
+  fi
+done
+[ "$pages" -gt 0 ] || { echo "error: no pages found in $SHORT" >&2; exit 1; }
+[ -f "$TMP/site/index.html" ] || { echo "error: no index.html in $SHORT" >&2; exit 1; }
+if [ -n "$LAUNCH" ]; then
+  grep -qxF "Sitemap: ${REAL_URL}sitemap.xml" "$TMP/site/robots.txt" \
+    || { echo "error: robots.txt in $SHORT does not point at ${REAL_URL}sitemap.xml" >&2; exit 1; }
+  if grep -rqF "$PREVIEW_URL" "$TMP/site" --include='*.html' --include='*.xml' --include='*.txt'; then
+    echo "error: the test address appears in the files of $SHORT" >&2; exit 1
+  fi
+  printf '%s\n' "$LIVE_HOST" > "$TMP/site/CNAME"
+else
+  printf '# Test copy of the IIPCT website: keep crawlers out. The real site is %s\nUser-agent: *\nDisallow: /\n' "$REAL_URL" \
+    > "$TMP/site/robots.txt"
+fi
+
+# 3. the share tags of the test copy point at the test address (line-targeted: only these four tags, only in the head)
+if [ -z "$LAUNCH" ]; then
+TAGS='^(<link rel="canonical" href="|<meta property="og:(url|image)" content="|<meta name="twitter:image" content=")'
+REAL_RE="${REAL_URL//./\\.}"
+while IFS= read -r f; do
+  sed -E -i "\#${TAGS}${REAL_RE}#s#${REAL_RE}#${PREVIEW_URL}#" "$f"
+  if grep -qE "${TAGS}${REAL_RE}" "$f"; then
+    echo "error: ${f#"$TMP/site/"}: a share tag still points at $REAL_URL" >&2; exit 1
+  fi
+  tagged="$(grep -cE "${TAGS}${PREVIEW_URL}" "$f" || true)"
+  total="$({ grep -oF "$PREVIEW_URL" "$f" || true; } | wc -l)"
+  if [ "$tagged" != "$total" ]; then
+    echo "error: ${f#"$TMP/site/"}: the test address appears outside the four share tags" >&2; exit 1
+  fi
+done < <(find "$TMP/site" -name '*.html' -not -path "$TMP/site/assets/*")
+fi
+
+# The "page not found" page is shown for ANY missing address, however deep (/iipct/contact-us/ for example), so its
+# own links must not be relative. On the test site everything lives under /iipct/; on the live site under "/".
+# Links to other sites, mail, phone and in-page anchors are left alone.
+BASE="$PREVIEW_BASE"; [ -n "$LAUNCH" ] && BASE="$LIVE_BASE"
+if [ -f "$TMP/site/404.html" ]; then
+  perl -pi -e 's{(href|src)="(?![a-z][a-z0-9+.-]*:|#|/)}{$1="'"$BASE"'}g' "$TMP/site/404.html"
+  if grep -qE '(href|src)="(assets/|[a-z0-9-]+\.html)' "$TMP/site/404.html"; then
+    echo "error: 404.html still has relative links after the rewrite" >&2
+    exit 1
+  fi
+fi
+
+KIND="test copy"; [ -n "$LAUNCH" ] && KIND="LIVE copy for $LIVE_HOST"
+if [ -n "$DRY" ]; then
+  if [ -e "$DRY" ] && [ -n "$(ls -A "$DRY" 2>/dev/null)" ]; then
+    echo "error: $DRY is not empty" >&2
+    exit 1
+  fi
+  mkdir -p "$DRY"
+  cp -R "$TMP/site/." "$DRY/"
+  echo "dry run: $KIND, $pages pages and $redirects redirect pages from $SHORT written to $DRY (nothing committed or pushed)"
+  exit 0
+fi
+
+# 3. commit on gh-pages without touching the working folder, then push
+GIT_DIR_ABS="$(git rev-parse --absolute-git-dir)"
+PARENT=""
+if git fetch --quiet "$REMOTE" "$BRANCH" 2>/dev/null; then
+  PARENT="$(git rev-parse --verify FETCH_HEAD)"
+fi
+# A CNAME file on gh-pages means GitHub serves the live domain from it: a test copy must never replace that.
+if [ -z "$LAUNCH" ] && [ -n "$PARENT" ] && git cat-file -e "$PARENT:CNAME" 2>/dev/null; then
+  echo "error: $BRANCH serves the live site ($(git cat-file -p "$PARENT:CNAME" | head -1)); publish it with --launch" >&2
+  exit 1
+fi
+TREE="$(cd "$TMP/site" && GIT_INDEX_FILE="$TMP/index" git --git-dir="$GIT_DIR_ABS" --work-tree="$TMP/site" add -A . \
+        && GIT_INDEX_FILE="$TMP/index" git --git-dir="$GIT_DIR_ABS" write-tree)"
+if [ -n "$PARENT" ] && [ "$(git rev-parse "$PARENT^{tree}")" = "$TREE" ]; then
+  echo "gh-pages already matches $SHORT: nothing to publish"
+  exit 0
+fi
+MSG="Publish test site from $SHORT"; [ -n "$LAUNCH" ] && MSG="Publish live site ($LIVE_HOST) from $SHORT"
+if [ -n "$PARENT" ]; then
+  COMMIT="$(git commit-tree "$TREE" -p "$PARENT" -m "$MSG")"
+else
+  COMMIT="$(git commit-tree "$TREE" -m "$MSG")"
+fi
+git push "$REMOTE" "$COMMIT:refs/heads/$BRANCH"
+echo "published the $KIND: $pages pages and $redirects redirect pages from $SHORT to $BRANCH ($(git rev-parse --short "$COMMIT"))"

@@ -11,6 +11,7 @@ MOCK = '/home/claude/iipct_src/zip/IIPCT_Full_Desktop_Rebrand_Package/01_Desktop
 PAGES = {
  'home': ('p_home', 'page', 'Main.dc.html', '01_Home.png', 'Home'),
  'who': ('p_who', 'page', 'WhoWeAre.dc.html', '02_Who_We_Are.png', 'Who We Are'),
+ 'team': ('p_team', 'page', 'Team.dc.html', None, 'Our Team'),
  'services': ('p_services', 'page', 'Services.dc.html', '03_Services.png', 'Services'),
  'events': ('p_events', 'page', 'Events.dc.html', '04_Events_Programs.png', 'Events & Programs'),
  'contact': ('p_contact', 'page', 'Contact.dc.html', '05_Contact_Us.png', 'Contact Us'),
@@ -31,6 +32,7 @@ PAGES = {
  'privacy': ('p_legal', 'privacy', 'Privacy.dc.html', None, 'Privacy Policy'),
  'access': ('p_legal', 'accessibility', 'Accessibility.dc.html', None, 'Accessibility'),
  'sitemap': ('p_legal', 'sitemap', 'SiteMap.dc.html', None, 'Site Map'),
+ 'notfound': ('p_legal', 'notfound', 'NotFound.dc.html', None, 'Page Not Found'),
 }
 FRAMES = {'tablet': 820, 'phone': 390}      # extra artboards: the same page held to a device width
 os.makedirs(OUT, exist_ok=True); os.makedirs(PREV, exist_ok=True)
