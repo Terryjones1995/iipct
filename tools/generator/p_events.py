@@ -173,7 +173,7 @@ def flyer_link(e):
     return (f'<a class="card ev-f" href="/_site/{full}" style="flex: 0 0 150px; max-width: 100%; align-self: flex-start; display: flex; flex-direction: column; gap: 8px; padding: 8px 8px 6px; '
             f'border-radius: 12px; background: #FFFDF8; border: 1px solid {LINE}; color: {RUST}; text-decoration: none">'
             + photo(th, f'Flyer for {title}', 'width: 100%; height: auto; border-radius: 7px', '', w, h)
-            + f'<span style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; font-size: 13px; font-weight: 600">'
+            + f'<span class="cft" style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; font-size: 13px; font-weight: 600">'
               f'<span style="text-decoration: underline; text-underline-offset: 3px">Full flyer</span>{ico("arrow", 14, RUST, 1.9)}</span></a>')
 
 # ------------------------------------------------------------------ live events (lib.LIVE_SITE)

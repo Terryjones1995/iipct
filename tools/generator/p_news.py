@@ -84,7 +84,7 @@ def in_the_news():
 def aside_news(extra=''):
     nl = (f'<div style="padding: 20px 22px 22px; border-radius: 14px; {CARD}; display: flex; flex-direction: column; align-items: flex-start; gap: 9px">{h3("Newsletter", 19)}'
           f'<p style="margin: 0; font-size: 13.6px; line-height: 1.45; color: {INK}">News, events and programs, sent by email.</p>'
-          f'{btn("Sign Up", NEWSLETTER_URL, "outline", "mail", True, "md", "margin-top: 4px")}</div>')
+          f'{btn("Sign Up", "#newsletter", "outline", "mail", True, "md", "margin-top: 4px")}</div>')
     return f'<aside style="flex: 1 1 300px; max-width: 400px; min-width: 0; display: flex; flex-direction: column; gap: 18px">{follow_card()}{extra}{nl}</aside>'
 
 

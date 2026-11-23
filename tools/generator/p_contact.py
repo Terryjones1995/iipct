@@ -112,7 +112,7 @@ def page():
 </div>
 {emails()}
 {note('info', 'Email is not for medical questions or emergencies', f'For a health question, call your clinic at {MAIN_PHONE}. In an emergency, call 911.', 'gold', 'margin-top: 2px')}
-<p style="margin: 0; font-size: 13.8px; line-height: 1.45; color: {INK}">Registered patients can book appointments online. {ext('Book online', BOOKING_URL, 13.8)}</p>
+<p style="margin: 0; font-size: 13.8px; line-height: 1.45; color: {INK}">Registered patients can book appointments online from our <a href="Booking.dc.html" style="font-weight: 600">Schedule Your Visit</a> page.</p>
 <div style="position: relative; margin-top: 2px">{social_row(label='Follow IIPCT')}</div>
 </div>
 </div>

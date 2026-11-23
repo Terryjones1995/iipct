@@ -513,9 +513,9 @@ def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None, narrow_r
         return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False), narrow_ratio)
     return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">', narrow_ratio)
 
-def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style='', right_cls=''):
+def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style='', right_cls='', sid=''):
     return f'''
-<section style="{WRAP}; padding: 0 52px">
+<section{f' id="{sid}"' if sid else ''} style="{WRAP}; padding: 0 52px{'; scroll-margin-top: 16px' if sid else ''}">
 <div class="band" style="position: relative; overflow: hidden; border-radius: 16px; background: #A85C43; border: 1px solid #8A4530; color: #FFFFFF; padding: 16px 132px 17px 90px; min-height: 84px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; box-shadow: 0 1px 2px rgba(90, 40, 20, 0.18); {style}">
 {branch(86, '#E4B58E', 0.5, 'left: -6px; bottom: -58px; transform: rotate(-18deg)', 4, True)}
 {branch(96, '#E4B58E', 0.5, 'right: 6px; bottom: -66px; transform: rotate(14deg)', 4, True)}
@@ -544,14 +544,14 @@ def newsletter(sub=NL_SUB):
              f'style="flex: 1 1 240px; min-width: 0; width: 346px; max-width: 100%; height: 40px; padding: 0 16px; border-radius: 9px; border: 1px solid #F3E4D2; background: #FFFDF8; '
              f'font-family: inherit; font-size: 13.4px; color: {INK}">'
              f'<div aria-hidden="true" style="position: absolute; left: -5000px"><input type="text" name="b_{f["u"]}_{f["id"]}" tabindex="-1" value=""></div>'
-             f'<button class="btn bp nl-btn" type="submit" style="flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 40px; min-width: 156px; '
+             f'<button class="btn bp nl-btn" type="submit" aria-describedby="nl-note" style="flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 40px; min-width: 156px; '
              f'padding: 0 22px; border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-family: inherit; '
              f'font-size: 13.6px; font-weight: 600; line-height: 1.2; cursor: pointer; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)"><span>Subscribe</span>{ico("arrow", 15, "currentColor", 2)}</button>'
              f'<p id="nl-note" style="flex: 1 1 100%; margin: 0; font-size: 12.6px; line-height: 1.4; color: #FFF6EC">Your email address goes to Mailchimp, the service IIPCT uses for its newsletter. '
-             f'You can unsubscribe at any time. <a class="dl dg" href="Privacy.dc.html" style="color: #FFFFFF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">Privacy Policy</a>. '
+             f'You can unsubscribe at any time. <a class="dl nlp" href="Privacy.dc.html" style="color: #FFFFFF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; padding: 1px 3px; margin: 0 -3px; border-radius: 4px">Privacy Policy</a>. '
              f'Subscribe opens Mailchimp in a new tab.</p>'
              f'</form>')
-    return rust_band('mail', 'Stay Connected with IIPCT', sub, right, right_style='flex: 0 1 520px', right_cls='nl-r')
+    return rust_band('mail', 'Stay Connected with IIPCT', sub, right, right_style='flex: 0 1 520px', right_cls='nl-r', sid='newsletter')
 
 def feature_list(items, icon_size=46, title_size=15.6, gap=22, text_size=12.5, icon_gap=33):
     """items: (icon, title, text)"""
@@ -1137,6 +1137,7 @@ HOVER = [   # (selectors, with % where the state goes; declarations)
     ('.tl% svg,.tx% svg,.il% svg', 'stroke:currentColor'),
     ('.fl%,.dl%', 'color:#E3BE74 !important'),
     ('.dg%', 'color:#FFFFFF !important;' + _UL),
+    ('.nlp%', 'background-color:#8C2B18 !important'),
     ('.cl% span:first-child', 'color:#8C2B18 !important'),
     ('.cld% span:first-child', 'color:#E3BE74 !important'),
     ('.lg% .lgw', 'color:#8C2B18 !important'),
@@ -1149,6 +1150,9 @@ HOVER = [   # (selectors, with % where the state goes; declarations)
     ('.bo% svg,.bs% svg,.bl% svg,.bg% svg', 'stroke:currentColor'),
     ('.card%', 'border-color:#C8A15A !important;box-shadow:0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important'),
     ('a.card% .ct,a.card% .t-h3', 'color:#8C2B18 !important'),
+    ('a.card% .cft', 'color:#17402A !important'),
+    ('a.card% .cft>span', 'text-decoration-color:#C8A15A !important'),
+    ('a.card% .cft svg', 'stroke:currentColor'),
     ('.nv%', 'color:#9A3B26 !important;border-bottom-color:#9A3B26 !important'),
     ('.nv-on%', 'color:#17402A !important;border-bottom-color:#C8A15A !important'),
     ('.nv% svg', 'stroke:currentColor'),
@@ -1163,7 +1167,7 @@ HOVER_P = [('.hero-sec .btn-row>.btn~.btn%,.sh .btn-row>.btn~.btn%', 'color:#174
            ('.hero-sec .btn-row>.btn~.btn%>span,.sh .btn-row>.btn~.btn%>span', 'text-decoration-color:#C8A15A !important')]
 def _rules(rules, state):
     return ''.join(','.join(sel.replace('%', state) for sel in sels.split(',')) + '{' + decl + '}' for sels, decl in rules)
-HOVER_CSS = ('.tl,.tx,.il,.fl,.dl,.cl span,.lgw,.pl img,.btn,.bo,.bs,.bl,.bg,.nv,.mi,.ml,.mb-a,.toc a,.ra,.ct,summary,.card,.tl svg,.tx svg,.il svg,.btn svg,.nv svg,.ra svg'
+HOVER_CSS = ('.tl,.tx,.il,.fl,.dl,.cl span,.lgw,.pl img,.btn,.bo,.bs,.bl,.bg,.nv,.mi,.ml,.mb-a,.toc a,.ra,.ct,.cft,.cft>span,summary,.card,.tl svg,.tx svg,.il svg,.btn svg,.nv svg,.ra svg,.cft svg'
              '{transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s,box-shadow .15s,stroke .15s,transform .15s}\n'
              '@media (hover:hover){' + _rules(HOVER, ':hover') + '.faq:hover{border-color:#C8A15A !important;background:#FFF8EA !important}}\n'
              + _rules(HOVER, ':focus-visible') + '\n'

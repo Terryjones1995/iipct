@@ -1283,7 +1283,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     animation: none !important;
   }
 }
-.tl, .tx, .il, .fl, .dl, .cl span, .lgw, .pl img, .btn, .bo, .bs, .bl, .bg, .nv, .mi, .ml, .mb-a, .toc a, .ra, .ct, summary, .card, .tl svg, .tx svg, .il svg, .btn svg, .nv svg, .ra svg {
+.tl, .tx, .il, .fl, .dl, .cl span, .lgw, .pl img, .btn, .bo, .bs, .bl, .bg, .nv, .mi, .ml, .mb-a, .toc a, .ra, .ct, .cft, .cft>span, summary, .card, .tl svg, .tx svg, .il svg, .btn svg, .nv svg, .ra svg, .cft svg {
   transition: color .15s,background-color .15s,border-color .15s,text-decoration-color .15s,box-shadow .15s,stroke .15s,transform .15s;
 }
 
@@ -1315,6 +1315,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     text-decoration-color: #C8A15A !important;
     text-underline-offset: 4px;
     text-decoration-thickness: 1.5px;
+  }
+  .nlp:hover {
+    background-color: #8C2B18 !important;
   }
   .cl:hover span:first-child {
     color: #8C2B18 !important;
@@ -1359,6 +1362,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   a.card:hover .ct, a.card:hover .t-h3 {
     color: #8C2B18 !important;
+  }
+  a.card:hover .cft {
+    color: #17402A !important;
+  }
+  a.card:hover .cft>span {
+    text-decoration-color: #C8A15A !important;
+  }
+  a.card:hover .cft svg {
+    stroke: currentColor;
   }
   .nv:hover {
     color: #9A3B26 !important;
@@ -1423,6 +1435,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   text-underline-offset: 4px;
   text-decoration-thickness: 1.5px;
 }
+.nlp:focus-visible {
+  background-color: #8C2B18 !important;
+}
 .cl:focus-visible span:first-child {
   color: #8C2B18 !important;
 }
@@ -1466,6 +1481,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 a.card:focus-visible .ct, a.card:focus-visible .t-h3 {
   color: #8C2B18 !important;
+}
+a.card:focus-visible .cft {
+  color: #17402A !important;
+}
+a.card:focus-visible .cft>span {
+  text-decoration-color: #C8A15A !important;
+}
+a.card:focus-visible .cft svg {
+  stroke: currentColor;
 }
 .nv:focus-visible {
   color: #9A3B26 !important;
