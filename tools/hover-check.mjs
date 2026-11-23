@@ -175,7 +175,6 @@ try {
       pr.controls++;
       if (!hov.hover) { pr.unreachable.push({ ...info, why: 'pointer on it but :hover did not match' }); continue; }
       const d = diff(rest.facts, hov.facts);
-      if (process.env.HOVER_DEBUG && info.t.includes(process.env.HOVER_DEBUG)) console.log('DEBUG', info, JSON.stringify(rest), JSON.stringify(hov), d);
       if (!d.length || d.includes('layout changed') && d.length === 1) pr.hoverFail.push(info);
       if (FOCUS) {
         // keyboard focus: a key press first, so Chrome treats the focus as keyboard focus (:focus-visible)

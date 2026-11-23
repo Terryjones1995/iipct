@@ -513,7 +513,7 @@ def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None, narrow_r
         return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False), narrow_ratio)
     return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">', narrow_ratio)
 
-def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style=''):
+def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style='', right_cls=''):
     return f'''
 <section style="{WRAP}; padding: 0 52px">
 <div class="band" style="position: relative; overflow: hidden; border-radius: 16px; background: #A85C43; border: 1px solid #8A4530; color: #FFFFFF; padding: 16px 132px 17px 90px; min-height: 84px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; box-shadow: 0 1px 2px rgba(90, 40, 20, 0.18); {style}">
@@ -524,7 +524,7 @@ def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style=''):
 <h2 style="margin: 0; font-family: {SERIF}; font-weight: 500; font-size: 24.8px; line-height: 1.05; letter-spacing: -0.012em; color: #FFFFFF">{title}</h2>
 <p style="margin: 0; font-size: {sub_size}px; line-height: 1.3; color: #FFF6EC">{sub}</p>
 </div>
-<div class="band-r" style="position: relative; min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px{"; " + right_style if right_style else ""}">{right}</div>
+<div class="band-r{" " + right_cls if right_cls else ""}" style="position: relative; min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px{"; " + right_style if right_style else ""}">{right}</div>
 </div>
 </section>'''
 
@@ -548,10 +548,10 @@ def newsletter(sub=NL_SUB):
              f'padding: 0 22px; border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-family: inherit; '
              f'font-size: 13.6px; font-weight: 600; line-height: 1.2; cursor: pointer; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)"><span>Subscribe</span>{ico("arrow", 15, "currentColor", 2)}</button>'
              f'<p id="nl-note" style="flex: 1 1 100%; margin: 0; font-size: 12.6px; line-height: 1.4; color: #FFF6EC">Your email address goes to Mailchimp, the service IIPCT uses for its newsletter. '
-             f'You can unsubscribe at any time. <a href="Privacy.dc.html" style="color: #FFFFFF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">Privacy Policy</a>. '
+             f'You can unsubscribe at any time. <a class="dl dg" href="Privacy.dc.html" style="color: #FFFFFF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">Privacy Policy</a>. '
              f'Subscribe opens Mailchimp in a new tab.</p>'
              f'</form>')
-    return rust_band('mail', 'Stay Connected with IIPCT', sub, right, right_style='flex: 0 1 520px')
+    return rust_band('mail', 'Stay Connected with IIPCT', sub, right, right_style='flex: 0 1 520px', right_cls='nl-r')
 
 def feature_list(items, icon_size=46, title_size=15.6, gap=22, text_size=12.5, icon_gap=33):
     """items: (icon, title, text)"""
@@ -850,6 +850,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .pg br{display:none}.pg br.k{display:inline}
 .vd{display:none !important}
 .band{padding:20px 28px !important}
+.nl-r{flex:1 1 100% !important}
 .aside{flex:1 1 100% !important;max-width:none !important;display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 .aside>*{max-width:none !important}
 .ft-row{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px !important}
@@ -1115,7 +1116,8 @@ FONT_HREF = ('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,
 # inline on the elements, so these rules carry !important. One class per kind of control:
 #   tl, tx  text link (rust): forest, gold underline (tu: the label sits in its own underlined span)
 #   il      link in ink (event titles, card titles, rows): rust; ct marks the title inside a row or a card link
-#   fl, dl  link on a dark band or the footer (cream, white): light gold; dg: gold at rest, so white with a gold underline
+#   fl, dl  link on a dark band or the footer (cream, white): light gold; dg: gold at rest, or on the rust band where light
+#           gold would be too faint: white with a gold underline
 #   bp      primary button: a lighter forest with a gold edge
 #   bo, bs  outline and soft buttons: forest fill, white words
 #   bl, bg  light button and gold-edged button on a dark band: gold fill, dark words

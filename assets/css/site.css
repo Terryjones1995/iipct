@@ -357,6 +357,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .band {
     padding: 20px 28px !important;
   }
+  .nl-r {
+    flex: 1 1 100% !important;
+  }
   .aside {
     flex: 1 1 100% !important;
     max-width: none !important;
