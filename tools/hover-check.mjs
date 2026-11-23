@@ -45,8 +45,9 @@ const PREP = () => {
     if (!VIS(el)) continue;
     el.dataset.hv = list.length; list.push({ i: list.length, menu: null });
   }
-  // header dropdown items: visible once a visitor points at the menu's own link
+  // header dropdown items: visible once a visitor points at the menu's own link (only where the desktop menu shows)
   document.querySelectorAll('.nvi').forEach((nvi, m) => {
+    if (!VIS(nvi)) return;
     nvi.querySelectorAll('.nvm a[href]').forEach(a => { a.dataset.hv = list.length; list.push({ i: list.length, menu: m }); });
     nvi.dataset.nvi = m;
   });
