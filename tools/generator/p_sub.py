@@ -10,16 +10,9 @@ SUBS = [('Immunization Program', 'Immunization.dc.html'), ('Well Baby &amp; Well
 SCHEDULE_URL = 'https://www.ontario.ca/page/ontarios-routine-immunization-schedule'
 TB_SHEET_URL = 'https://hpepublichealth.ca/wp-content/uploads/2020/02/TB-6-Tuberculosis-Fact-Sheet.pdf'
 
-def nl_band(sub='Get our news, events and programs by email. Sign up on our newsletter page.'):
-    """The newsletter band: lib.newsletter() once it has no dead button; until then the same band with a sign-up link."""
-    band = newsletter(sub)
-    if '<button' not in band:
-        return band
-    right = (f'<a class="btn bp" href="{NEWSLETTER_URL}" style="display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; padding: 0 22px; '
-             f'border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-size: 13.6px; font-weight: 600; '
-             f'line-height: 1.2; text-align: center; text-decoration: none; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
-             f'{ico("mail", 17, "#FFFFFF", 1.8)}<span>Sign up for the newsletter</span>{ico("external", 15, "#FFFFFF", 2)}</a>')
-    return rust_band('mail', 'Stay Connected with IIPCT', sub, right)
+def nl_band(sub=NL_SUB):
+    """The newsletter band: lib.newsletter(), the sign-up form that posts to IIPCT's Mailchimp audience."""
+    return newsletter(sub)
 
 def hero_photo(path, wh, alt, pos='center center'):
     """A real photograph (site-img/) in the same box as sub_hero()'s photo slot: 440 px wide, 440 / 232, rounded, bordered."""
@@ -42,7 +35,7 @@ def page_hero(trail, title, lead, pic='', **kw):
 
 def related(current):
     tiles = [(f'<a class="card t-s" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; border-radius: 12px; {CARD}; '
-              f'font-size: 14px; font-weight: 600; line-height: 1.25; color: {HEAD}; text-decoration: none"><span>{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
+              f'font-size: 14px; font-weight: 600; line-height: 1.25; color: {HEAD}; text-decoration: none"><span class="ct">{t}</span>{ico("arrow", 15, RUST, 1.9)}</a>')
              for t, h in [PC] + [(t, h) for t, h in SUBS if h != current]]
     return section('More in primary care', grid(tiles, 230, 12, '', 'g-tiles gt3'), size=23)
 
@@ -214,7 +207,7 @@ def outreach():
              f'<span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 112px; height: 112px; border-radius: 50%; background: #153526; color: #FFFFFF">'
              f'<span style="font-family: {SERIF}; font-weight: 600; font-size: 38px; line-height: 1">19</span><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px; color: #E3BE74">mammograms</span></span>'
              f'<span style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px">'
-             f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">Together We’re Stronger: Breast Cancer Screening Event</span>'
+             f'<span class="ct" style="font-family: {SERIF}; font-weight: 700; font-size: 21px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">Together We’re Stronger: Breast Cancer Screening Event</span>'
              f'<span style="font-size: 13.8px; line-height: 1.45">19 mammograms were completed, with our partners the Mohawks of the Bay of Quinte, the South East Indigenous Cancer Program and Kingston Health Sciences Centre.</span>'
              f'<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.6px; font-weight: 600; color: {RUST}">Read the story{ico("arrow", 15, RUST, 1.9)}</span></span></a>')
     main = section('Why we do it', goal + reach, 'Our goal') + section('What outreach looks like', what) + section('From the community', story)

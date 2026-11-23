@@ -22,7 +22,7 @@ def loc_card(name, kind, key):
     more = tlink('View Location', 'Contact.dc.html', 'arrow', 12.4, 'gap: 7px')
     more = more.replace('<a class="tl" href="Contact.dc.html"', '<span class="tl"', 1).replace('</a>', '</span>')
     return f'''<a class="card" href="Contact.dc.html#{key}" style="padding: 10px 8px 11px 16px; border-radius: 10px; background: #FCF7EC; border: 1px solid #CFC9A8; box-shadow: 0 1px 2px rgba(64, 44, 14, 0.07), 0 5px 12px rgba(64, 44, 14, 0.05); display: flex; flex-direction: column; gap: 2px; color: {INK}; text-decoration: none">
-<span style="display: flex; align-items: center; gap: 9px">{pin_fill(17)}<span class="t-b" style="font-size: 14.8px; font-weight: 700; color: {HEAD}; line-height: 1.15">{name}</span></span>
+<span style="display: flex; align-items: center; gap: 9px">{pin_fill(17)}<span class="t-b ct" style="font-size: 14.8px; font-weight: 700; color: {HEAD}; line-height: 1.15">{name}</span></span>
 <span class="t-s" style="padding-left: 26px; font-size: 12px; color: {INK}; line-height: 1.3">{kind}</span>
 <span style="padding-left: 26px">{more}</span>
 </a>'''
@@ -48,9 +48,8 @@ def green_band_photo(pic, eyebrow_txt, title, text_html, right_html, style='', p
 </section>'''
 
 def page():
-    # On phones the second button (same destination as the first) gives way to the main line as a quiet link.
-    buttons = (btn('Schedule Your Visit', 'Contact.dc.html', 'primary', 'calendar-check')
-               + btn('Book an Appointment', 'Contact.dc.html', 'outline', 'calendar-dot', False, cls='hide-p') + hero_call())
+    # One booking action (Schedule Your Visit) and, beside it, the main line as a quiet call link on every screen.
+    buttons = btn('Schedule Your Visit', BOOKING, 'primary', 'calendar-check') + hero_call(phones_only=False)
     s = header('home')
     # Hero: IIPCT team members at the BPSO gathering in Thunder Bay (old site, BPSO page photo); see site-img/SOURCES.md.
     s += site_hero('home/hero-team-thunder-bay.jpg', (1600, 840),

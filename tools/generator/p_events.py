@@ -330,7 +330,7 @@ def page():
          f'<span class="t-s" style="font-size: 13.6px; line-height: 1.4; color: {MUTED}">{d}</span></span>{tlink("Read the post", update_href(n), "arrow", 13.6)}</li>' for i, (t, d, n) in enumerate(RECENT))}
 </ul>
 </section>
-<div style="margin-top: 40px">{nl_band('Get our news, events and programs by email. Sign up on our newsletter page.')}</div>'''
+<div style="margin-top: 40px">{nl_band()}</div>'''
     s += footer(150, '', True)
     return 'IIPCT — Events &amp; Programs', s
 
@@ -400,10 +400,10 @@ def home_row(attrs, href_attr, time, title, place, closed, slots=('', '', '')):
     """A row in "Coming up": the whole row is the link."""
     closed_row = f'<span{slot("status", closed)} style="{HOME_CLOSED_ROW}">{closed}</span>' if (closed or LIVE) else ''
     return (f'<li{attrs}>'
-            f'<a class="tl"{href_attr} style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
+            f'<a class="tl il"{href_attr} style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-height: 40px; padding: 6px 0; text-decoration: none; color: {INK}">'
             f'<span class="t-s ev-tm"{slots[0]} style="flex: 0 0 128px; font-size: 13.6px; font-weight: 600; color: {MUTED}">{time}</span>'
             f'<span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 1px">'
-            f'<span class="t-b"{slots[1]} style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{title}</span>'
+            f'<span class="t-b ct"{slots[1]} style="font-size: 15px; font-weight: 700; line-height: 1.3; color: {HEAD}; text-decoration: underline; text-decoration-color: #D6BC86; text-underline-offset: 4px">{title}</span>'
             f'<span class="t-s"{slots[2]} style="font-size: 13.4px; line-height: 1.35; color: {MUTED}">{place}</span>{closed_row}</span></a></li>')
 
 def home_templates():

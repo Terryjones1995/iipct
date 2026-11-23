@@ -13,9 +13,6 @@ body {
 a {
   color: #8C2B18;
 }
-a:hover {
-  color: #5F1B0E;
-}
 input::placeholder, textarea::placeholder {
   color: #6B746E;
 }
@@ -33,84 +30,6 @@ input::placeholder, textarea::placeholder {
 }
 .nvi:hover>.nvm, .nvi:focus-within>.nvm {
   display: block;
-}
-.nv {
-  transition: color .15s,border-color .15s;
-}
-.nv:hover {
-  color: #9A3B26 !important;
-  border-bottom-color: #9A3B26 !important;
-}
-.nv:hover svg {
-  stroke: #9A3B26;
-}
-.nvm a {
-  transition: background .15s,color .15s;
-}
-.nvm a:hover {
-  background: #F1E7D3;
-  color: #8C2B18 !important;
-}
-.btn, .seg {
-  transition: transform .15s,box-shadow .15s,filter .15s,background .15s;
-}
-.btn:hover {
-  transform: translateY(-1px);
-}
-.bp:hover, .seg:hover {
-  filter: brightness(1.16);
-}
-.bo:hover, .sego:hover {
-  background: #F1E7D3 !important;
-  filter: none;
-}
-.bs:hover {
-  filter: brightness(.96);
-}
-.bg:hover {
-  background: #C8A15A !important;
-  color: #10291F !important;
-}
-.tl svg {
-  transition: transform .15s;
-}
-.tl:hover {
-  color: #5F1B0E !important;
-}
-.tl:hover svg {
-  stroke: #5F1B0E;
-  transform: translateX(3px);
-}
-.ra {
-  transition: background .15s,border-color .15s;
-}
-.ra:hover {
-  background: #17402A !important;
-  border-color: #17402A !important;
-}
-.ra:hover svg {
-  stroke: #fff;
-}
-.card {
-  transition: transform .18s,box-shadow .18s,border-color .18s;
-}
-.card:hover {
-  transform: translateY(-3px);
-  border-color: #C8A15A !important;
-  box-shadow: 0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important;
-}
-.fl {
-  transition: color .15s;
-}
-.fl:hover {
-  color: #E3BE74 !important;
-}
-.faq:hover {
-  border-color: #C8A15A !important;
-  background: #FFF8EA !important;
-}
-.toc a:hover {
-  background: #F1E7D3;
 }
 input:focus, textarea:focus, select:focus {
   outline: 2px solid #C8A15A;
@@ -169,12 +88,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .xt[open]>summary>svg, .faq[open]>summary>svg {
   transform: rotate(180deg);
 }
-.ml {
-  transition: background .15s;
-}
-.ml:hover {
-  background: #F1E7D3;
-}
 
 @media (max-width:1399px) {
   .hd {
@@ -183,9 +96,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .hd-nav {
     gap: 4px 14px !important;
-  }
-  .hd-seg2 {
-    display: none !important;
   }
   .pg h3, .pg li, .pg li>span {
     white-space: normal !important;
@@ -270,6 +180,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .btn {
     min-height: 40px !important;
+  }
+  .nl-in, .nl-btn {
+    min-height: 44px !important;
+  }
+  .nl-in {
+    font-size: 16px !important;
   }
   .ra {
     width: 40px !important;
@@ -399,10 +315,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   }
   .mb-a+.mb-a {
     border-left: 1px solid rgba(200,161,90,.32);
-  }
-  .mb-a:hover {
-    background: #1C4632;
-    color: #FFFFFF;
   }
   .ft-dark {
     padding-bottom: calc(56px + env(safe-area-inset-bottom,0px));
@@ -1260,6 +1172,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     padding-top: 9px !important;
     padding-bottom: 9px !important;
   }
+  .nl-in, .nl-btn {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
   .g-tm {
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
     gap: 12px !important;
@@ -1362,6 +1278,250 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @media (prefers-reduced-motion:reduce) {
   .hz-sun {
     animation: none !important;
+  }
+}
+.tl, .tx, .il, .fl, .dl, .cl span, .lgw, .pl img, .btn, .bo, .bs, .bl, .bg, .nv, .mi, .ml, .mb-a, .toc a, .ra, .ct, summary, .card, .tl svg, .tx svg, .il svg, .btn svg, .nv svg, .ra svg {
+  transition: color .15s,background-color .15s,border-color .15s,text-decoration-color .15s,box-shadow .15s,stroke .15s,transform .15s;
+}
+
+@media (hover:hover) {
+  .tl:not(.il):hover, .tx:hover {
+    color: #17402A !important;
+  }
+  .tl:not(.il):not(.tu):hover, .tx:not(.tu):hover {
+    text-decoration-line: underline !important;
+    text-decoration-color: #C8A15A !important;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+  }
+  .tu:hover>span {
+    text-decoration-color: #C8A15A !important;
+  }
+  .il:hover, .il:hover .ct {
+    color: #8C2B18 !important;
+  }
+  .tl:hover svg, .tx:hover svg, .il:hover svg {
+    stroke: currentColor;
+  }
+  .fl:hover, .dl:hover {
+    color: #E3BE74 !important;
+  }
+  .dg:hover {
+    color: #FFFFFF !important;
+    text-decoration-line: underline !important;
+    text-decoration-color: #C8A15A !important;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+  }
+  .cl:hover span:first-child {
+    color: #8C2B18 !important;
+  }
+  .cld:hover span:first-child {
+    color: #E3BE74 !important;
+  }
+  .lg:hover .lgw {
+    color: #8C2B18 !important;
+  }
+  .lgd:hover .lgw {
+    color: #E3BE74 !important;
+  }
+  .pl:hover img {
+    border-color: #C8A15A !important;
+  }
+  .bp:hover {
+    background: linear-gradient(180deg,#31723F 0%,#1F4E2A 100%) !important;
+    border-color: #C8A15A !important;
+  }
+  .bo:hover, .bs:hover {
+    background: #17402A !important;
+    color: #FFFFFF !important;
+    border-color: #17402A !important;
+  }
+  .bl:hover {
+    background: #E3BE74 !important;
+    color: #10291F !important;
+    border-color: #E3BE74 !important;
+  }
+  .bg:hover {
+    background: #C8A15A !important;
+    color: #10291F !important;
+    border-color: #C8A15A !important;
+  }
+  .bo:hover svg, .bs:hover svg, .bl:hover svg, .bg:hover svg {
+    stroke: currentColor;
+  }
+  .card:hover {
+    border-color: #C8A15A !important;
+    box-shadow: 0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important;
+  }
+  a.card:hover .ct, a.card:hover .t-h3 {
+    color: #8C2B18 !important;
+  }
+  .nv:hover {
+    color: #9A3B26 !important;
+    border-bottom-color: #9A3B26 !important;
+  }
+  .nv-on:hover {
+    color: #17402A !important;
+    border-bottom-color: #C8A15A !important;
+  }
+  .nv:hover svg {
+    stroke: currentColor;
+  }
+  .mi:hover, .ml:hover, .toc a:hover {
+    background: #F1E7D3;
+    color: #8C2B18 !important;
+  }
+  .mnav .ml.cur:hover {
+    background: #EFE0C2 !important;
+    color: #17402A !important;
+  }
+  .mb-a:hover {
+    background: #1C4632;
+    color: #E3BE74;
+  }
+  .ra:hover {
+    background: #17402A !important;
+    border-color: #17402A !important;
+  }
+  .ra:hover svg {
+    stroke: #FFFFFF;
+  }
+  .faq:hover {
+    border-color: #C8A15A !important;
+    background: #FFF8EA !important;
+  }
+}
+.tl:not(.il):focus-visible, .tx:focus-visible {
+  color: #17402A !important;
+}
+.tl:not(.il):not(.tu):focus-visible, .tx:not(.tu):focus-visible {
+  text-decoration-line: underline !important;
+  text-decoration-color: #C8A15A !important;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+.tu:focus-visible>span {
+  text-decoration-color: #C8A15A !important;
+}
+.il:focus-visible, .il:focus-visible .ct {
+  color: #8C2B18 !important;
+}
+.tl:focus-visible svg, .tx:focus-visible svg, .il:focus-visible svg {
+  stroke: currentColor;
+}
+.fl:focus-visible, .dl:focus-visible {
+  color: #E3BE74 !important;
+}
+.dg:focus-visible {
+  color: #FFFFFF !important;
+  text-decoration-line: underline !important;
+  text-decoration-color: #C8A15A !important;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+.cl:focus-visible span:first-child {
+  color: #8C2B18 !important;
+}
+.cld:focus-visible span:first-child {
+  color: #E3BE74 !important;
+}
+.lg:focus-visible .lgw {
+  color: #8C2B18 !important;
+}
+.lgd:focus-visible .lgw {
+  color: #E3BE74 !important;
+}
+.pl:focus-visible img {
+  border-color: #C8A15A !important;
+}
+.bp:focus-visible {
+  background: linear-gradient(180deg,#31723F 0%,#1F4E2A 100%) !important;
+  border-color: #C8A15A !important;
+}
+.bo:focus-visible, .bs:focus-visible {
+  background: #17402A !important;
+  color: #FFFFFF !important;
+  border-color: #17402A !important;
+}
+.bl:focus-visible {
+  background: #E3BE74 !important;
+  color: #10291F !important;
+  border-color: #E3BE74 !important;
+}
+.bg:focus-visible {
+  background: #C8A15A !important;
+  color: #10291F !important;
+  border-color: #C8A15A !important;
+}
+.bo:focus-visible svg, .bs:focus-visible svg, .bl:focus-visible svg, .bg:focus-visible svg {
+  stroke: currentColor;
+}
+.card:focus-visible {
+  border-color: #C8A15A !important;
+  box-shadow: 0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important;
+}
+a.card:focus-visible .ct, a.card:focus-visible .t-h3 {
+  color: #8C2B18 !important;
+}
+.nv:focus-visible {
+  color: #9A3B26 !important;
+  border-bottom-color: #9A3B26 !important;
+}
+.nv-on:focus-visible {
+  color: #17402A !important;
+  border-bottom-color: #C8A15A !important;
+}
+.nv:focus-visible svg {
+  stroke: currentColor;
+}
+.mi:focus-visible, .ml:focus-visible, .toc a:focus-visible {
+  background: #F1E7D3;
+  color: #8C2B18 !important;
+}
+.mnav .ml.cur:focus-visible {
+  background: #EFE0C2 !important;
+  color: #17402A !important;
+}
+.mb-a:focus-visible {
+  background: #1C4632;
+  color: #E3BE74;
+}
+.ra:focus-visible {
+  background: #17402A !important;
+  border-color: #17402A !important;
+}
+.ra:focus-visible svg {
+  stroke: #FFFFFF;
+}
+
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  .card:hover {
+    transform: translateY(-3px);
+  }
+  .tl:hover svg, .tx:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+@media (max-width:599px) {
+
+@media (hover:hover) {
+    .hero-sec .btn-row>.btn~.btn:hover, .sh .btn-row>.btn~.btn:hover {
+      color: #17402A !important;
+    }
+    .hero-sec .btn-row>.btn~.btn:hover>span, .sh .btn-row>.btn~.btn:hover>span {
+      text-decoration-color: #C8A15A !important;
+    }
+  }
+  .hero-sec .btn-row>.btn~.btn:focus-visible, .sh .btn-row>.btn~.btn:focus-visible {
+    color: #17402A !important;
+  }
+  .hero-sec .btn-row>.btn~.btn:focus-visible>span, .sh .btn-row>.btn~.btn:focus-visible>span {
+    text-decoration-color: #C8A15A !important;
   }
 }
 

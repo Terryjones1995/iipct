@@ -97,7 +97,7 @@ def page():
 {p('One number for every location. After you call, press the number for the location you need.', 13.8, INK, 1.35)}
 </div>
 </div>
-<a class="fl" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; min-height: 44px; font-family: {SERIF}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: {HEAD}; text-decoration: none">{ico('phone', 26, '#A04A32', 1.7)}<span>{MAIN_PHONE}</span></a>
+<a class="il" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; min-height: 44px; font-family: {SERIF}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: {HEAD}; text-decoration: none">{ico('phone', 26, '#A04A32', 1.7)}<span>{MAIN_PHONE}</span></a>
 {call_list(size=14)}
 <p style="margin: 4px 0 0; font-size: 13.8px; line-height: 1.45; color: {INK}">Hours differ by location. <a href="#locations" style="font-weight: 600">See each location’s hours</a>.</p>
 </div>

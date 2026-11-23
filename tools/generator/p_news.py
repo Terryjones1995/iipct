@@ -88,16 +88,9 @@ def aside_news(extra=''):
     return f'<aside style="flex: 1 1 300px; max-width: 400px; min-width: 0; display: flex; flex-direction: column; gap: 18px">{follow_card()}{extra}{nl}</aside>'
 
 
-def nl_band(sub='Get our news, events and programs by email. Sign up on our newsletter page.'):
-    """The newsletter band. lib.newsletter() once it has no dead button; until then the same band with a sign-up link."""
-    band = newsletter(sub)
-    if '<button' not in band:
-        return band
-    right = (f'<a class="btn bp" href="{NEWSLETTER_URL}" style="display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; padding: 0 22px; '
-             f'border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-size: 13.6px; font-weight: 600; '
-             f'line-height: 1.2; text-align: center; text-decoration: none; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
-             f'{ico("mail", 17, "#FFFFFF", 1.8)}<span>Sign up for the newsletter</span>{ico("external", 15, "#FFFFFF", 2)}</a>')
-    return rust_band('mail', 'Stay Connected with IIPCT', sub, right)
+def nl_band(sub=NL_SUB):
+    """The newsletter band: lib.newsletter(), the sign-up form that posts to IIPCT's Mailchimp audience."""
+    return newsletter(sub)
 
 
 # ------------------------------------------------------------------ one Facebook post
