@@ -67,7 +67,7 @@ def strip_card(m):
     return (f'<a class="card" href="{TEAM_PAGE}#{a}" style="flex: 1 1 {STRIP_BASIS}; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
             + photo(f'people/{photo_file}.jpg', '', f'width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid {LINE}', w=600, h=600)
             + f'<span style="display: flex; flex-direction: column; gap: 4px; padding: 13px 14px 15px; overflow-wrap: break-word; hyphens: auto">'
-            f'<span style="font-family: {SERIF}; font-weight: 700; font-size: 18px; line-height: 1.12; letter-spacing: -0.014em; color: {HEAD}">{name}</span>'
+            f'<span class="ct" style="font-family: {SERIF}; font-weight: 700; font-size: 18px; line-height: 1.12; letter-spacing: -0.014em; color: {HEAD}">{name}</span>'
             f'<span style="font-size: 14px; line-height: 1.3; color: {INK}">{role}</span>{where}</span></a>')
 
 def location_tile(key, aid, label, tone):

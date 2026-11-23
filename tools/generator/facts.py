@@ -24,6 +24,12 @@ GENERAL_EMAIL = 'info@iipct.com'
 BOOKING_URL = 'https://ocean.cognisantmd.com/intake/patients.html?linkRef=23964341-fa0d-46a7-b261-29ad22a145a6#/online-booking'
 # contacts.json newsletter[0]: main menu "Newsletter" item on every old page.
 NEWSLETTER_URL = 'https://mailchi.mp/iipct/iipct-newsletter'
+# The newsletter form (lib.newsletter) posts to the Mailchimp audience behind that page: its public form settings
+# (https://mc.us22.list-manage.com/signup-form/settings?u=356268c1304222407acf3de5d&id=00d0dfe1f0, read 2026-11-22: one field,
+# EMAIL; no human check) give the account u, audience id and form f_id. Host: the account's own list-manage host, where
+# Mailchimp's own sign-up page for this audience posts its form; a GET of the form address answers 200 with that page
+# (mc.us22.list-manage.com answers a GET with a redirect to this host). Never submit it in a test: it is a live list.
+NEWSLETTER_FORM = dict(host='iipct-tmt.us22.list-manage.com', u='356268c1304222407acf3de5d', id='aeb4a67e2f', f_id='00d0dfe1f0')
 # contacts.json social: footer icon links on every old page.
 FACEBOOK_URL = 'https://www.facebook.com/IIPCT.TMT/'
 TIKTOK_URL = 'https://www.tiktok.com/@theiipctcrew'

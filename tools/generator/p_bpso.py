@@ -37,7 +37,7 @@ def committee_card(num, label, role):
     rl = f'<span style="font-size: 13.6px; line-height: 1.3; color: {INK}">{role}</span>' if role else ''
     return (f'<a class="card tile" href="{TEAM_PAGE}#{m[2]}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; {CARD}; color: {INK}; text-decoration: none">'
             + photo(f'people/{m[7]}.jpg', '', f'flex: none; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid #FFFDF8; box-shadow: 0 0 0 1px {LINE}', w=600, h=600)
-            + f'<span style="min-width: 0; display: flex; flex-direction: column; gap: 3px"><span style="font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.1; color: {HEAD}">{label}</span>{rl}</span></a>')
+            + f'<span style="min-width: 0; display: flex; flex-direction: column; gap: 3px"><span class="ct" style="font-family: {SERIF}; font-weight: 700; font-size: 19px; line-height: 1.1; color: {HEAD}">{label}</span>{rl}</span></a>')
 
 def story(title, img_rel, w, h, focus, alt, paras, flip):
     # sp-photo puts the photo on its own row above the text at tablet width and below, so a wide group photo is not cut to a
@@ -68,7 +68,7 @@ def page():
 {ext('Read more about BPSOs on the RNAO website', RNAO_BPSO, 14.4, RUST, 'display: inline-flex; align-items: center; min-height: 40px')}
 </div>
 <figure style="position: relative; flex: 1 1 420px; min-width: 0; margin: 0; padding: 12px 12px 10px; border-radius: 14px; {CARD}">
-<a href="/_site/bpso/map-indigenous-bpso.jpg" style="display: block">{photo('bpso/map-indigenous-bpso.jpg', 'Map of Ontario showing the Indigenous-focused BPSO organizations by cohort; IIPCT is listed in Cohort 4', 'width: 100%; height: auto; border-radius: 8px', w=1195, h=897)}</a>
+<a href="/_site/bpso/map-indigenous-bpso.jpg" style="display: block">{photo('bpso/map-indigenous-bpso.jpg', 'Map of Ontario showing the Indigenous-focused BPSO organizations by cohort; IIPCT is listed in Cohort 4', f'width: 100%; height: auto; border-radius: 8px; border: 1px solid {LINE}', w=1195, h=897)}</a>
 <figcaption style="margin-top: 9px; font-size: 13.4px; line-height: 1.4; color: {MUTED}">Indigenous-focused BPSO organizations across Ontario. IIPCT is in Cohort 4. Select the map to see it larger.</figcaption>
 </figure>
 </section>'''

@@ -157,7 +157,8 @@ SQUIGGLE = ('<svg class="sqg" aria-hidden="true" width="160" height="17" viewBox
             '<path d="M1 15 C 24 5 58 1 95 4 C 118 6 140 5.6 159 1 C 145 10.6 120 13.6 94 11 C 62 7.8 30 9.8 1 15 Z" fill="#C79A3D"></path></svg>')
 
 # ---------------------------------------------------------------- buttons
-BOOK_LABELS = ('Schedule Your Visit', 'Book an Appointment', 'Book Online')
+# Booking has one name: "Schedule Your Visit" (the one word "Schedule" where there is no room), always to that page.
+BOOK_LABELS = ('Schedule Your Visit',)
 def btn(label, href='#', kind='primary', icon=None, arrow=True, size='md', style='', cls=''):
     if label in BOOK_LABELS:
         href = 'Booking.dc.html'
@@ -172,7 +173,8 @@ def btn(label, href='#', kind='primary', icon=None, arrow=True, size='md', style
         'soft': 'background: linear-gradient(180deg, #F3EDD9 0%, #E7E0C8 100%); color: #13261B; border: 1px solid #CFC9AA; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.10)',
         'sage': 'background: #FAF6EA; color: #133019; border: 1.5px solid #7E9471; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.07)',
     }[kind]
-    cls = {'primary': 'btn bp', 'outline': 'btn bo', 'gold': 'btn bg', 'light': 'btn bo', 'soft': 'btn bs', 'sage': 'btn bo'}[kind] + (' ' + cls if cls else '')
+    # hover classes (HOVER_CSS): bp primary, bo outline, bl light button on a dark band, bg gold-edged on a dark band, bs soft
+    cls = {'primary': 'btn bp', 'outline': 'btn bo', 'gold': 'btn bg', 'light': 'btn bl', 'soft': 'btn bs', 'sage': 'btn bo'}[kind] + (' ' + cls if cls else '')
     ic = ico(icon, round(fs + 3.5), 'currentColor', 1.8) if icon else ''
     ar = ico('arrow', round(fs + 1.5), 'currentColor', 2) if arrow else ''
     return f'<a class="{cls}" href="{href}" style="{base}{look}; {style}">{ic}<span>{label}</span>{ar}</a>'
@@ -316,14 +318,12 @@ MENUS = {
  'events': [('Events &amp; Programs', 'Events.dc.html', 0), ('News &amp; Updates', 'News.dc.html', 0), ('Newsletter', NEWSLETTER_URL, 0)],
 }
 
-def dual_btn(href='Booking.dc.html'):
-    """Header CTA: the two actions joined into one segmented control."""
-    seg = ('display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 12px; '
-           'font-size: 12.6px; font-weight: 600; line-height: 1; text-decoration: none; white-space: nowrap; ')
-    return (f'<span class="hd-cta" style="flex: none; display: inline-flex; border-radius: 10px; overflow: hidden; border: 1.5px solid #1E3D28; box-shadow: 0 1px 2px rgba(16, 44, 24, 0.20)">'
-            f'<a class="seg" href="{href}" style="{seg}background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF">{ico("calendar-check", 16, "currentColor", 1.8)}<span>Schedule Your Visit</span></a>'
-            f'<a class="seg sego hd-seg2" href="{href}" style="{seg}background: #FFFDF8; color: #13261B; border-left: 1.5px solid #1E3D28">{ico("calendar-dot", 16, "currentColor", 1.8)}<span>Book an Appointment</span></a>'
-            f'</span>')
+def book_btn(href='Booking.dc.html'):
+    """Header CTA: one primary button. Booking has one name and one place (Schedule Your Visit)."""
+    return (f'<a class="btn bp hd-cta" href="{href}" style="flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; '
+            f'border-radius: 10px; font-size: 12.6px; font-weight: 600; line-height: 1; text-decoration: none; white-space: nowrap; '
+            f'background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; border: 1px solid #2E5E38; box-shadow: 0 1px 2px rgba(16, 44, 24, 0.20)">'
+            f'{ico("calendar-check", 16, "currentColor", 1.8)}<span>Schedule Your Visit</span></a>')
 
 def _menu(key):
     rows = ''
@@ -333,7 +333,7 @@ def _menu(key):
             st = 'padding: 7px 12px 7px 26px; font-size: 12.8px; font-weight: 500; color: #3A4640'
         else:
             st = 'padding: 9px 12px; font-size: 13.4px; font-weight: 600; color: #10291F'
-        rows += (f'<a href="{href}" style="display: flex; align-items: center; justify-content: space-between; gap: 14px; border-radius: 8px; '
+        rows += (f'<a class="mi" href="{href}" style="display: flex; align-items: center; justify-content: space-between; gap: 14px; border-radius: 8px; '
                  f'line-height: 1.2; text-decoration: none; white-space: nowrap; {st}"><span>{label}</span>{ext}</a>')
     return (f'<span class="nvm"><span style="display: flex; flex-direction: column; gap: 1px; min-width: 236px; padding: 8px; border-radius: 12px; '
             f'background: #FFFDF8; border: 1px solid {LINE}; box-shadow: 0 2px 4px rgba(40, 30, 10, 0.06), 0 14px 28px rgba(40, 30, 10, 0.16); letter-spacing: 0">{rows}</span></span>')
@@ -342,7 +342,7 @@ def _mobile(active):
     """Book button + menu for tablet and phone widths. The menu is a native <details>, so it opens without script.
     The menu opens as a full-width sheet: one group per section (section row, then its pages in a grid of large rows).
     export_site.py marks the link to the page being shown (class cur, aria-current="page").
-    The header's Book button (hd-book) is hidden wherever the bottom action bar (action_bar) carries Book."""
+    The header's Schedule button (hd-book) is hidden wherever the bottom action bar (action_bar) carries Schedule."""
     rows = ''
     for label, href, dd, key in NAV:
         col = '#9A3B26' if key == active else '#10291F'
@@ -357,8 +357,8 @@ def _mobile(active):
     book = ('display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 15px; border-radius: 10px; font-size: 13.6px; font-weight: 600; line-height: 1; '
             'text-decoration: none; white-space: nowrap; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; border: 1px solid #2E5E38')
     return (f'<div class="hd-m">'
-            f'<a class="btn bp hd-book" href="Booking.dc.html" style="{book}">{ico("calendar-check", 17, "currentColor", 1.8)}<span>Book<span class="xs-hide"> a Visit</span></span></a>'
-            f'<details class="mnav"><summary aria-label="Menu" style="width: 46px; height: 44px; border-radius: 10px; border: 1.5px solid #1E3D28; background: #FFFDF8; color: #13261B; '
+            f'<a class="btn bp hd-book" href="Booking.dc.html" style="{book}">{ico("calendar-check", 17, "currentColor", 1.8)}<span>Schedule<span class="xs-hide"> Your Visit</span></span></a>'
+            f'<details class="mnav"><summary class="bo" aria-label="Menu" style="width: 46px; height: 44px; border-radius: 10px; border: 1.5px solid #1E3D28; background: #FFFDF8; color: #13261B; '
             f'display: flex; align-items: center; justify-content: center; cursor: pointer">'
             f'<span class="mi-o" style="display: flex">{ico("menu", 22, "currentColor", 2)}</span><span class="mi-x" style="display: flex">{ico("close", 22, "currentColor", 2)}</span></summary>'
             f'<div class="msheet" style="position: absolute; left: 0; right: 0; top: 100%; z-index: 40; padding: 10px 20px 22px; background: #FFFDF8; border-top: 1px solid {LINE}; border-bottom: 1px solid {LINE}; '
@@ -376,22 +376,22 @@ def header(active):
         col = '#9A3B26' if on else '#10291F'
         bb = '#9A3B26' if on else 'transparent'
         chev = ico('chev-down', 12, col, 2.4) if dd else ''
-        link = (f'<a class="nv" href="{href}" style="display: inline-flex; align-items: center; gap: 5px; padding: 10px 0 8px; border-bottom: 2px solid {bb}; '
+        link = (f'<a class="nv{" nv-on" if on else ""}" href="{href}" style="display: inline-flex; align-items: center; gap: 5px; padding: 10px 0 8px; border-bottom: 2px solid {bb}; '
                 f'color: {col}; text-decoration: none; white-space: nowrap">{label}{chev}</a>')
         items += f'<span class="nvi">{link}{_menu(key)}</span>' if dd else link
     return f'''
 <header style="position: relative; z-index: 20; border-bottom: 1px solid {LINE}">
 <div class="hd" style="{WRAP}; padding: 11px 40px 10px 48px; min-height: 102px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px">
-<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: {H1C}">
+<a class="lg" href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: {H1C}">
 {img('logo-emblem', 'IIPCT logo: a turtle carrying a medicine wheel, with a stethoscope shaped like a heart', 'width: 80px; height: auto').replace('<img ', '<img class="hd-logo" ')}
 <span style="display: flex; flex-direction: column; gap: 5px">
-<span style="font-family: {SERIF}; font-weight: 700; font-size: 30px; line-height: 0.95; letter-spacing: -0.012em; color: {H1C}">IIPCT</span>
+<span class="lgw" style="font-family: {SERIF}; font-weight: 700; font-size: 30px; line-height: 0.95; letter-spacing: -0.012em; color: {H1C}">IIPCT</span>
 <span class="hd-tag lk" style="font-size: 9.6px; font-weight: 700; letter-spacing: 0.035em; line-height: 1.22; text-transform: uppercase; color: {INK}">Indigenous Interprofessional<br class="k">Primary Care Team</span>
 </span>
 </a>
 <span class="hd-div" aria-hidden="true" style="flex: none; width: 1px; height: 60px; background: {GOLDL}; margin: 0 8px 0 2px"></span>
 <nav class="hd-nav" aria-label="Main" style="flex: 1 1 420px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 17px; font-size: {NAV_SIZE}px; font-weight: 600; letter-spacing: -0.005em">{items}</nav>
-{dual_btn()}
+{book_btn()}
 {_mobile(active)}
 </div>
 </header>'''
@@ -414,10 +414,10 @@ def footer(top_h=90, pre='', tall=False):
 <div style="{WRAP}; padding: 14px 40px 0 55px">
 <div class="ft-row" style="display: flex; flex-wrap: wrap; gap: 26px 0; align-items: flex-start; padding-bottom: 22px">
 <div class="ft-logo" style="flex: none; width: 308px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding-top: 2px">
-<a href="Main.dc.html" style="display: flex; align-items: center; gap: 13px; text-decoration: none">
+<a class="lg lgd" href="Main.dc.html" style="display: flex; align-items: center; gap: 13px; text-decoration: none">
 <span style="flex: none; width: 94px; height: 94px; border-radius: 50%; background: #FBF4EA; display: flex; align-items: center; justify-content: center">{img('logo-emblem', 'IIPCT logo', 'width: 76px; height: auto')}</span>
 <span style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-family: {SERIF}; font-weight: 600; font-size: 33px; line-height: 0.95; letter-spacing: -0.01em; color: #FFFFFF">IIPCT</span>
+<span class="lgw" style="font-family: {SERIF}; font-weight: 600; font-size: 33px; line-height: 0.95; letter-spacing: -0.01em; color: #FFFFFF">IIPCT</span>
 <span class="lk" style="font-size: 9.6px; font-weight: 600; letter-spacing: 0.06em; line-height: 1.25; text-transform: uppercase; color: #FFFFFF">Indigenous Interprofessional<br class="k">Primary Care Team</span>
 </span>
 </a>
@@ -445,7 +445,7 @@ def footer(top_h=90, pre='', tall=False):
 {pipe}<a class="fl" href="Privacy.dc.html" style="color: #F4EFE4; text-decoration: none">Privacy Policy</a>
 {pipe}<a class="fl" href="Accessibility.dc.html" style="color: #F4EFE4; text-decoration: none">Accessibility</a>
 {pipe}<a class="fl" href="SiteMap.dc.html" style="color: #F4EFE4; text-decoration: none">Site Map</a>{signin}
-{pipe}<span>Built by <a class="fl" href="https://pixelelite.ca" style="color: #E3BE74; font-weight: 600; text-decoration: none">Pixel Elite Media</a> · <a class="fl" href="https://pixelelite.ca" style="color: #F4EFE4; text-decoration: none">pixelelite.ca</a></span>
+{pipe}<span>Built by <a class="fl dg" href="https://pixelelite.ca" style="color: #E3BE74; font-weight: 600; text-decoration: none">Pixel Elite Media</a> · <a class="fl" href="https://pixelelite.ca" style="color: #F4EFE4; text-decoration: none">pixelelite.ca</a></span>
 <span class="ft-bar" aria-hidden="true" style="margin-left: auto; width: 150px; height: 7px; border-radius: 2px; overflow: hidden; display: flex">{bar}</span>
 </div>
 </div>
@@ -454,13 +454,13 @@ def footer(top_h=90, pre='', tall=False):
 {action_bar()}'''
 
 def action_bar():
-    """The two things people come for, always under the thumb on phones and tablets: Call, Book, Locations.
+    """The two things people come for, always under the thumb on phones and tablets: Call, Schedule, Locations.
     Plain links in a bar fixed to the bottom of the screen (styles: .mbar in RESP_CSS). Hidden from 1100 px, on
     screens under 500 px tall (phones held sideways) and in print; the footer gets matching bottom padding."""
     cell = lambda ic, label, href, extra='': (f'<a class="mb-a" href="{href}"{extra}>{ico(ic, 21, "#E3BE74", 1.8)}<span>{label}</span></a>')
     return ('<nav class="mbar" aria-label="Quick actions">'
             + cell('phone', 'Call', 'tel:' + MAIN_TEL, f' aria-label="Call {MAIN_PHONE}"')
-            + cell('calendar-check', 'Book', 'Booking.dc.html', ' aria-label="Book a visit"')
+            + cell('calendar-check', 'Schedule', 'Booking.dc.html', ' aria-label="Schedule your visit"')
             + cell('pin', 'Locations', 'Contact.dc.html#locations', ' aria-label="Our locations"') + '</nav>')
 
 # ---------------------------------------------------------------- shared sections
@@ -496,9 +496,9 @@ def hero_pic(img_html, ratio=None):
     st = f' style="--nr: {ratio}"' if ratio else ''       # tablets: the box's shape when it sits beside the text (default 5 / 4)
     return f'<div class="hero-pic"{st}>{img_html}</div>'
 
-def hero_call():
-    """The hero's quiet second action on phones: the main line as a text link (shown under 600 px only)."""
-    return (f'<a class="tl show-p hero-call" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; '
+def hero_call(phones_only=True):
+    """The hero's quiet second action: the main line as a text link (phones_only: shown under 600 px only; else on every screen)."""
+    return (f'<a class="tl{" show-p" if phones_only else ""} hero-call" href="tel:{MAIN_TEL}" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; '
             f'font-size: 15px; font-weight: 700; color: {RUST}; text-decoration: none">{ico("phone", 18, RUST, 1.8)}'
             f'<span style="text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px">Call {MAIN_PHONE}</span></a>')
 
@@ -513,9 +513,9 @@ def _hero_img(crop, photo_w, obj, site_photo, alt, wh, narrow_pos=None, narrow_r
         return hero_pic(photo(site_photo, alt, st, cls, w, h, lazy=False), narrow_ratio)
     return hero_pic(f'<img class="{cls}" src="{BLOB[crop]}" alt="" style="display: block; {st}">', narrow_ratio)
 
-def rust_band(icon, title, sub, right, style='', sub_size=13.1):
+def rust_band(icon, title, sub, right, style='', sub_size=13.1, right_style='', right_cls='', sid=''):
     return f'''
-<section style="{WRAP}; padding: 0 52px">
+<section{f' id="{sid}"' if sid else ''} style="{WRAP}; padding: 0 52px{'; scroll-margin-top: 16px' if sid else ''}">
 <div class="band" style="position: relative; overflow: hidden; border-radius: 16px; background: #A85C43; border: 1px solid #8A4530; color: #FFFFFF; padding: 16px 132px 17px 90px; min-height: 84px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; box-shadow: 0 1px 2px rgba(90, 40, 20, 0.18); {style}">
 {branch(86, '#E4B58E', 0.5, 'left: -6px; bottom: -58px; transform: rotate(-18deg)', 4, True)}
 {branch(96, '#E4B58E', 0.5, 'right: 6px; bottom: -66px; transform: rotate(14deg)', 4, True)}
@@ -524,18 +524,34 @@ def rust_band(icon, title, sub, right, style='', sub_size=13.1):
 <h2 style="margin: 0; font-family: {SERIF}; font-weight: 500; font-size: 24.8px; line-height: 1.05; letter-spacing: -0.012em; color: #FFFFFF">{title}</h2>
 <p style="margin: 0; font-size: {sub_size}px; line-height: 1.3; color: #FFF6EC">{sub}</p>
 </div>
-<div class="band-r" style="position: relative; min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px">{right}</div>
+<div class="band-r{" " + right_cls if right_cls else ""}" style="position: relative; min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px{"; " + right_style if right_style else ""}">{right}</div>
 </div>
 </section>'''
 
-def newsletter(sub='Get our news, events and programs by email. Sign up on our newsletter page.'):
-    """Newsletter band. A static page cannot sign anyone up, so the band links to the Mailchimp sign-up page (new tab)."""
-    right = (f'<a class="btn bp nl-btn" href="{NEWSLETTER_URL}" aria-label="Sign up for the newsletter (opens in a new tab)" '
-             f'style="display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; padding: 0 22px; border-radius: 9px; '
-             f'border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-size: 13.6px; font-weight: 600; '
-             f'line-height: 1.2; text-align: center; text-decoration: none; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)">'
-             f'{ico("mail", 17, "#FFFFFF", 1.8)}<span>Sign up for the newsletter</span>{ico("external", 15, "#FFFFFF", 2)}</a>')
-    return rust_band('mail', 'Stay Connected with IIPCT', sub, right)
+NL_SUB = 'Get our news, events and programs by email.'
+NEWSLETTER_FORM = facts.NEWSLETTER_FORM
+def newsletter(sub=NL_SUB):
+    """Newsletter band, as designed: an email box and a Subscribe button. It is a plain HTML form that posts straight to
+    IIPCT's Mailchimp audience (facts.NEWSLETTER_FORM, Mailchimp's own embedded-form address) and opens Mailchimp's
+    answer in a new tab: no script, and this site stores nothing. The hidden b_... field is Mailchimp's anti-robot field,
+    written as their embed code writes it. Styles for narrow screens: .nl-* in RESP_CSS."""
+    f = NEWSLETTER_FORM
+    action = f'https://{f["host"]}/subscribe/post?u={f["u"]}&amp;id={f["id"]}&amp;f_id={f["f_id"]}'
+    right = (f'<form class="nl-form" action="{action}" method="post" target="_blank" rel="noopener" '
+             f'style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; width: 100%">'
+             f'<label for="nl-email" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap">Email address</label>'
+             f'<input class="nl-in" id="nl-email" type="email" name="EMAIL" required autocomplete="email" placeholder="Enter your email address" aria-describedby="nl-note" '
+             f'style="flex: 1 1 240px; min-width: 0; width: 346px; max-width: 100%; height: 40px; padding: 0 16px; border-radius: 9px; border: 1px solid #F3E4D2; background: #FFFDF8; '
+             f'font-family: inherit; font-size: 13.4px; color: {INK}">'
+             f'<div aria-hidden="true" style="position: absolute; left: -5000px"><input type="text" name="b_{f["u"]}_{f["id"]}" tabindex="-1" value=""></div>'
+             f'<button class="btn bp nl-btn" type="submit" aria-describedby="nl-note" style="flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 40px; min-width: 156px; '
+             f'padding: 0 22px; border-radius: 9px; border: 1px solid #C8A15A; background: linear-gradient(180deg, #20502B 0%, #133419 100%); color: #FFFFFF; font-family: inherit; '
+             f'font-size: 13.6px; font-weight: 600; line-height: 1.2; cursor: pointer; box-shadow: 0 2px 6px rgba(40, 20, 10, 0.3)"><span>Subscribe</span>{ico("arrow", 15, "currentColor", 2)}</button>'
+             f'<p id="nl-note" style="flex: 1 1 100%; margin: 0; font-size: 12.6px; line-height: 1.4; color: #FFF6EC">Your email address goes to Mailchimp, the service IIPCT uses for its newsletter. '
+             f'You can unsubscribe at any time. <a class="dl nlp" href="Privacy.dc.html" style="color: #FFFFFF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; padding: 1px 3px; margin: 0 -3px; border-radius: 4px">Privacy Policy</a>. '
+             f'Subscribe opens Mailchimp in a new tab.</p>'
+             f'</form>')
+    return rust_band('mail', 'Stay Connected with IIPCT', sub, right, right_style='flex: 0 1 520px', right_cls='nl-r', sid='newsletter')
 
 def feature_list(items, icon_size=46, title_size=15.6, gap=22, text_size=12.5, icon_gap=33):
     """items: (icon, title, text)"""
@@ -593,7 +609,7 @@ CLINICS = [(l['name'], address(l, False), f'{MAIN_PHONE}, press {l["option"]}', 
 def call_list(dark=False, size=13.4):
     """The main line's menu: one row per location ("Tyendinaga Clinic ... press 1"). Each row dials the main line."""
     name_c, opt_c, line = ('#FFFFFF', '#E3BE74', 'rgba(255, 255, 255, 0.22)') if dark else (HEAD, RUST, '#E6D9BF')
-    rows = ''.join(f'<li style="border-top: 1px solid {line}"><a class="cl" href="tel:{MAIN_TEL}" aria-label="Call {MAIN_PHONE} and press {l["option"]} for the {l["name"]}" '
+    rows = ''.join(f'<li style="border-top: 1px solid {line}"><a class="cl{" cld" if dark else ""}" href="tel:{MAIN_TEL}" aria-label="Call {MAIN_PHONE} and press {l["option"]} for the {l["name"]}" '
                    f'style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; padding: 6px 0; text-decoration: none">'
                    f'<span style="font-weight: 600; color: {name_c}">{l["name"]}</span>'
                    f'<span style="flex: none; font-weight: 700; color: {opt_c}; white-space: nowrap">Press {l["option"]}</span></a></li>' for l in LOCATIONS)
@@ -683,7 +699,7 @@ def book_aside(related='', title='Book this service'):
 </aside>"""
 
 def link_list(title, links):
-    rows = ''.join(f'<li><a class="tl" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #E6D9BF; '
+    rows = ''.join(f'<li><a class="tl il" href="{h}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #E6D9BF; '
                    f'font-size: 13.6px; font-weight: 600; color: {HEAD}; text-decoration: none"><span>{t}</span>{ico("arrow", 15, RUST, 1.9)}</a></li>' for t, h in links)
     return f'<div style="padding: 18px 22px 10px; border-radius: 14px; {CARD}">{h3(title, 19)}<ul class="t-b" style="margin: 10px 0 0; padding: 0; list-style: none">{rows}</ul></div>'
 
@@ -720,7 +736,7 @@ def link_card(icon, tone, title, text, href):
     return (f'<a class="card tile tila" href="{href}" style="position: relative; display: flex; align-items: flex-start; gap: 15px; min-height: 112px; padding: 18px 46px 18px 18px; border-radius: 14px; '
             f'{CARD}; color: {INK}; text-decoration: none">{circ(icon, tone, 56, 29, 1.5)}'
             f'<span class="tile-b" style="min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px">'
-            f'<span class="t-h3" style="font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</span>'
+            f'<span class="t-h3 ct" style="font-family: {SERIF}; font-weight: 700; font-size: 18.4px; line-height: 1.12; letter-spacing: -0.016em; color: {HEAD}">{title}</span>'
             f'<span class="t-s" style="font-size: 13.4px; line-height: 1.44; color: {INK}">{text}</span></span>'
             f'<span class="tile-ar" aria-hidden="true" style="position: absolute; right: 14px; bottom: 13px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; '
             f'background: #FFFDF8; border: 1px solid #C9B691">{ico("arrow", 13, "#13261B", 2)}</span></a>')
@@ -762,11 +778,9 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 .mnav[open] .mi-o,.mnav:not([open]) .mi-x{display:none !important}
 .xt>summary,.faq>summary{list-style:none}.xt>summary::-webkit-details-marker,.faq>summary::-webkit-details-marker{display:none}
 .xt[open]>summary>svg,.faq[open]>summary>svg{transform:rotate(180deg)}
-.ml{transition:background .15s}.ml:hover{background:#F1E7D3}
 @container pg (max-width:1399px){
 .hd{padding-left:32px !important;padding-right:28px !important}
 .hd-nav{gap:4px 14px !important}
-.hd-seg2{display:none !important}
 .pg h3,.pg li,.pg li>span{white-space:normal !important}
 .hero-txt{padding-left:56px !important}
 .hero-txt .h1{font-size:42px !important}
@@ -792,6 +806,8 @@ RESP_CSS = """.pg{container-type:inline-size;container-name:pg;min-width:320px}
 nav[aria-label="Breadcrumb"] a{min-width:40px}
 .tl:not([style*="display"]):not(p .tl):not(li .tl),a[href^="tel:"]:not([style*="display"]):not(p a):not(li a),a[href^="mailto:"]:not([style*="display"]):not(p a):not(li a){display:inline-flex;align-items:center}
 .btn{min-height:40px !important}
+.nl-in,.nl-btn{min-height:44px !important}
+.nl-in{font-size:16px !important}
 .ra{width:40px !important;height:40px !important}
 .toc a{display:flex !important;align-items:center;min-height:40px}
 }
@@ -822,7 +838,6 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .mbar{display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#153526;border-top:1px solid #C8A15A;padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);box-shadow:0 -4px 16px rgba(12,39,29,.22)}
 .mb-a{flex:1 1 0;min-width:0;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px !important;color:#FFFFFF;text-decoration:none;font-size:13px;font-weight:700;line-height:1.1;letter-spacing:.01em}
 .mb-a+.mb-a{border-left:1px solid rgba(200,161,90,.32)}
-.mb-a:hover{background:#1C4632;color:#FFFFFF}
 .ft-dark{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
 .hd-book{display:none !important}
 .sp-photo,.sp-feat{flex:1 1 100% !important}
@@ -835,6 +850,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .pg br{display:none}.pg br.k{display:inline}
 .vd{display:none !important}
 .band{padding:20px 28px !important}
+.nl-r{flex:1 1 100% !important}
 .aside{flex:1 1 100% !important;max-width:none !important;display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 .aside>*{max-width:none !important}
 .ft-row{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px !important}
@@ -1056,6 +1072,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .jl>a{justify-content:center;text-align:center;padding:6px 10px !important;min-height:44px !important;font-size:14px !important;border-radius:14px !important}
 .toc ul{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px !important}
 .btn{font-size:15px !important;white-space:normal !important;line-height:1.25 !important;text-align:center;padding-top:9px !important;padding-bottom:9px !important}
+.nl-in,.nl-btn{flex:1 1 100% !important;width:100% !important}
 .g-tm{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
 .tm{padding:12px !important;gap:10px !important}
 .tm-h{flex-direction:column;align-items:flex-start !important;gap:10px !important}
@@ -1094,23 +1111,76 @@ html{scroll-padding-bottom:0}
 
 FONT_HREF = ('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700'
              '&amp;family=Kaushan+Script&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&amp;display=swap')
+# ---------------------------------------------------------------- hover and keyboard focus
+# Every link, button and summary answers the pointer, and keyboard focus, with a colour change. Most colours sit
+# inline on the elements, so these rules carry !important. One class per kind of control:
+#   tl, tx  text link (rust): forest, gold underline (tu: the label sits in its own underlined span)
+#   il      link in ink (event titles, card titles, rows): rust; ct marks the title inside a row or a card link
+#   fl, dl  link on a dark band or the footer (cream, white): light gold; dg: gold at rest, or on the rust band where light
+#           gold would be too faint: white with a gold underline
+#   bp      primary button: a lighter forest with a gold edge
+#   bo, bs  outline and soft buttons: forest fill, white words
+#   bl, bg  light button and gold-edged button on a dark band: gold fill, dark words
+#   card    a card that is a link: gold edge and a lift; its title (ct, t-h3) turns rust
+#   nv nv-on mi ml mb-a ra cl cld lg lgd pl, .toc a: header menu (and its current item), dropdown items, the phone menu,
+#   the bottom bar, round arrows, call-list rows, the logo, picture links, the legal pages' contents list
+# lib.responsive() gives every hand-written link without a class its kind from its colour (_linkkind).
+# Pointer rules sit behind @media (hover: hover), so touch screens never keep a stuck hover colour; keyboard focus
+# (:focus-visible) gets the same colours on every screen, as well as its outline. Movement (the lift, the arrow
+# nudge) only for visitors who have not asked for reduced motion. tools/hover-check.mjs checks every page.
+_UL = 'text-decoration-line:underline !important;text-decoration-color:#C8A15A !important;text-underline-offset:4px;text-decoration-thickness:1.5px'
+HOVER = [   # (selectors, with % where the state goes; declarations)
+    ('.tl:not(.il)%,.tx%', 'color:#17402A !important'),
+    ('.tl:not(.il):not(.tu)%,.tx:not(.tu)%', _UL),
+    ('.tu%>span', 'text-decoration-color:#C8A15A !important'),
+    ('.il%,.il% .ct', 'color:#8C2B18 !important'),
+    ('.tl% svg,.tx% svg,.il% svg', 'stroke:currentColor'),
+    ('.fl%,.dl%', 'color:#E3BE74 !important'),
+    ('.dg%', 'color:#FFFFFF !important;' + _UL),
+    ('.nlp%', 'background-color:#8C2B18 !important'),
+    ('.cl% span:first-child', 'color:#8C2B18 !important'),
+    ('.cld% span:first-child', 'color:#E3BE74 !important'),
+    ('.lg% .lgw', 'color:#8C2B18 !important'),
+    ('.lgd% .lgw', 'color:#E3BE74 !important'),
+    ('.pl% img', 'border-color:#C8A15A !important'),
+    ('.bp%', 'background:linear-gradient(180deg,#31723F 0%,#1F4E2A 100%) !important;border-color:#C8A15A !important'),
+    ('.bo%,.bs%', 'background:#17402A !important;color:#FFFFFF !important;border-color:#17402A !important'),
+    ('.bl%', 'background:#E3BE74 !important;color:#10291F !important;border-color:#E3BE74 !important'),
+    ('.bg%', 'background:#C8A15A !important;color:#10291F !important;border-color:#C8A15A !important'),
+    ('.bo% svg,.bs% svg,.bl% svg,.bg% svg', 'stroke:currentColor'),
+    ('.card%', 'border-color:#C8A15A !important;box-shadow:0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important'),
+    ('a.card% .ct,a.card% .t-h3', 'color:#8C2B18 !important'),
+    ('a.card% .cft', 'color:#17402A !important'),
+    ('a.card% .cft>span', 'text-decoration-color:#C8A15A !important'),
+    ('a.card% .cft svg', 'stroke:currentColor'),
+    ('.nv%', 'color:#9A3B26 !important;border-bottom-color:#9A3B26 !important'),
+    ('.nv-on%', 'color:#17402A !important;border-bottom-color:#C8A15A !important'),
+    ('.nv% svg', 'stroke:currentColor'),
+    ('.mi%,.ml%,.toc a%', 'background:#F1E7D3;color:#8C2B18 !important'),
+    ('.mnav .ml.cur%', 'background:#EFE0C2 !important;color:#17402A !important'),
+    ('.mb-a%', 'background:#1C4632;color:#E3BE74'),
+    ('.ra%', 'background:#17402A !important;border-color:#17402A !important'),
+    ('.ra% svg', 'stroke:#FFFFFF'),
+]
+# phones: a hero's second button is drawn as a text link there (RESP_CSS), so it answers like one
+HOVER_P = [('.hero-sec .btn-row>.btn~.btn%,.sh .btn-row>.btn~.btn%', 'color:#17402A !important'),
+           ('.hero-sec .btn-row>.btn~.btn%>span,.sh .btn-row>.btn~.btn%>span', 'text-decoration-color:#C8A15A !important')]
+def _rules(rules, state):
+    return ''.join(','.join(sel.replace('%', state) for sel in sels.split(',')) + '{' + decl + '}' for sels, decl in rules)
+HOVER_CSS = ('.tl,.tx,.il,.fl,.dl,.cl span,.lgw,.pl img,.btn,.bo,.bs,.bl,.bg,.nv,.mi,.ml,.mb-a,.toc a,.ra,.ct,.cft,.cft>span,summary,.card,.tl svg,.tx svg,.il svg,.btn svg,.nv svg,.ra svg,.cft svg'
+             '{transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s,box-shadow .15s,stroke .15s,transform .15s}\n'
+             '@media (hover:hover){' + _rules(HOVER, ':hover') + '.faq:hover{border-color:#C8A15A !important;background:#FFF8EA !important}}\n'
+             + _rules(HOVER, ':focus-visible') + '\n'
+             '@media (hover:hover) and (prefers-reduced-motion:no-preference){.btn:hover{transform:translateY(-1px)}.card:hover{transform:translateY(-3px)}'
+             '.tl:hover svg,.tx:hover svg{transform:translateX(3px)}}\n'
+             '@container pg (max-width:599px){@media (hover:hover){' + _rules(HOVER_P, ':hover') + '}' + _rules(HOVER_P, ':focus-visible') + '}\n')
+
 BASE_CSS = ('body{margin:0;background:#FBF4EA}\n*,*::before,*::after{box-sizing:border-box}\n'
-            'a{color:#8C2B18}a:hover{color:#5F1B0E}\ninput::placeholder,textarea::placeholder{color:#6B746E}\n'
+            'a{color:#8C2B18}\ninput::placeholder,textarea::placeholder{color:#6B746E}\n'
             '.nvi{position:relative;display:inline-flex}.nvm{position:absolute;top:100%;left:-16px;padding-top:9px;display:none;z-index:40}'
             '.nvi:hover>.nvm,.nvi:focus-within>.nvm{display:block}\n'
-            '.nv{transition:color .15s,border-color .15s}.nv:hover{color:#9A3B26 !important;border-bottom-color:#9A3B26 !important}.nv:hover svg{stroke:#9A3B26}\n'
-            '.nvm a{transition:background .15s,color .15s}.nvm a:hover{background:#F1E7D3;color:#8C2B18 !important}\n'
-            '.btn,.seg{transition:transform .15s,box-shadow .15s,filter .15s,background .15s}.btn:hover{transform:translateY(-1px)}'
-            '.bp:hover,.seg:hover{filter:brightness(1.16)}.bo:hover,.sego:hover{background:#F1E7D3 !important;filter:none}'
-            '.bs:hover{filter:brightness(.96)}.bg:hover{background:#C8A15A !important;color:#10291F !important}\n'
-            '.tl svg{transition:transform .15s}.tl:hover{color:#5F1B0E !important}.tl:hover svg{stroke:#5F1B0E;transform:translateX(3px)}\n'
-            '.ra{transition:background .15s,border-color .15s}.ra:hover{background:#17402A !important;border-color:#17402A !important}.ra:hover svg{stroke:#fff}\n'
-            '.card{transition:transform .18s,box-shadow .18s,border-color .18s}'
-            '.card:hover{transform:translateY(-3px);border-color:#C8A15A !important;box-shadow:0 2px 4px rgba(64,44,14,.08),0 14px 26px rgba(64,44,14,.13) !important}\n'
-            '.fl{transition:color .15s}.fl:hover{color:#E3BE74 !important}.faq:hover{border-color:#C8A15A !important;background:#FFF8EA !important}\n'
-            '.toc a:hover{background:#F1E7D3}\n'
             'input:focus,textarea:focus,select:focus{outline:2px solid #C8A15A;outline-offset:1px}'
-            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #C8A15A;outline-offset:2px}\n' + RESP_CSS)
+            'a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #C8A15A;outline-offset:2px}\n' + RESP_CSS + HOVER_CSS)
 
 _TAG = re.compile(r'<[a-zA-Z][^<>]*>')
 def _hook(m):
@@ -1136,7 +1206,7 @@ def _fsu(m):
         return t.replace(cm.group(0), f' class="{cm.group(1)} fsu"', 1)
     return re.sub(r'^<(\w+)', r'<\1 class="fsu"', t, count=1)
 
-ROLE_CLASSES = {'t-b', 't-s', 't-h3', 't-h3l', 'lead', 'h1', 'h2', 'fsu', 'lk', 'tl', 'btn', 'nv', 'ml', 'fl', 'mb-a', 'seg', 'bo', 'cl', 'crumb'}
+ROLE_CLASSES = {'t-b', 't-s', 't-h3', 't-h3l', 'lead', 'h1', 'h2', 'fsu', 'lk', 'tl', 'btn', 'nv', 'ml', 'fl', 'mb-a', 'bo', 'bl', 'cl', 'crumb'}
 _ROLE_TAGS = {'p', 'li', 'dd', 'dt', 'figcaption', 'ul', 'ol', 'span', 'a', 'div', 'summary'}
 def _role(m):
     """Type roles for phones and tablets (RESP_CSS sets their sizes there; desktop keeps the inline sizes). Helpers set
@@ -1209,11 +1279,54 @@ def _nobreak(body):
         parts[i] = _PHONE.sub(lambda m: f'<span class="nb">{m.group(0)}</span>', part)
     return ''.join(parts)
 
+# _linkkind: the hover kind (HOVER_CSS) of a link written by hand in page text, from its inline colour
+LINK_INK = {'#10291F', '#17231D', '#0F3325', '#13261B', '#3A4640', '#133019'}
+LINK_ON_DARK = {'#FFFFFF', '#F4EFE4', '#F4F1E8', '#FFF6EC', '#FBF4EA'}
+LINK_GOLD_ON_DARK = {'#E3BE74', '#D9B36A', '#DDB86C'}
+LINK_RUST = {'#8C2B18', '#9C4530', '#A0432C', '#9A3B26'}
+_LINKTAG = re.compile(r'<(a|summary)(\s[^<>]*)?>(<img |<span style="text-decoration: underline)?')
+def _linkkind(m):
+    """Every link and summary gets a hover class. Helpers give theirs; a link without a class gets one here: a picture
+    link (it holds only an image) pl; ink il; cream or white on a dark band dl; gold on a dark band dl dg; rust or the
+    page's own link colour tx. A label in its own underlined span adds tu (its underline turns gold, none is added)."""
+    tag, attrs, nxt = m.group(1), m.group(2) or '', m.group(3) or ''
+    if tag == 'a' and ' href=' not in attrs:
+        return m.group(0)
+    cm = re.search(r' class="([^"]*)"', attrs)
+    have = cm.group(1).split() if cm else []
+    add = []
+    if not have:
+        st = re.search(r' style="([^"]*)"', attrs)
+        col = re.search(r'(?:^|;)\s*color:\s*(#[0-9A-Fa-f]{6})', st.group(1)) if st else None
+        c = col.group(1).upper() if col else None
+        if nxt == '<img ':
+            add.append('pl')
+        elif c in LINK_INK:
+            add.append('il')
+        elif c in LINK_GOLD_ON_DARK:
+            add += ['dl', 'dg']
+        elif c in LINK_ON_DARK:
+            add.append('dl')
+        elif c is None or c in LINK_RUST:
+            add.append('tx')
+        else:
+            raise AssertionError(f'_linkkind: a link coloured {c} has no hover kind; give it a class: {m.group(0)[:160]}')
+    if nxt.startswith('<span') and 'tu' not in have:
+        add.append('tu')
+    if not add:
+        return m.group(0)
+    if cm:
+        tagtxt = m.group(0).replace(cm.group(0), f' class="{" ".join(have + add)}"', 1)
+    else:
+        tagtxt = f'<{tag} class="{" ".join(add)}"{attrs}>{nxt}'
+    return tagtxt
+
 def responsive(body):
-    """Hooks the narrow-width rules need: every page-width wrapper gets class w, text set below 12 px gets class fsu
+    """Hooks the narrow-width rules need: every link gets its hover kind (_linkkind), every page-width wrapper gets class w, text set below 12 px gets class fsu
     (lifted to 12 px on phones, except the logo lockup, class lk), headings get a step of the phone scale (_head), body
     copy gets a type role (_role), phone numbers get
     their no-break rule (_nobreak), and forced line breaks keep a space when they are switched off."""
+    body = _LINKTAG.sub(_linkkind, body)
     body = _TAG.sub(_hook, body)
     body = _TAG.sub(_fsu, body)
     body = _TAG.sub(_head, body)
